@@ -158,30 +158,148 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
         //
         // Please keep these in alphabetical order by op name.
         //
+        confirmation_function_map["Add"] = SimpleConfirmationFunction();
+        confirmation_function_map["AddN"] = SimpleConfirmationFunction();
+        confirmation_function_map["ArgMax"] = SimpleConfirmationFunction();
+        confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
+        confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
         confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
+        confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
+        confirmation_function_map["Cast"] = SimpleConfirmationFunction();
+        confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
+        confirmation_function_map["Concat"] = SimpleConfirmationFunction();
         confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
         confirmation_function_map["Const"] = SimpleConfirmationFunction();
-#if 0
+        #if 0
         confirmation_function_map["Conv2D"] = [](Node* n, bool* result) {
-
-                            std::string tf_data_format;
-                           GetNodeAttr(n->attrs(), "data_format", &tf_data_format);
-                            *result = tf_data_format == "NCHW"; //NHWC
-                            std::cout << tf_data_format << "  and result is " << *result << std::endl;
-                            return Status::OK();
-                        };
-#else
+                    std::string tf_data_format;
+                    TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "data_format", &tf_data_format));
+                    *result = tf_data_format == "NCHW"; //NHWC
+                    std::cout << tf_data_format << "  and result is " << *result << std::endl;
+                    return Status::OK();
+                };
+        #else
         confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
-#endif   
+        #endif   
+        confirmation_function_map["Conv2DBackpropInput"] = SimpleConfirmationFunction();
+        confirmation_function_map["Cos"] = SimpleConfirmationFunction();
+        confirmation_function_map["Cosh"] = SimpleConfirmationFunction();
+        confirmation_function_map["CropAndResize"] = [](Node* n, bool* result) {
+                    std::string ipMode;
+                    TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "method", &ipMode));
+                    *result = ipMode == "bilinear"; 
+                    std::cout << ipMode << "  and result is " << *result << std::endl;
+                    return Status::OK();
+                };
+        confirmation_function_map["CumSum"] = SimpleConfirmationFunction();
+        confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
+        confirmation_function_map["DepthwiseConv2dNative"] = SimpleConfirmationFunction();
+        confirmation_function_map["Enter"] = SimpleConfirmationFunction();
+        confirmation_function_map["Equal"] = SimpleConfirmationFunction();
+        confirmation_function_map["Exit"] = SimpleConfirmationFunction();
+        confirmation_function_map["Exp"] = SimpleConfirmationFunction();
+        confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
+        confirmation_function_map["ExperimentalSparseWeightedSum"] = SimpleConfirmationFunction();
+        confirmation_function_map["ExtractImagePatches"] = SimpleConfirmationFunction();
+        confirmation_function_map["Fill"] = SimpleConfirmationFunction();
+        confirmation_function_map["Floor"] = SimpleConfirmationFunction();
+        confirmation_function_map["FusedBatchNorm"] = SimpleConfirmationFunction();
+        confirmation_function_map["Gather"] = SimpleConfirmationFunction();
+        confirmation_function_map["GatherNd"] = SimpleConfirmationFunction();
+        confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();
+        confirmation_function_map["Greater"] = SimpleConfirmationFunction();
+        confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction();
         confirmation_function_map["Identity"] = SimpleConfirmationFunction();
         confirmation_function_map["LRN"] = SimpleConfirmationFunction();
+        confirmation_function_map["Less"] = SimpleConfirmationFunction();
+        confirmation_function_map["Log"] = SimpleConfirmationFunction();
+        confirmation_function_map["Log1p"] = SimpleConfirmationFunction();
+        confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
+        confirmation_function_map["LogicalOr"] = SimpleConfirmationFunction();
+        confirmation_function_map["LogicalNot"] = SimpleConfirmationFunction();
+        confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
+        confirmation_function_map["LoopCond"] = SimpleConfirmationFunction();
         confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
+        confirmation_function_map["Max"] = SimpleConfirmationFunction();
         confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
+        confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
+        confirmation_function_map["Mean"] = SimpleConfirmationFunction();
+        confirmation_function_map["Merge"] = SimpleConfirmationFunction();
+        confirmation_function_map["Min"] = SimpleConfirmationFunction();
+        confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
+        confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction();
+        confirmation_function_map["Mul"] = SimpleConfirmationFunction();
+        confirmation_function_map["Neg"] = SimpleConfirmationFunction();
+        confirmation_function_map["NextIteration"] = SimpleConfirmationFunction();
+        confirmation_function_map["NonMaxSuppressionV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["NonMaxSuppressionV4"] = SimpleConfirmationFunction();
+        confirmation_function_map["NonMaxSuppressionV5"] = SimpleConfirmationFunction();
+        confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
+        confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
+        confirmation_function_map["Pack"] = SimpleConfirmationFunction();
+        confirmation_function_map["Pad"] = SimpleConfirmationFunction();
+        confirmation_function_map["PadV2"] = SimpleConfirmationFunction();
+        confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
+        confirmation_function_map["PlaceholderWithDefault"] = SimpleConfirmationFunction();
+        confirmation_function_map["Prod"] = SimpleConfirmationFunction();
+        confirmation_function_map["Range"] = SimpleConfirmationFunction();
+        confirmation_function_map["Rank"] = SimpleConfirmationFunction();
+        confirmation_function_map["RealDiv"] = SimpleConfirmationFunction();
         confirmation_function_map["Relu"] = SimpleConfirmationFunction();
+        confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
         confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
+        confirmation_function_map["ResizeBilinear"] = SimpleConfirmationFunction();
+        confirmation_function_map["ResizeNearestNeighbor"] = SimpleConfirmationFunction();
+        confirmation_function_map["ResourceGather"] = SimpleConfirmationFunction();
+        confirmation_function_map["ReverseSequence"] = SimpleConfirmationFunction();
+        confirmation_function_map["Round"] = SimpleConfirmationFunction();
+        confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
         confirmation_function_map["Shape"] = SimpleConfirmationFunction();
-        confirmation_function_map["Softmax"] = SimpleConfirmationFunction();    
+        confirmation_function_map["Sigmoid"] = SimpleConfirmationFunction();
+        confirmation_function_map["Sin"] = SimpleConfirmationFunction();
+        confirmation_function_map["Sinh"] = SimpleConfirmationFunction();
+        confirmation_function_map["Size"] = SimpleConfirmationFunction();
+        confirmation_function_map["Slice"] = SimpleConfirmationFunction();
+        confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
+        confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
+        confirmation_function_map["Softsign"] = SimpleConfirmationFunction();
+        confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
+        confirmation_function_map["SparseToDense"] = SimpleConfirmationFunction();
         confirmation_function_map["Split"] = SimpleConfirmationFunction();
+        confirmation_function_map["SplitV"] = SimpleConfirmationFunction();
+        confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
+        confirmation_function_map["Square"] = SimpleConfirmationFunction();
+        confirmation_function_map["SquaredDifference"] = SimpleConfirmationFunction();
+        confirmation_function_map["Square"] = SimpleConfirmationFunction();
+        confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
+                    int axis;  // To do, update datatype
+                    int dim; // To do, update datatype
+                    TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "axis", &axis));
+                    TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "squeeze_dims", &dim));
+                    //std::cout << ipMode << "  and result is " << *result << std::endl;
+                    return Status::OK();
+                };
+        confirmation_function_map["StopGradient"] = SimpleConfirmationFunction();
+        confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
+        confirmation_function_map["Sub"] = SimpleConfirmationFunction();
+        confirmation_function_map["Sum"] = SimpleConfirmationFunction();
+        confirmation_function_map["Swish"] = SimpleConfirmationFunction();
+        confirmation_function_map["Switch"] = SimpleConfirmationFunction();
+        confirmation_function_map["Tan"] = SimpleConfirmationFunction();
+        confirmation_function_map["Tanh"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArrayGatherV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArrayReadV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArrayScatterV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArraySizeV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArrayV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["TensorArrayWriteV3"] = SimpleConfirmationFunction();
+        confirmation_function_map["Tile"] = SimpleConfirmationFunction();
+        confirmation_function_map["TopKV2"] = SimpleConfirmationFunction();
+        confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
+        confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
+        confirmation_function_map["Where"] = SimpleConfirmationFunction();
+        confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
+
     }
     return confirmation_function_map;
 }
