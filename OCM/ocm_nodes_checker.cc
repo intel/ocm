@@ -1,6 +1,6 @@
 #include "ocm_nodes_checker.h"
-#include "./tensorflow/ocm_tf_checker.h"
-#include "./onnx/ocm_onnx_checker.h"
+#include "tf/ocm_tf_checker.h"
+#include "onnx/ocm_onnx_checker.h"
 
 namespace ocm{
     

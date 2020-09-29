@@ -60,7 +60,7 @@ endif()
 
 set(SRC
     ocm_nodes_checker.cc
-    tensorflow/ocm_tf_checker.cc
+    tf/ocm_tf_checker.cc
     onnx/ocm_onnx_checker.cc
 )
 
