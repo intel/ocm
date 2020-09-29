@@ -4,6 +4,8 @@
 #include <iostream>
 #include <set>
 
+namespace ocm{
+  
 std::set<std::string> common_supported_ops = {
       "Add",
       "And",
@@ -114,5 +116,7 @@ std::set<std::string> common_supported_ops = {
     "ReduceSumSquare",
     "SinFloat",
   };
+
+}//namespace ocm 
 
 #endif //_OCM_ONNX_OPS_LIST_H_

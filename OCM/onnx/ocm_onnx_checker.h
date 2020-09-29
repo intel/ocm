@@ -3,6 +3,8 @@
 
 #include "ocm_nodes_checker.h"
 
+namespace ocm{
+
 namespace onnxruntime{
     class GraphViewer{
         public:
@@ -12,13 +14,13 @@ namespace onnxruntime{
 
 class ONNXRTNodesChecker: public NodesChecker{
 public:
-	bool isOpSupported(std::string opName){
-		return opcheck(opName, supported_ops);
+	bool IsOpSupported(std::string opName){
+		return OpCheck(opName, supported_ops);
 	}
-	bool isOpModeSupported(){
+	bool IsOpModeSupported(){
 	    return true;     
 	 }
-	 void setGraph(void* graph){
+	 void SetGraph(void* graph){
 	 	graph = static_cast< onnxruntime::GraphViewer*> (graph);
 	 }
 	 std::vector<void *> PrepareSupportedNodesList() override;
@@ -26,5 +28,6 @@ public:
 	const onnxruntime::GraphViewer* graph;
 };
 
+}//namespace ocm 
 
 #endif //_OCM_ONNX_CHECKER_

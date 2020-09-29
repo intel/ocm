@@ -52,7 +52,7 @@ else()
 endif()
 
 add_library(tensorflow_cc_lib SHARED IMPORTED)
-if(OV_TF_USE_TENSORFLOW_2)
+if(NOT(TensorFlow_VERSION LESS 2.0))
     set_target_properties(
         tensorflow_cc_lib
         PROPERTIES IMPORTED_LOCATION
@@ -64,7 +64,7 @@ else()
         PROPERTIES IMPORTED_LOCATION
         ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.1
     )
-    set(TensorFlow_FRAMEWORK_LIBRARY ${TF_SRC_DIR}/bazel-bin/tensorflow/${TF_LIB_NAME})
+    # set(TensorFlow_FRAMEWORK_LIBRARY ${TF_SRC_DIR}/bazel-bin/tensorflow/${TF_LIB_NAME})
 endif()
 
 

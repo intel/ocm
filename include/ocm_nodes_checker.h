@@ -7,6 +7,9 @@
 #include <vector>
 #include <memory>
 
+
+namespace ocm{
+
 enum class Framework_Names{TF, ONNX} ;
 
 struct NodeInfo{
@@ -14,15 +17,15 @@ struct NodeInfo{
 };
 
 //find if the op is supported based on the ops_support set
-bool opcheck(const std::string &optype, std::set<std::string> oplist);
+bool OpCheck(const std::string &optype, std::set<std::string> oplist);
 
 class NodesChecker{
 public:
 	virtual ~NodesChecker() {
 	};
-	virtual bool isOpSupported(std::string opname) = 0;
-	virtual bool isOpModeSupported() = 0;
-	virtual void setGraph(void* graph) = 0;
+	virtual bool IsOpSupported(std::string opname) = 0;
+	virtual bool IsOpModeSupported() = 0;
+	virtual void SetGraph(void* graph) = 0;
 	virtual std::vector<void *> PrepareSupportedNodesList() = 0;
 
 public:
@@ -45,5 +48,6 @@ private:
 	std::vector<unsigned int> unsupported_nodes_idx;
 };
 
+} // namespace ocm
 
 #endif //_GCM_NODES_CHECKER_

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <set>
 
+namespace ocm{
+
 //OpenVINO 2020.4 supported TF ops
 std::set<std::string> common_supported_ops = {
 	"Add",
@@ -156,5 +158,7 @@ std::set<std::string> gpu_only_ops = {
 std::set<std::string> vpu_only_ops = {
 "ReduceLogSum",
 };
+
+} //namespace ocm 
 
 #endif //_OCM_TF_OPS_LIST_H_

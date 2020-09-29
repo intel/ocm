@@ -1,5 +1,6 @@
 #include "ocm_onnx_checker.h"
 
+namespace ocm{
 
 std::vector<void *> ONNXRTNodesChecker::PrepareSupportedNodesList(){
 	std::vector<void *> nodeList;
@@ -28,3 +29,5 @@ std::vector<void *> ONNXRTNodesChecker::PrepareSupportedNodesList(){
 	*/
 	return nodeList;
 }
+
+} //namespace ocm 

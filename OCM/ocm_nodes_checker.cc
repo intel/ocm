@@ -2,6 +2,8 @@
 #include "./tensorflow/ocm_tf_checker.h"
 #include "./onnx/ocm_onnx_checker.h"
 
+namespace ocm{
+    
 FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw, std::string device_id, std::string ov_version, void* graph){
     switch (fw)
     {
@@ -15,15 +17,17 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw, std::string dev
         default:
             throw std::runtime_error("Invalid Framework type");
     }
-    ocmFrameworkObj->setGraph(graph);
+    ocmFrameworkObj->SetGraph(graph);
     ocmFrameworkObj->device_id = device_id;
     ocmFrameworkObj->ov_version = ov_version;
 }
+
 std::vector<void *> FrameworkNodesChecker::MarkSupportedNodes(){
     std::cout << "Inside MarkSupportedNodes" << std::endl;
     nodes_list = ocmFrameworkObj->PrepareSupportedNodesList();
     return nodes_list;
 }
+
 std::vector<unsigned int> FrameworkNodesChecker::GetUnSupportedNodesIndices(){
     MarkSupportedNodes();
     // prepare the vector of unsupported node indices for ONNXRT
@@ -31,7 +35,9 @@ std::vector<unsigned int> FrameworkNodesChecker::GetUnSupportedNodesIndices(){
 }
 
 
-bool opcheck(const std::string &opName, std::set<std::string> oplist){
-    bool check_passed = oplist.find(opName)!=oplist.end();
+bool OpCheck(const std::string &op_name, std::set<std::string> oplist){
+    bool check_passed = oplist.find(op_name)!=oplist.end();
     return check_passed;
 }
+
+} //namespace ocm 

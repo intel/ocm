@@ -15,11 +15,13 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/graph/graph_constructor.h"
 
+using namespace ocm;
+
 int main(int argc, char** argv)
 {
 	//std::string graph_file_name = "/home/chandrakant/codes/models/test_graph/test.pb";
     //std::string graph_file_name = "/home/rrajore/models/inception/inception_v3_2016_08_28_frozen.pb";
-    std::string graph_file_name = "/home/rrajore/models/alexnet/alexnet_frozen.pb";
+    std::string graph_file_name = "/home/chandrakant/codes/models/ocm/resnet50/resnet50_fp32_pretrained_model.pb";
 
 	tensorflow::SessionOptions options;
 	std::unique_ptr<tensorflow::Session> session(NewSession(options));
@@ -59,7 +61,6 @@ int main(int argc, char** argv)
 	*/
 
 	Framework_Names fName = Framework_Names::TF;
-	// FrameworkNodesChecker FC(fName,"CPU", "2020_4", &graph);
 	FrameworkNodesChecker FC(fName,"CPU", "2020_4", &graph);
 	std::vector<void *> nodes_list = FC.MarkSupportedNodes();
 	// cast back the nodes in the TF format

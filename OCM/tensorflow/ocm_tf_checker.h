@@ -9,31 +9,36 @@
 #include "tensorflow/core/graph/graph_constructor.h"
 
 using namespace tensorflow;
+namespace ocm{
+
+using SetAttributesFunction = std::function<Status(Node*)>;
+const std::map<std::string, SetAttributesFunction>& GetAttributeSetters();
 
 using ConfirmationFunction = std::function<tensorflow::Status(tensorflow::Node*, bool*)>;
 const std::map<std::string, ConfirmationFunction>& GetConfirmationMap();
 
-std::set<std::string> getTFSupportedOPs(std::string device_id, std::string ov_version);
+using TypeConstraintMap = std::map<std::string, std::map<std::string, std::set<DataType>>>;
+const TypeConstraintMap& GetTypeConstraintMap();
+
+std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_version);
 
 class TFNodesChecker: public NodesChecker{
 public:
-	bool isOpSupported(std::string opName) override{
-		return opcheck(opName, supported_ops);
+	bool IsOpSupported(std::string op_name) override{
+		return OpCheck(op_name, supported_ops);
 	}
-	bool isOpModeSupported() override{
+	bool IsOpModeSupported() override{
 	    return true;     
 	}
-	void setGraph(void* tf_graph) override{
+	void SetGraph(void* tf_graph) override{
         //graphDef = static_cast<tensorflow::GraphDef*> (tf_graph);
 		graph = static_cast<tensorflow::Graph*> (tf_graph);
-        // // print graph nodes
-        // for (auto node : graph->op_nodes()){
-        //     std::cout << node->type_string() << std::endl;
-        // }
 	}
 	std::vector<void *> PrepareSupportedNodesList() override;
     const tensorflow::Graph* graph;
     const tensorflow::GraphDef* graphDef;
 };
+
+} //namespace ocm
 
 #endif //_OCM_TF_CHECKER_
