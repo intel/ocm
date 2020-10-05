@@ -11,9 +11,6 @@
 using namespace tensorflow;
 namespace ocm{
 
-using SetAttributesFunction = std::function<Status(Node*)>;
-const std::map<std::string, SetAttributesFunction>& GetAttributeSetters();
-
 using ConfirmationFunction = std::function<tensorflow::Status(tensorflow::Node*, bool*)>;
 const std::map<std::string, ConfirmationFunction>& GetConfirmationMap();
 

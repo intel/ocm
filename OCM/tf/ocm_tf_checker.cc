@@ -3,10 +3,27 @@
 
 namespace ocm{
   
-const std::set<DataType> SupportedTypes(){
+const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
+  
   const std::set<DataType> cpuSupportedInputTypes = {DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64,
       DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BFLOAT16};
-return cpuSupportedInputTypes;
+  
+  if(device_id=="CPU"){
+    return cpuSupportedInputTypes;
+  }
+
+  return cpuSupportedInputTypes;
+}
+
+const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
+
+  const std::set<DataType> cpuSupportedInputTypes= {DT_INT32, DT_INT64};
+
+  if(device_id=="CPU"){
+    return cpuSupportedInputTypes;
+  }
+  
+  return cpuSupportedInputTypes;
 }
 
 const TypeConstraintMap& GetTypeConstraintMap() {
@@ -27,25 +44,40 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     //
     // Initialize type constraint map.
     //
-    
-    // Resnet50 V1 unique Ops List
-    //['Add', 'AddN', 'AvgPool', 'Const', 'Conv2D', 'FusedBatchNorm', 'Identity', 'MatMul', 'MaxPool', 'Mul', 'Pad', 'Placeholder', 'Relu', 'Reshape', 'Softmax', 'Sub']
     type_constraint_map["Add"]["T"] = SupportedTypes();
     type_constraint_map["AddN"]["T"] = SupportedTypes();
+    type_constraint_map["AddV2"]["T"] = SupportedTypes();
+    type_constraint_map["ArgMax"]["T"] = SupportedTypes();
+    type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["AvgPool"]["T"] = SupportedTypes();
+    type_constraint_map["BiasAdd"]["T"] = SupportedTypes();
+    type_constraint_map["ConcatV2"]["T"] = SupportedTypes();
+    type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
+    type_constraint_map["FusedBatchNormV3"]["T"] = {DT_FLOAT};
+    type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
+    type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["Identity"]["T"] = SupportedTypes();
     type_constraint_map["MatMul"]["T"] = SupportedTypes();
     type_constraint_map["MaxPool"]["T"] = SupportedTypes();
+    type_constraint_map["Mean"]["T"] = SupportedTypes();
+    type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Mul"]["T"] = SupportedTypes();
+    type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
     // type_constraint_map['Placeholder']['T'] = SupportedTypes();
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
+    type_constraint_map["Shape"]["T"] = SupportedTypes();
+    type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx();    
     type_constraint_map["Softmax"]["T"] = SupportedTypes();
     type_constraint_map["Sub"]["T"] = SupportedTypes();
+    type_constraint_map["Squeeze"]["T"] = SupportedTypes();
+    type_constraint_map["StridedSlice"]["T"] = SupportedTypes();
+    type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx();  
+    type_constraint_map["Sub"]["T"] = SupportedTypes();  
   }
   return type_constraint_map;
 }
@@ -69,87 +101,6 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
   }
     return supported_ops;
 }
-
-// Marks the input indices in "inputs" as static
-static inline void SetStaticInputs(Node* n, std::vector<int32> inputs) {
-  n->AddAttr("_ngraph_static_inputs", inputs);
-}
-
-// Marks the input indices given in static_input_indices as static, i.e., inputs
-// that must be driven either by an _Arg or by a Const in the encapsulated
-// graph (meaning that its value must be known at translation-to-nGraph time). A
-// negative value in static_input_indices indicates that the input index is
-// counted from the right.
-static SetAttributesFunction SetStaticInputs(
-    const std::vector<int32>& static_input_indices = {}) {
-  auto cf = [static_input_indices](Node* n) {
-    // Adjust negative input indices.
-    auto indices = static_input_indices;
-    std::transform(indices.begin(), indices.end(), indices.begin(),
-                   [n](int x) { return x >= 0 ? x : n->num_inputs() + x; });
-    SetStaticInputs(n, indices);
-    return Status::OK();
-  };
-  return cf;
-};
-
-const std::map<std::string, SetAttributesFunction>& GetAttributeSetters() {
-  //
-  // A map of op types (e.g. "Add") to set_attribute functions. These can be
-  // used to set any additional attributes. For example:
-  //
-  //    confirmation_function_map["MyOp"] = [](Node* n) {
-  //     if(n->condition()){
-  //        int dummy=5;
-  //        n->AddAttr("_ngraph_dummy_attr", dummy);
-  //      }
-  //
-  //      vector<int32> static_input_index =5;
-  //      n->AddAttr("_ngraph_static_inputs", static_input_index);
-  //      return Status::OK();
-  //    };
-  //
-
-  static std::map<std::string, SetAttributesFunction> set_attributes_map;
-  static bool initialized = false;
-
-  if (!initialized) {
-    // Set Additional Attributes (if any)
-    set_attributes_map["Any"] = SetStaticInputs({1});
-    set_attributes_map["All"] = SetStaticInputs({1});
-    set_attributes_map["ArgMax"] = SetStaticInputs({1});
-    set_attributes_map["ArgMin"] = SetStaticInputs({1});
-    set_attributes_map["ConcatV2"] = SetStaticInputs({-1});
-    set_attributes_map["Conv2DBackpropInput"] = SetStaticInputs({0});
-    set_attributes_map["ExpandDims"] = SetStaticInputs({1});
-    set_attributes_map["Fill"] = SetStaticInputs({0});
-    set_attributes_map["GatherV2"] = SetStaticInputs({2});
-    set_attributes_map["Max"] = SetStaticInputs({1});
-    set_attributes_map["Mean"] = SetStaticInputs({1});
-    set_attributes_map["Min"] = SetStaticInputs({1});
-    set_attributes_map["MirrorPad"] = SetStaticInputs({1});
-    set_attributes_map["NonMaxSuppressionV4"] = SetStaticInputs({2, 3, 4});
-    set_attributes_map["OneHot"] = SetStaticInputs({1});
-    set_attributes_map["Pad"] = SetStaticInputs({1});
-    set_attributes_map["PadV2"] = SetStaticInputs({1, 2});
-    set_attributes_map["Prod"] = SetStaticInputs({1});
-    set_attributes_map["Reshape"] = SetStaticInputs({1});
-    set_attributes_map["Shape"] = SetStaticInputs({0});
-    set_attributes_map["ScatterNd"] = SetStaticInputs({2});
-    set_attributes_map["Slice"] = SetStaticInputs({1, 2});
-    set_attributes_map["Split"] = SetStaticInputs({0});
-    set_attributes_map["SplitV"] = SetStaticInputs({1, 2});
-    set_attributes_map["StridedSlice"] = SetStaticInputs({1, 2, 3});
-    set_attributes_map["Sum"] = SetStaticInputs({1});
-    set_attributes_map["TopKV2"] = SetStaticInputs({1});
-    set_attributes_map["Tile"] = SetStaticInputs({1});
-    set_attributes_map["Transpose"] = SetStaticInputs({1});
-    set_attributes_map["UnsortedSegmentSum"] = SetStaticInputs({2});
-    initialized = true;
-  }
-  return set_attributes_map;
-}
-
 // Checks if the node meets the confirmation constraints
 static Status ConfirmationOk(
         tensorflow::Node* node,
@@ -230,15 +181,13 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
-    confirmation_function_map["Conv2DBackpropInput"] =
-        SimpleConfirmationFunction();
+    confirmation_function_map["Conv2DBackpropInput"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv3D"] = SimpleConfirmationFunction();
     confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
     confirmation_function_map["Cos"] = SimpleConfirmationFunction();
     confirmation_function_map["Cosh"] = SimpleConfirmationFunction();
     confirmation_function_map["Cumsum"] = SimpleConfirmationFunction();
-    confirmation_function_map["DepthwiseConv2dNative"] =
-        SimpleConfirmationFunction();
+    confirmation_function_map["DepthwiseConv2dNative"] = SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = [](Node* n, bool* result) {
       std::string tf_data_format;
       TF_RETURN_IF_ERROR(
@@ -252,13 +201,9 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["Floor"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
-    // confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
-    confirmation_function_map["FusedBatchNorm"] =
-        FusedBatchNormConfirmationFunction();
-    confirmation_function_map["FusedBatchNormV2"] =
-        FusedBatchNormConfirmationFunction();
-    confirmation_function_map["FusedBatchNormV3"] =
-        FusedBatchNormConfirmationFunction();
+    confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
+    confirmation_function_map["FusedBatchNormV2"] = FusedBatchNormConfirmationFunction();
+    confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherNd"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();
@@ -291,8 +236,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Mod"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction();
     confirmation_function_map["NotEqual"] = SimpleConfirmationFunction();
-    confirmation_function_map["NonMaxSuppressionV4"] =
-        SimpleConfirmationFunction();
+    confirmation_function_map["NonMaxSuppressionV4"] = SimpleConfirmationFunction();
     confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
@@ -319,14 +263,12 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Snapshot"] = SimpleConfirmationFunction();
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
-    confirmation_function_map["SpaceToDepth"] =
-        confirmation_function_map["DepthToSpace"];
+    confirmation_function_map["SpaceToDepth"] = confirmation_function_map["DepthToSpace"];
     confirmation_function_map["Split"] = SimpleConfirmationFunction();
     confirmation_function_map["SplitV"] = SimpleConfirmationFunction();
     confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Square"] = SimpleConfirmationFunction();
-    confirmation_function_map["SquaredDifference"] =
-        SimpleConfirmationFunction();
+    confirmation_function_map["SquaredDifference"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();
     confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
     confirmation_function_map["Pack"] = SimpleConfirmationFunction();
@@ -346,8 +288,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     };
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
-    confirmation_function_map["UnsortedSegmentSum"] =
-        SimpleConfirmationFunction();
+    confirmation_function_map["UnsortedSegmentSum"] = SimpleConfirmationFunction();
     confirmation_function_map["Xdivy"] = SimpleConfirmationFunction();
     confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
     initialized = true;
@@ -391,15 +332,12 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
 }
 
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
-	std::vector<void *> nodeList;
+	std::vector<void *> node_list;
 
   // Get OV supported ops list for TF
 	supported_ops = GetTFSupportedOPs(device_id, ov_version);
   std::cout <<"TF OPS list generated" <<"\n";
   
-  // Get the attribute map
-  const std::map<std::string, SetAttributesFunction>& set_attributes_map = GetAttributeSetters();
-
   // Get the op type map based in the input device_id
   const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap();
 
@@ -434,21 +372,11 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 
 		} while(false);
 		if(is_node_supported){
-			nodeList.push_back((void *)node);
+			node_list.push_back((void *)node);
 		}
 
 	}
-  for (auto void_node : nodeList) {
-    // TODO(amprocte): move attr name to a constant
-    tensorflow::Node* node = (tensorflow::Node *)void_node;
-    node->AddAttr("_ngraph_marked_for_clustering", true);
-    auto it = set_attributes_map.find(node->type_string());
-    if (it != set_attributes_map.end()) {
-      it->second(node);
-    }
-  }
-
-	return nodeList;
+	return node_list;
 }
 
 } //namespace ocm 
