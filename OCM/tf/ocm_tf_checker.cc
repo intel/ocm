@@ -2,28 +2,61 @@
 #include "ocm_tf_ops_list.h"
 
 namespace ocm{
-  
+
+// Refer following page for type support: 
+// https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_Supported_Devices.html  
 const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
-  const std::set<DataType> cpuSupportedInputTypes = {DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64,
-      DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BFLOAT16};
+  const std::set<DataType> cpu_supported_inputTypes = {
+    DT_BFLOAT16, 
+    DT_FLOAT, 
+    DT_DOUBLE, 
+    DT_INT8, 
+    DT_INT16, 
+    DT_INT32, 
+    DT_INT64, 
+    DT_UINT8, 
+    DT_UINT16, 
+    DT_UINT32, 
+    DT_UINT64
+    };
+
+  const std::set<DataType> gpu_supported_inputTypes = {
+    DT_BFLOAT16, 
+    DT_FLOAT, 
+    DT_INT8,
+    };
+
+  const std::set<DataType> myriad_supported_inputTypes = {
+    DT_BFLOAT16, 
+    };
+  
+  const std::set<DataType> hddl_supported_inputTypes = {
+    DT_BFLOAT16, 
+    };
   
   if(device_id=="CPU"){
-    return cpuSupportedInputTypes;
+    return cpu_supported_inputTypes;
+  } else if(device_id=="GPU"){
+    return gpu_supported_inputTypes;
+  } else if(device_id=="MYRIAD"){
+    return myriad_supported_inputTypes;
+  } else if(device_id=="HDDL"){
+    return hddl_supported_inputTypes;
   }
 
-  return cpuSupportedInputTypes;
+  return cpu_supported_inputTypes;
 }
 
 const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
 
-  const std::set<DataType> cpuSupportedInputTypes= {DT_INT32, DT_INT64};
+  const std::set<DataType> cpu_supported_inputTypes= {DT_INT32, DT_INT64};
 
   if(device_id=="CPU"){
-    return cpuSupportedInputTypes;
+    return cpu_supported_inputTypes;
   }
   
-  return cpuSupportedInputTypes;
+  return cpu_supported_inputTypes;
 }
 
 const TypeConstraintMap& GetTypeConstraintMap() {
@@ -99,8 +132,9 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
                vpu_only_ops.begin(), vpu_only_ops.end(),
                std::inserter(supported_ops, supported_ops.begin()));
   }
-    return supported_ops;
+  return supported_ops;
 }
+
 // Checks if the node meets the confirmation constraints
 static Status ConfirmationOk(
         tensorflow::Node* node,
@@ -161,136 +195,36 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     //
     // Please keep these in alphabetical order by op name.
     //
-    confirmation_function_map["Abs"] = SimpleConfirmationFunction();
-    confirmation_function_map["Acos"] = SimpleConfirmationFunction();
     confirmation_function_map["Add"] = SimpleConfirmationFunction();
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
-    confirmation_function_map["Any"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
     confirmation_function_map["ArgMax"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMin"] = SimpleConfirmationFunction();
-    confirmation_function_map["Asin"] = SimpleConfirmationFunction();
-    confirmation_function_map["Atan"] = SimpleConfirmationFunction();
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
-    confirmation_function_map["BatchMatMul"] = SimpleConfirmationFunction();
-    confirmation_function_map["BatchMatMulV2"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
-    confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
-    confirmation_function_map["Conv2DBackpropInput"] = SimpleConfirmationFunction();
-    confirmation_function_map["Conv3D"] = SimpleConfirmationFunction();
-    confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
-    confirmation_function_map["Cos"] = SimpleConfirmationFunction();
-    confirmation_function_map["Cosh"] = SimpleConfirmationFunction();
-    confirmation_function_map["Cumsum"] = SimpleConfirmationFunction();
-    confirmation_function_map["DepthwiseConv2dNative"] = SimpleConfirmationFunction();
-    confirmation_function_map["DepthToSpace"] = [](Node* n, bool* result) {
-      std::string tf_data_format;
-      TF_RETURN_IF_ERROR(
-          GetNodeAttr(n->attrs(), "data_format", &tf_data_format));
-      *result = tf_data_format != "NCHW_VECT_C";
-      return Status::OK();
-    };
-    confirmation_function_map["Equal"] = SimpleConfirmationFunction();
-    confirmation_function_map["Exp"] = SimpleConfirmationFunction();
-    confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
-    confirmation_function_map["Floor"] = SimpleConfirmationFunction();
-    confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
-    confirmation_function_map["FusedBatchNormV2"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
-    confirmation_function_map["GatherNd"] = SimpleConfirmationFunction();
-    confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();
-    confirmation_function_map["_FusedMatMul"] =
-        SimpleConfirmationFunction();  // TODO accept under all conditions?
-                                       // check?
-    confirmation_function_map["Greater"] = SimpleConfirmationFunction();
-    confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction();
+    confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
-    confirmation_function_map["IsFinite"] = SimpleConfirmationFunction();
-    confirmation_function_map["L2Loss"] = SimpleConfirmationFunction();
-    confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
-    confirmation_function_map["Less"] = SimpleConfirmationFunction();
-    confirmation_function_map["LessEqual"] = SimpleConfirmationFunction();
-    confirmation_function_map["Log"] = SimpleConfirmationFunction();
-    confirmation_function_map["Log1p"] = SimpleConfirmationFunction();
-    confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
-    confirmation_function_map["LogicalNot"] = SimpleConfirmationFunction();
-    confirmation_function_map["LogicalOr"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
-    confirmation_function_map["Max"] = SimpleConfirmationFunction();
-    confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
-    confirmation_function_map["MaxPool3D"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
-    confirmation_function_map["Min"] = SimpleConfirmationFunction();
-    confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
-    confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction();
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
-    confirmation_function_map["Mod"] = SimpleConfirmationFunction();
-    confirmation_function_map["Neg"] = SimpleConfirmationFunction();
-    confirmation_function_map["NotEqual"] = SimpleConfirmationFunction();
-    confirmation_function_map["NonMaxSuppressionV4"] = SimpleConfirmationFunction();
-    confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
-    confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
+    confirmation_function_map["Pack"] = SimpleConfirmationFunction();
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
-    confirmation_function_map["PadV2"] = SimpleConfirmationFunction();
-    confirmation_function_map["Pow"] = SimpleConfirmationFunction();
-    confirmation_function_map["PreventGradient"] = SimpleConfirmationFunction();
-    confirmation_function_map["Prod"] = SimpleConfirmationFunction();
-    confirmation_function_map["Rank"] = SimpleConfirmationFunction();
-    confirmation_function_map["RealDiv"] = SimpleConfirmationFunction();
-    confirmation_function_map["Reciprocal"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
-    confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
-    confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
-    confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
-    confirmation_function_map["Select"] = SimpleConfirmationFunction();
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sigmoid"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sign"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sin"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sinh"] = SimpleConfirmationFunction();
-    confirmation_function_map["Size"] = SimpleConfirmationFunction();
-    confirmation_function_map["Slice"] = SimpleConfirmationFunction();
-    confirmation_function_map["Snapshot"] = SimpleConfirmationFunction();
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
-    confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
-    confirmation_function_map["SpaceToDepth"] = confirmation_function_map["DepthToSpace"];
-    confirmation_function_map["Split"] = SimpleConfirmationFunction();
-    confirmation_function_map["SplitV"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
-    confirmation_function_map["Square"] = SimpleConfirmationFunction();
-    confirmation_function_map["SquaredDifference"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();
     confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
-    confirmation_function_map["Pack"] = SimpleConfirmationFunction();
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
-    confirmation_function_map["Sum"] = SimpleConfirmationFunction();
-    confirmation_function_map["Tan"] = SimpleConfirmationFunction();
-    confirmation_function_map["Tanh"] = SimpleConfirmationFunction();
-    confirmation_function_map["Tile"] = SimpleConfirmationFunction();
-    confirmation_function_map["TopKV2"] = [](Node* n, bool* result) {
-      bool sorted = true;
-      TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "sorted", &sorted));
-
-      // sorted = false is not supported right now, it falls back to TF if set
-      // to false.
-      *result = sorted;
-      return Status::OK();
-    };
-    confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
-    confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
-    confirmation_function_map["UnsortedSegmentSum"] = SimpleConfirmationFunction();
-    confirmation_function_map["Xdivy"] = SimpleConfirmationFunction();
-    confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
     initialized = true;
   }
   return confirmation_function_map;
@@ -332,7 +266,8 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
 }
 
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
-	std::vector<void *> node_list;
+	
+  std::vector<void *> node_list;
 
   // Get OV supported ops list for TF
 	supported_ops = GetTFSupportedOPs(device_id, ov_version);
