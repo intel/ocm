@@ -10,15 +10,11 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   const std::set<DataType> cpu_supported_inputTypes = {
     DT_BFLOAT16, 
     DT_FLOAT, 
-    DT_DOUBLE, 
     DT_INT8, 
     DT_INT16, 
     DT_INT32, 
     DT_INT64, 
     DT_UINT8, 
-    DT_UINT16, 
-    DT_UINT32, 
-    DT_UINT64
     };
 
   const std::set<DataType> gpu_supported_inputTypes = {
@@ -29,10 +25,12 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
 
   const std::set<DataType> myriad_supported_inputTypes = {
     DT_BFLOAT16, 
+    DT_FLOAT
     };
   
   const std::set<DataType> hddl_supported_inputTypes = {
     DT_BFLOAT16, 
+    DT_FLOAT
     };
   
   if(device_id=="CPU"){
@@ -89,7 +87,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
-    type_constraint_map["FusedBatchNormV3"]["T"] = {DT_FLOAT};
+    type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["Identity"]["T"] = SupportedTypes();
@@ -100,7 +98,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Mul"]["T"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
-    // type_constraint_map['Placeholder']['T'] = SupportedTypes();
+    type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
@@ -120,9 +118,12 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
 	std::set<std::string> supported_ops = {};
 
   if (device_id == "CPU") {
-    std::merge(common_supported_ops.begin(), common_supported_ops.end(),
-               cpu_only_ops.begin(), cpu_only_ops.end(),
-               std::inserter(supported_ops,supported_ops.begin()));
+    // std::merge(common_supported_ops.begin(), common_supported_ops.end(),
+    //            cpu_only_ops.begin(), cpu_only_ops.end(),
+    //            std::inserter(supported_ops,supported_ops.begin()));
+    supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
+    supported_ops.insert(cpu_only_ops.begin(), cpu_only_ops.end());
+    supported_ops.insert(composite_ops.begin(), composite_ops.end());
   } else if (device_id == "GPU") {
     std::merge(common_supported_ops.begin(), common_supported_ops.end(),
                gpu_only_ops.begin(), gpu_only_ops.end(),
@@ -159,6 +160,17 @@ static ConfirmationFunction FusedBatchNormConfirmationFunction() {
   };
   return cf;
 };
+
+static Status ValidateInputCountMin(const Node* op, tensorflow::int32 count, bool* result) {
+  if (op->num_inputs() < count) {
+    *result = false;
+    std::cout<<"\""<< op->name()<< "\" requires at least "<<
+                                   count<< " input(s), got "<< op->num_inputs()<<
+                                   " instead";
+  }
+  *result = true;
+  return Status::OK();
+}
 
 // Generates a "simple" confirmation function which always returns true,
 static ConfirmationFunction SimpleConfirmationFunction() {
@@ -206,7 +218,6 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
-    confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
@@ -216,8 +227,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
-    confirmation_function_map["Pack"] = SimpleConfirmationFunction();
+    confirmation_function_map["Pack"] = [](Node* n, bool* result) {
+      // num of inputs
+      tensorflow::int32 count = 1;
+      TF_RETURN_IF_ERROR(ValidateInputCountMin(n, count, result));
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
+    confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
@@ -303,7 +320,6 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 			    std::cout << "Op Mode:" << node->type_string() << " is not supported " << std::endl;
   				break;
 			}
-			// CHECK_4: TBD
 
 		} while(false);
 		if(is_node_supported){

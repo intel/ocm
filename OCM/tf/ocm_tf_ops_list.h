@@ -6,7 +6,8 @@
 
 namespace ocm{
 
-//OpenVINO 2021.1 supported TF ops
+// OpenVINO 2021.1 supported TF ops, Refer following page:
+// https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
 std::set<std::string> common_supported_ops = {
 	"Add",
 	"AddN",
@@ -17,7 +18,6 @@ std::set<std::string> common_supported_ops = {
 	"ConcatV2",
 	"Const",
 	"Conv2D",
-	"Fill",   // implemented using broadcast
 	"FusedBatchNorm",
 	"Identity",
 	"MatMul",
@@ -45,6 +45,9 @@ std::set<std::string> composite_ops = {
 
 //Op supported only on CPU and not supported on VPU
 std::set<std::string> cpu_only_ops = {
+	"Bucketize",
+	"ExperimentalSparseWeightedSum",
+	"SparseToDense"
 };
 
 std::set<std::string> gpu_only_ops = {
