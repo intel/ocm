@@ -1,0 +1,46 @@
+#based on ops classification models
+#SEResNext50
+#MobilenetV3 v3-small_224_1.0_float 
+#Efficientnet B0
+#Efficientnet B3
+
+#constant_op_test.PlaceholderTest.*
+#constant_op_test.ConstantTest.*
+#pad_op_test.PadOpTest.*
+#identity_op_py_test.IdentityOpTest.*
+#conv_ops_test.Conv2DTest.*
+#nn_fused_batchnorm_test.*
+#relu_op_test.ReluTest.*
+#nn_test.MaxPoolTest.*
+#split_op_test.*
+#bias_op_test.BiasAddTest.*
+#array_ops_test.OperatorShapeTest.*
+#array_ops_test.StridedSliceTest.*
+#reshape_op_test.*
+#matmul_op_test.*
+softmax_op_test.*
+#nn_grad_test.DepthwiseConv2dTest*
+#depthwise_conv_op_test.DepthwiseConv2DTest*
+#shape_ops_test.ShapeOpsTest.testSqueeze*
+#relu_op_test.Relu6Test.*
+#pooling_ops_test.PoolingTest.testAvgPool*
+
+#Mean
+#Mul
+#Pack
+#pad_op_test.PadOpTest.*
+#Placeholder
+#random_ops_test.RandomUniformTest.*
+#relu_op_test.Relu6Test.*
+#####reshape_op_test.ReshapeTest.*
+#####shape_ops_test.OperatorShapeTest._compareShape*
+#softmax_op_test.*
+#shape_ops_test.ShapeOpsTest.testSqueeze*
+######shape_ops_test.OperatorShapeTest.testSqueeze*
+#array_ops_test.StridedSliceTest.*
+#Sub
+#####variables_test.VariablesTestCase.
+#cwise_ops_binary_test.*
+#cwise_ops_test.*
+
+

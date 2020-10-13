@@ -288,7 +288,7 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 
   // Get OV supported ops list for TF
 	supported_ops = GetTFSupportedOPs(device_id, ov_version);
-  std::cout <<"TF OPS list generated" <<"\n";
+  //std::cout <<"TF OPS list generated" <<"\n";
   
   // Get the op type map based in the input device_id
   const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap();

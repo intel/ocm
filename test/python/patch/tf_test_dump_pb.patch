@@ -1,0 +1,33 @@
+2c2
+< #  Copyright 2018-2020 Intel Corporation
+---
+> #  Copyright 2018-2019 Intel Corporation
+25a26,28
+> import tensorflow as tf
+> import tf_test_modify_input as modify
+> 
+30a34
+> 
+31a36
+> 
+37d41
+< 
+279,280c283,284
+<             sys.stdout = open(os.devnull, "w")
+<             sys.stderr = open(os.devnull, "w")
+---
+>             #sys.stdout = open(os.devnull, "w")
+>             #sys.stderr = open(os.devnull, "w")
+283,286c287,293
+<                 loader.loadTestsFromName(test))
+< 
+<             sys.stderr = sys.__stderr__
+<             sys.stdout = sys.__stdout__
+---
+>                     loader.loadTestsFromName(test))
+>             sess = tf.compat.v1.Session()
+>             #tf.io.write_graph(sess.graph, './pbfiles', test + ".pb", as_text=False)
+>             modify.process_graph(sess.graph,test)
+>             
+>             #sys.stderr = sys.__stderr__
+>             #sys.stdout = sys.__stdout__

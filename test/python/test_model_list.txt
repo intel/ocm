@@ -1,0 +1,6 @@
+inception_v3_frozen.pb [1,300,300,3]
+inception_v4_frozen.pb [1,300,300,3]
+resnet50_fp32_pretrained_model.pb [1,224,224,3]
+resnet50_v1.pb  [1,224,224,3]
+frozen_resnet_v1_50.pb  [1,224,224,3]
+frozen_resnet_v2_50.pb [1,224,224,3]

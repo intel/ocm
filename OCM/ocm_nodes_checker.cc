@@ -8,7 +8,7 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw, std::string dev
     switch (fw)
     {
         case  Framework_Names::TF:
-            std::cout << "Inside FrameworkNodesChecker::TF" << std::endl;
+            //std::cout << "Inside FrameworkNodesChecker::TF" << std::endl;
             ocmFrameworkObj = std::unique_ptr<TFNodesChecker>(new TFNodesChecker);
             break;
         case  Framework_Names::ONNX:
@@ -23,7 +23,7 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw, std::string dev
 }
 
 std::vector<void *> FrameworkNodesChecker::MarkSupportedNodes(){
-    std::cout << "Inside MarkSupportedNodes" << std::endl;
+    //std::cout << "Inside MarkSupportedNodes" << std::endl;
     nodes_list = ocmFrameworkObj->PrepareSupportedNodesList();
     return nodes_list;
 }
