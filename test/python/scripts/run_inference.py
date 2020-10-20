@@ -15,7 +15,7 @@ def run_inference(benchmark_app_path, path):
   
   os.system("mkdir -p tf_infer_logs")
   for f in files:
-      cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d","CPU","-load_config","config.json"]
+      cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d","CPU","-load_config","config.json", "-niter", "10"]
 
       infer_log = "./tf_infer_logs/" + f[10:].replace("/","_")
       infer_log, ext = os.path.splitext(infer_log)
@@ -31,7 +31,7 @@ def run_inference(benchmark_app_path, path):
         infer_log_file.close()
 
         print("Log file written to " + infer_log)
-      break
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',
@@ -46,5 +46,5 @@ if __name__ == '__main__':
   
   args = parser.parse_args()
   home=os.environ['HOME']
-  benchmark_app_path=home + "/inference_engine_test_samples_build/intel64/Release"
+  benchmark_app_path=home + "/inference_engine_python_samples_build/intel64/Release"
   run_inference(benchmark_app_path, args.model_path)

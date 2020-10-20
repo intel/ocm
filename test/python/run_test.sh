@@ -5,7 +5,7 @@ MODEL_PATH=$3
 
 #Clean up
 echo "Clearing up existing logs"
-rm -rf tf_ocm_logs
+
 rm -rf tf_mo_logs
 rm -rf tf_infer_logs
 
@@ -14,11 +14,13 @@ echo "Activating python virtual env"
 source env/bin/activate
 
 generate_unittest_pbfiles(){
+  rm -rf ./pbfiles
   #Run test script
   python3 ./scripts/tf_unittest_runner.py --tensorflow_path ./tensorflow/ --run_tests_from_file test_list.txt
 }
 #Run through model checker
-model_checker(){
+ocm_checker(){
+  rm -rf tf_ocm_logs
   echo "Running through OCM"
   python3 ./scripts/run_ocm.py -i $MODEL_PATH
   echo "Finished running through OCM"
@@ -26,6 +28,7 @@ model_checker(){
 
 #Run through model optimizer
 model_optimize(){
+  rm -rf tf_mo_logs
   echo "Generating IR files"
   python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE
   echo "End Generating IR files"
@@ -34,6 +37,7 @@ model_optimize(){
 
 #Run inference
 run_infer(){
+  rm -rf tf_infer_logs
   echo "Running inference"
   python3 ./scripts/run_inference.py -i $MODEL_PATH  
   echo "End Running inference"
@@ -64,7 +68,7 @@ else
     for BUILD in ${BUILD_LIST[@]}; do
 	    if [[ $BUILD  == "OCM" ]]; then
 	        echo $BUILD
-	        model_checker
+	        ocm_checker
 	    elif [[ $BUILD  == "MO" ]]; then
 	        echo $BUILD
 	        model_optimize

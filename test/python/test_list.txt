@@ -34,7 +34,7 @@ softmax_op_test.*
 #relu_op_test.Relu6Test.*
 #####reshape_op_test.ReshapeTest.*
 #####shape_ops_test.OperatorShapeTest._compareShape*
-#softmax_op_test.*
+softmax_op_test.*
 #shape_ops_test.ShapeOpsTest.testSqueeze*
 ######shape_ops_test.OperatorShapeTest.testSqueeze*
 #array_ops_test.StridedSliceTest.*

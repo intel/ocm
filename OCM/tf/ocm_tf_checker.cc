@@ -8,8 +8,9 @@ namespace ocm{
 const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
   const std::set<DataType> cpu_supported_inputTypes = {
-    DT_BFLOAT16, 
-    DT_FLOAT, 
+    DT_BFLOAT16,
+    DT_HALF,
+    DT_FLOAT,
     DT_INT8, 
     DT_INT16, 
     DT_INT32, 
@@ -18,18 +19,21 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     };
 
   const std::set<DataType> gpu_supported_inputTypes = {
-    DT_BFLOAT16, 
+    DT_BFLOAT16,
+    DT_HALF,  
     DT_FLOAT, 
     DT_INT8,
     };
 
   const std::set<DataType> myriad_supported_inputTypes = {
     DT_BFLOAT16, 
+    DT_HALF, 
     DT_FLOAT
     };
   
   const std::set<DataType> hddl_supported_inputTypes = {
-    DT_BFLOAT16, 
+    DT_BFLOAT16,
+    DT_HALF,  
     DT_FLOAT
     };
   
@@ -86,11 +90,14 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
+    type_constraint_map["FloorMod"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["Identity"]["T"] = SupportedTypes();
+    type_constraint_map["Less"]["T"] = SupportedTypes();
+    type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
     type_constraint_map["MatMul"]["T"] = SupportedTypes();
     type_constraint_map["MaxPool"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["T"] = SupportedTypes();
@@ -99,6 +106,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
+    type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
@@ -109,6 +117,8 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["StridedSlice"]["T"] = SupportedTypes();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx();  
     type_constraint_map["Sub"]["T"] = SupportedTypes();  
+    type_constraint_map["Transpose"]["T"] = SupportedTypes();
+    type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
   }
   return type_constraint_map;
 }
@@ -218,11 +228,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
+    confirmation_function_map["Less"] = SimpleConfirmationFunction();
+    confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
@@ -236,12 +249,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
+    confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();
     confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
+    confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     initialized = true;
   }
   return confirmation_function_map;
@@ -310,14 +325,14 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 			// CHECK_2: OP Type and Dimensions Check...
       is_node_supported &= IsTypeSupported(node, type_constraint_map);
       if(is_node_supported == false){
-			    std::cout << "Op Type:" << node->type_string() << " is not supported " << std::endl;
+			    std::cout << "Op Type: " << node->type_string() << " is not supported " << std::endl;
   				break;
 			}
 
 			// CHECK_3: OP mode check based on attributes
       is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
       if(is_node_supported == false){
-			    std::cout << "Op Mode:" << node->type_string() << " is not supported " << std::endl;
+			    std::cout << "Op Mode: " << node->type_string() << " is not supported " << std::endl;
   				break;
 			}
 
@@ -325,7 +340,7 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 		if(is_node_supported){
 			node_list.push_back((void *)node);
 		}
-
+         
 	}
 	return node_list;
 }
