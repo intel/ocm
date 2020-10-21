@@ -110,15 +110,21 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
-    type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx();    
+    type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(); 
+    type_constraint_map["Slice"]["T"] = SupportedTypes(); // Added for unit tests
     type_constraint_map["Softmax"]["T"] = SupportedTypes();
+    type_constraint_map["Split"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["SplitV"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["Sub"]["T"] = SupportedTypes();
     type_constraint_map["Squeeze"]["T"] = SupportedTypes();
     type_constraint_map["StridedSlice"]["T"] = SupportedTypes();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx();  
     type_constraint_map["Sub"]["T"] = SupportedTypes();  
+    type_constraint_map["Tile"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["Transpose"]["T"] = SupportedTypes();
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
+    type_constraint_map["Unpack"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["ZerosLike"]["T"] = SupportedTypes(); // For unit tests
   }
   return type_constraint_map;
 }
@@ -252,11 +258,17 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
+    confirmation_function_map["Slice"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
+    confirmation_function_map["Split"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["SplitV"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();
     confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
+    confirmation_function_map["Tile"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
+    confirmation_function_map["Unpack"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction(); // For unit tests
     initialized = true;
   }
   return confirmation_function_map;
