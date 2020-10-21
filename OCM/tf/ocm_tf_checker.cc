@@ -327,6 +327,12 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 		bool is_node_supported = true;
 		// check if the optype supported
 		do{
+      // CHECK for the static Ops _Arg and _Retval
+      if(node->type_string()=="_Arg" || node->type_string()=="_Retval"){
+        // no further checks, as these are ops related to input and output
+        break;
+      }
+
 			// CHECK_1: if the op is supported
 			is_node_supported &= IsOpSupported(node->type_string());
 			if(is_node_supported == false){
