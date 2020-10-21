@@ -37,7 +37,7 @@ std::set<std::string> common_supported_ops = {
     "Range", // Unittest - Softmax
     "Relu",
     "Reshape",
-    "RSqrt", // Unittest
+    "Rsqrt", // Unittest
     "Shape",
     "Size", // Unittest
     "Slice", // Unittest 
