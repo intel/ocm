@@ -41,9 +41,9 @@ std::set<std::string> common_supported_ops = {
     "Squeeze",
     "StridedSlice",
     "Sub",
-    "Tile" // Unittest 
-    "Transpose" // Unittest - Softmax
-    "Unpack" // Unittest 
+    "Tile", // Unittest 
+    "Transpose", // Unittest - Softmax
+    "Unpack", // Unittest 
     "ZerosLike" // Unittest
 };
 
