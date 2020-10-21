@@ -117,8 +117,14 @@ def process_graph(graph,file):
           replace_input_to_placeholder(new_graph_def, node_to_replace)
 
         #Write the new graph
-        new_graph_def = tf.compat.v1.graph_util.extract_sub_graph(new_graph_def, [output])
-        tf.io.write_graph(new_graph_def, out_dir, out_file , as_text=False)
+        nodes = [node for node in new_graph_def.node]
+        if len(nodes) > 1:
+          new_graph_def = tf.compat.v1.graph_util.extract_sub_graph(new_graph_def, [output])
+          tf.io.write_graph(new_graph_def, out_dir, out_file , as_text=False)
+        else:
+          print(nodes)
+          print("Skipping graphs with just Placeholder/Const node")
+
 
 def read_tests_from_file(filename):
     with open(filename) as list_of_tests:

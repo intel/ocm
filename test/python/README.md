@@ -22,23 +22,23 @@ test_models_list.txt has names of models to be tested and relevant parameters e.
 
 To run OCM 
     -On models
-         $./run_tf_unit_tests.sh OCM MTEST /home/rrajore/models/ocm/sprint-1/
+         $./run_tests.sh OCM MTEST /home/rrajore/models/ocm/sprint-1/
     - On unit tests generate PB files
-         $./run_tf_unit_tests.sh OCM UTEST
+         $./run_tests.sh OCM UTEST
     - On unit tests on pre-generated PB files
-         $./run_tf_unit_tests.sh OCM UTEST ./pbfiles
+         $./run_tests.sh OCM UTEST ./pbfiles
         
 To run MO on models
     - On models
-         $./run_tf_unit_tests.sh MO MTEST /home/rrajore/models/ocm/sprint-1/
+         $./run_tests.sh MO MTEST /home/rrajore/models/ocm/sprint-1/
     - On unit test PB files 
-         $./run_tf_unit_tests.sh MO UTEST ./pbfiles
+         $./run_tests.sh MO UTEST ./pbfiles
 
 To run INFER 
     - On models
-         $./run_tf_unit_tests.sh INFER MTEST /home/rrajore/models/ocm/sprint-1/
+         $./run_tests.sh INFER MTEST /home/rrajore/models/ocm/sprint-1/
     - On unit test PB files 
-         $./run_tf_unit_tests.sh INFER MTEST ./pbfiles
+         $./run_tests.sh INFER UTEST ./pbfiles
 
 Output directories post execution of tests:
   - pbfiles: generated .pb files for the unit tests

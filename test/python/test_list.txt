@@ -1,8 +1,10 @@
-#based on ops classification models
-#SEResNext50
-#MobilenetV3 v3-small_224_1.0_float 
-#Efficientnet B0
-#Efficientnet B3
+#based on ops of models
+#Resent50
+#Resent50_v1
+#Resent50_v1_5
+#Resent50_v2 
+#Inception V3
+#Inception V4
 
 #constant_op_test.PlaceholderTest.*
 #constant_op_test.ConstantTest.*
@@ -43,4 +45,14 @@ softmax_op_test.*
 #cwise_ops_binary_test.*
 #cwise_ops_test.*
 
-
+#math_ops_test.AddNTest.*
+#argmax_op_test.ArgMaxTest.*
+#pooling_ops_test.PoolingTest.testAvgPool*
+#bias_op_test.BiasAddTest.*
+#concat_op_test.ConcatOpTest.*
+#constant_op_test.ConstantTest.*
+#conv_ops_test.Conv2DTest.*
+#nn_fused_batchnorm_test.*
+#identity_op_py_test.IdentityOpTest.*
+#matmul_op_test.MatMulTest.*
+pooling_ops_test.PoolingTest.testMaxPooling
