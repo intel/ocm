@@ -90,5 +90,5 @@ target_link_libraries(
     tensorflow_cc_lib
     ${TensorFlow_FRAMEWORK_LIBRARY}
     # absl_synchronization
-    OCM
+    ocm
 )

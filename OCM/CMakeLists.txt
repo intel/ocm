@@ -45,6 +45,6 @@ message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
-add_library(OCM SHARED ${SRC})
+add_library(ocm SHARED ${SRC})
 
 
