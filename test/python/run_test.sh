@@ -6,10 +6,6 @@ MODEL_PATH=$3
 #Clean up
 echo "Clearing up existing logs"
 
-rm -rf tf_mo_logs
-rm -rf tf_infer_logs
-
-
 echo "Activating python virtual env"
 source env/bin/activate
 

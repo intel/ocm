@@ -102,9 +102,13 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["MaxPool"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx();    
+    type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
+    type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypes();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
+    type_constraint_map["PadV2"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypes(); // For unit tests
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["Relu"]["T"] = SupportedTypes();
@@ -245,6 +249,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
+    confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Pack"] = [](Node* n, bool* result) {
       // num of inputs
@@ -253,6 +258,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
       return tensorflow::Status::OK();
     };
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
+    confirmation_function_map["PadV2"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();

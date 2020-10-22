@@ -30,13 +30,13 @@ softmax_op_test.*
 #Mean
 #Mul
 #Pack
-#pad_op_test.PadOpTest.*
+pad_op_test.PadOpTest.*
 #Placeholder
 #random_ops_test.RandomUniformTest.*
 #relu_op_test.Relu6Test.*
 #####reshape_op_test.ReshapeTest.*
 #####shape_ops_test.OperatorShapeTest._compareShape*
-softmax_op_test.*
+#softmax_op_test.*
 #shape_ops_test.ShapeOpsTest.testSqueeze*
 ######shape_ops_test.OperatorShapeTest.testSqueeze*
 #array_ops_test.StridedSliceTest.*
@@ -55,4 +55,4 @@ softmax_op_test.*
 #nn_fused_batchnorm_test.*
 #identity_op_py_test.IdentityOpTest.*
 #matmul_op_test.MatMulTest.*
-pooling_ops_test.PoolingTest.testMaxPooling
+#pooling_ops_test.PoolingTest.testMaxPooling

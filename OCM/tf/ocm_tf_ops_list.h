@@ -26,9 +26,11 @@ std::set<std::string> common_supported_ops = {
     "MatMul",
     "MaxPool",
     "Mean",
+    "MirrorPad",
     "Mul",
     "Pack",
     "Pad",
+    "PadV2",
     "Placeholder",
     "Range", // Unittest - Softmax
     "Relu",
@@ -41,10 +43,10 @@ std::set<std::string> common_supported_ops = {
     "Squeeze",
     "StridedSlice",
     "Sub",
-    "Tile" // Unittest 
-    "Transpose" // Unittest - Softmax
-    "Unpack" // Unittest 
-    "ZerosLike" // Unittest
+    "Tile", // Unittest 
+    "Transpose", // Unittest - Softmax
+    "Unpack", // Unittest 
+    "ZerosLike", // Unittest
 };
 
 //TF OPs supported through composite ops i.e. translated using multiple other available Ngaph OPs
