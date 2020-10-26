@@ -18,8 +18,11 @@ std::set<std::string> common_supported_ops = {
     "ConcatV2",
     "Const",
     "Conv2D",
+    "ExpandDims", // Unittest
+    "Fill", // Unittest
     "FloorMod", //Unit test - Softmax
     "FusedBatchNorm",
+    "GatherV2", // Unittest
     "Identity",
     "Less", //Unit test - Softmax
     "LogSoftmax",//Unit test - Softmax
@@ -28,16 +31,21 @@ std::set<std::string> common_supported_ops = {
     "Mean",
     "MirrorPad",
     "Mul",
+    "OneHot", // Unittest
     "Pack",
     "Pad",
     "PadV2",
     "Placeholder",
     "Range", // Unittest - Softmax
     "Relu",
+    "Relu6", // Unittest - Relu
     "Reshape",
+    "Rsqrt", // Unittest
     "Shape",
+    "Size", // Unittest
     "Slice", // Unittest 
     "Softmax",
+    "SpaceToDepth", // Unittest
     "Split", // Unittest 
     "SplitV", // Unittest 
     "Squeeze",
@@ -46,7 +54,7 @@ std::set<std::string> common_supported_ops = {
     "Tile", // Unittest 
     "Transpose", // Unittest - Softmax
     "Unpack", // Unittest 
-    "ZerosLike", // Unittest
+    "ZerosLike" // Unittest
 };
 
 //TF OPs supported through composite ops i.e. translated using multiple other available Ngaph OPs

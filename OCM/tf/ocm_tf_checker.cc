@@ -11,7 +11,7 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_BFLOAT16,
     DT_HALF,
     DT_FLOAT,
-    DT_INT8, 
+    //DT_INT8, 
     DT_INT16, 
     DT_INT32, 
     DT_INT64, 
@@ -22,7 +22,7 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_BFLOAT16,
     DT_HALF,  
     DT_FLOAT, 
-    DT_INT8,
+    //DT_INT8,
     };
 
   const std::set<DataType> myriad_supported_inputTypes = {
@@ -90,11 +90,17 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
+    type_constraint_map["ExpandDims"]["T"] = SupportedTypes();
+    type_constraint_map["Fill"]["T"] = SupportedTypes();
+    type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx();
     type_constraint_map["FloorMod"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
+    type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes();
+    type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
+    type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["Identity"]["T"] = SupportedTypes();
     type_constraint_map["Less"]["T"] = SupportedTypes();
     type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
@@ -105,6 +111,9 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypes();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
+    type_constraint_map["OneHot"]["axis"] = {DT_INT64};
+    type_constraint_map["OneHot"]["T"] = SupportedTypes();
+    type_constraint_map["OneHot"]["TI"] = SupportedTypesIdx();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
     type_constraint_map["PadV2"]["T"] = SupportedTypes(); // For unit tests
@@ -112,11 +121,16 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["Relu"]["T"] = SupportedTypes();
+    type_constraint_map["Relu6"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
+    type_constraint_map["Rsqrt"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(); 
+    type_constraint_map["Size"]["T"] = SupportedTypes(); 
+    type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(); 
     type_constraint_map["Slice"]["T"] = SupportedTypes(); // Added for unit tests
     type_constraint_map["Softmax"]["T"] = SupportedTypes();
+    type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes();
     type_constraint_map["Split"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["SplitV"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["Sub"]["T"] = SupportedTypes();
@@ -238,11 +252,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
+    confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
+    confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
@@ -251,6 +268,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
+    confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
     confirmation_function_map["Pack"] = [](Node* n, bool* result) {
       // num of inputs
       tensorflow::int32 count = 1;
@@ -261,11 +279,15 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["PadV2"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
+    confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
+    confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
+    confirmation_function_map["Size"] = SimpleConfirmationFunction();
     confirmation_function_map["Slice"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
+    confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     confirmation_function_map["Split"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["SplitV"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();

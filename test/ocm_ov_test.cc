@@ -56,7 +56,7 @@ int main(int argc, char** argv)
         for(auto attr : node.attr())
             std::cout << attr.first << "   " ;
         std::cout << " " <<  std::endl;    
-    }   
+    }
 #endif
     // Convert the GraphDef to Graph
     tensorflow::GraphConstructorOptions opts;
@@ -67,6 +67,10 @@ int main(int argc, char** argv)
     /*
     for (auto node : graph.op_nodes()){
         std::cout << node->type_string() << std::endl;
+        tensorflow::DataType dt;
+        GetNodeAttr(node->attrs(), "dtype", &dt);
+        std::cout  << node->type_string()  <<  "type is " << dt << std::endl;
+
     }
     */
 
