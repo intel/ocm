@@ -8,33 +8,35 @@ namespace ocm{
 const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
   const std::set<DataType> cpu_supported_inputTypes = {
-    DT_BFLOAT16,
-    DT_HALF,
     DT_FLOAT,
     //DT_INT8, 
     DT_INT16, 
     DT_INT32, 
     DT_INT64, 
     DT_UINT8, 
+    DT_UINT16, 
     };
 
   const std::set<DataType> gpu_supported_inputTypes = {
     DT_BFLOAT16,
     DT_HALF,  
     DT_FLOAT, 
+    DT_UINT8
     //DT_INT8,
     };
 
   const std::set<DataType> myriad_supported_inputTypes = {
     DT_BFLOAT16, 
     DT_HALF, 
-    DT_FLOAT
+    DT_FLOAT,
+    DT_UINT8
     };
   
   const std::set<DataType> hddl_supported_inputTypes = {
     DT_BFLOAT16,
     DT_HALF,  
-    DT_FLOAT
+    DT_FLOAT,
+    DT_UINT8
     };
   
   if(device_id=="CPU"){
@@ -84,8 +86,12 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["AddV2"]["T"] = SupportedTypes();
     type_constraint_map["ArgMax"]["T"] = SupportedTypes();
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx();
+    type_constraint_map["ArgMin"]["T"] = SupportedTypes();
+    type_constraint_map["ArgMin"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["AvgPool"]["T"] = SupportedTypes();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes();
+    type_constraint_map["Cast"]["SrcT"] = SupportedTypes();
+    type_constraint_map["Cast"]["DstT"] = SupportedTypes();
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
@@ -245,9 +251,31 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] = SimpleConfirmationFunction();
+    confirmation_function_map["ArgMax"] = [](Node* n, bool* result) {
+      *result = true;
+      // only Float32 input type is supported
+      DataType dt;
+      std::string type_attr_name = "T";
+      if (GetNodeAttr(n->attrs(), type_attr_name, &dt)!= Status::OK() || dt!=DT_FLOAT){
+        *result = false;
+        return tensorflow::Status::OK();
+      };
+      // First dimension of the input cannot be zero
+      Node* tf_input_node;
+      int input_idx = 0;
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+      TensorShape t;
+      TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "shape", &t));
+      if (t.dim_size(0)==0){
+        *result = false;
+      }
+      return tensorflow::Status::OK();
+    };
+    
+    confirmation_function_map["ArgMin"] = confirmation_function_map["ArgMax"];
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
+    confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
@@ -328,10 +356,13 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
       if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != Status::OK() ||
           std::find(allowed_types.begin(), allowed_types.end(), dt) ==
               allowed_types.end()) {
+        std::cout<<node->type_string()<<" "<<type_attr_name<<": "<<dt<<"\n";
         type_constraints_ok = false;
         break;
       }
     }
+  } else{
+    type_constraints_ok = false;
   }
 
   return type_constraints_ok;
