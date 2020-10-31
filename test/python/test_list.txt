@@ -6,26 +6,17 @@
 #Inception V3
 #Inception V4
 
-#constant_op_test.PlaceholderTest.*
+#math_ops_test.AddNTest.*
+#argmax_op_test.ArgMaxTest.*
+#pooling_ops_test.PoolingTest.testAvgPooling
+#bias_op_test.BiasAddTest*
+#concat_op_test.ConcatOpTest.*
 #constant_op_test.ConstantTest.*
-#pad_op_test.PadOpTest.*
-#identity_op_py_test.IdentityOpTest.*
 #conv_ops_test.Conv2DTest.*
 #nn_fused_batchnorm_test.*
-#relu_op_test.ReluTest.*
-#nn_test.MaxPoolTest.*
-#split_op_test.*
-#bias_op_test.BiasAddTest.*
-#array_ops_test.OperatorShapeTest.*
-#array_ops_test.StridedSliceTest.*
-#reshape_op_test.*
-#matmul_op_test.*
-#softmax_op_test.*
-#nn_grad_test.DepthwiseConv2dTest*
-#depthwise_conv_op_test.DepthwiseConv2DTest*
-#shape_ops_test.ShapeOpsTest.testSqueeze*
-#relu_op_test.Relu6Test.*
-#pooling_ops_test.PoolingTest.testAvgPool*
+#identity_op_py_test.IdentityOpTest.*
+#matmul_op_test.MatMulTest.*
+#pooling_ops_test.PoolingTest.testMaxPooling
 
 #Mul, Sub, Add, truediv, floordiv, atan2
 #cwise_ops_binary_test.*
@@ -96,14 +87,3 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 #array_ops_test.OperatorShapeTest.testSqueeze*
 
 
-#math_ops_test.AddNTest.*
-#argmax_op_test.ArgMaxTest.*
-#pooling_ops_test.PoolingTest.testAvgPool*
-#bias_op_test.BiasAddTest.*
-#concat_op_test.ConcatOpTest.*
-#constant_op_test.ConstantTest.*
-#conv_ops_test.Conv2DTest.*
-#nn_fused_batchnorm_test.*
-#identity_op_py_test.IdentityOpTest.*
-#matmul_op_test.MatMulTest.*
-#pooling_ops_test.PoolingTest.testMaxPooling

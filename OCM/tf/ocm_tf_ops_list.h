@@ -16,6 +16,7 @@ std::set<std::string> common_supported_ops = {
     "ArgMax",
     "AvgPool",
     "BiasAdd",
+    "Cast", // Unittest
     "ConcatV2",
     "Const",
     "Conv2D",
@@ -61,8 +62,10 @@ std::set<std::string> common_supported_ops = {
     "ZerosLike" // Unittest
 };
 
-//TF OPs supported through composite ops i.e. translated using multiple other available Ngaph OPs
+// TF OPs supported through composite ops i.e. translated using multiple other available Ngraph OPs
+// and are not supported by MO route
 std::set<std::string> composite_ops = {
+    "ArgMin",
     "FusedBatchNormV3",
     "_FusedConv2D",
     "_FusedMatMul",

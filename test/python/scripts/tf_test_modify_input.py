@@ -98,7 +98,7 @@ def process_graph(graph,file):
 
       sub_test = full_test_name_placeholder + test_case_name + '-' + index
 
-      print(sub_test)
+      print("Testing --- ", sub_test)
       if sub_test in invalid_tests:
         print("Skipping test: {}".format(sub_test))
         continue
