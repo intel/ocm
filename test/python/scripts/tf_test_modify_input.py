@@ -101,7 +101,7 @@ def process_graph(graph,file):
       print(sub_test)
       if sub_test in invalid_tests:
         print("Skipping test: {}".format(sub_test))
-        return
+        continue
 
       print("File log {} exists?: {}".format(out_dir + '/' + out_file,os.path.exists(out_dir + '/' + out_file)))
 

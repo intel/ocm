@@ -6,7 +6,9 @@ then
   echo "Tensorflow repo is already available"
 else
   git clone https://github.com/tensorflow/tensorflow.git
-  cd tensorflow; git checkout r2.2; cd ..
+  cd tensorflow; git checkout r2.2; 
+  git apply ../scripts/tf_test_update.patch
+  cd ..
 fi 
 
 #Download Unit test runner script

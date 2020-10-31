@@ -12,7 +12,7 @@ source env/bin/activate
 generate_unittest_pbfiles(){
   rm -rf ./pbfiles
   #Run test script
-  python3 ./scripts/tf_unittest_runner.py --tensorflow_path ./tensorflow/ --run_tests_from_file test_list.txt
+  python3 ./scripts/tf_unittest_runner.py --tensorflow_path ./tensorflow/tensorflow/python --run_tests_from_file test_list.txt
 }
 #Run through model checker
 ocm_checker(){

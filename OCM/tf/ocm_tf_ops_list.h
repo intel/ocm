@@ -9,6 +9,7 @@ namespace ocm{
 // OpenVINO 2021.1 supported TF ops, Refer following page:
 // https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
 std::set<std::string> common_supported_ops = {
+    "Abs", // Unittest - cwise_math
     "Add",
     "AddN",
     "AddV2",  // implemented using ngraph ADD
@@ -23,12 +24,12 @@ std::set<std::string> common_supported_ops = {
     "FloorMod", //Unit test - Softmax
     "FusedBatchNorm",
     "GatherV2", // Unittest
+    "Greater", // Unittest - cwise_math
     "Identity",
     "Less", //Unit test - Softmax
     "LogSoftmax",//Unit test - Softmax
     "MatMul",
     "MaxPool",
-    "Mean",
     "MirrorPad",
     "Mul",
     "OneHot", // Unittest
@@ -37,11 +38,13 @@ std::set<std::string> common_supported_ops = {
     "PadV2",
     "Placeholder",
     "Range", // Unittest - Softmax
+    "RealDiv", // Unittest - cwise_math
     "Relu",
     "Relu6", // Unittest - Relu
     "Reshape",
     "Rsqrt", // Unittest
     "Shape",
+    "Sign", // Unittest - cwise_math
     "Size", // Unittest
     "Slice", // Unittest 
     "Softmax",
@@ -51,6 +54,7 @@ std::set<std::string> common_supported_ops = {
     "Squeeze",
     "StridedSlice",
     "Sub",
+    "Sum", // Unittest - cwise_math
     "Tile", // Unittest 
     "Transpose", // Unittest - Softmax
     "Unpack", // Unittest 
@@ -66,12 +70,32 @@ std::set<std::string> composite_ops = {
 
 //Op supported only on CPU and not supported on VPU
 std::set<std::string> cpu_only_ops = {
+    "Acos", // Unittest - cwise_math
+    "Acosh", // Unittest - cwise_math
+    "Asin", // Unittest - cwise_math
+    "Asinh", // Unittest - cwise_math
+    "Atan", // Unittest - cwise_math
+    "Atanh", // Unittest - cwise_math
     "Bucketize",
     "ExperimentalSparseWeightedSum",
+    "Mean",
+    "Neg", // Unittest - cwise_math    
+    "Sinh", // Unittest - cwise_math
     "SparseToDense"
+    "Tanh", // Unittest - cwise_math   
 };
 
 std::set<std::string> gpu_only_ops = {
+    "Acos", // Unittest - cwise_math
+    "Acosh", // Unittest - cwise_math
+    "Asin", // Unittest - cwise_math
+    "Asinh", // Unittest - cwise_math
+    "Atan", // Unittest - cwise_math
+    "Atanh", // Unittest - cwise_math
+    "Mean",
+    "Neg", // Unittest - cwise_math 
+    "Sinh", // Unittest - cwise_math       
+    "Tanh", // Unittest - cwise_math
 };
 
 std::set<std::string> vpu_only_ops = {

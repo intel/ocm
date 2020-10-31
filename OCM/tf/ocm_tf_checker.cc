@@ -12,7 +12,7 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_HALF,
     DT_FLOAT,
     //DT_INT8, 
-    DT_INT16, 
+    DT_INT16,
     DT_INT32, 
     DT_INT64, 
     DT_UINT8, 
@@ -79,11 +79,18 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     //
     // Initialize type constraint map.
     //
+    type_constraint_map["Abs"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Acos"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Acosh"]["T"] = SupportedTypes(); //cwise_math
     type_constraint_map["Add"]["T"] = SupportedTypes();
     type_constraint_map["AddN"]["T"] = SupportedTypes();
     type_constraint_map["AddV2"]["T"] = SupportedTypes();
     type_constraint_map["ArgMax"]["T"] = SupportedTypes();
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx();
+    type_constraint_map["Asin"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Asinh"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Atan"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Atanh"]["T"] = SupportedTypes(); //cwise_math
     type_constraint_map["AvgPool"]["T"] = SupportedTypes();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes();
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes();
@@ -101,6 +108,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
+    type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Identity"]["T"] = SupportedTypes();
     type_constraint_map["Less"]["T"] = SupportedTypes();
     type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
@@ -111,6 +119,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypes();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
+    type_constraint_map["Neg"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["OneHot"]["axis"] = {DT_INT64};
     type_constraint_map["OneHot"]["T"] = SupportedTypes();
     type_constraint_map["OneHot"]["TI"] = SupportedTypesIdx();
@@ -120,12 +129,15 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypes(); // For unit tests
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
+    type_constraint_map["RealDiv"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Relu6"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(); 
+    type_constraint_map["Sign"]["T"] = SupportedTypes(); //cwise_math    
+    type_constraint_map["Sinh"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Size"]["T"] = SupportedTypes(); 
     type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(); 
     type_constraint_map["Slice"]["T"] = SupportedTypes(); // Added for unit tests
@@ -138,6 +150,8 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["StridedSlice"]["T"] = SupportedTypes();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx();  
     type_constraint_map["Sub"]["T"] = SupportedTypes();  
+    type_constraint_map["Sum"]["T"] = SupportedTypes(); //cwise_math    
+    type_constraint_map["Tanh"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Tile"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["Transpose"]["T"] = SupportedTypes();
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
@@ -241,11 +255,18 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     //
     // Please keep these in alphabetical order by op name.
     //
+    confirmation_function_map["Abs"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Acos"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Acosh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Add"] = SimpleConfirmationFunction();
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
     confirmation_function_map["ArgMax"] = SimpleConfirmationFunction();
+    confirmation_function_map["Asin"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Atanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
@@ -259,6 +280,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
+    confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
@@ -268,6 +290,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
+    confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
     confirmation_function_map["Pack"] = [](Node* n, bool* result) {
       // num of inputs
@@ -278,11 +301,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
     confirmation_function_map["PadV2"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
+    confirmation_function_map["RealDiv"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
+    confirmation_function_map["Sign"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Sinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
     confirmation_function_map["Size"] = SimpleConfirmationFunction();
     confirmation_function_map["Slice"] = SimpleConfirmationFunction(); // For unit tests
@@ -290,9 +316,30 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     confirmation_function_map["Split"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["SplitV"] = SimpleConfirmationFunction(); // For unit tests
-    confirmation_function_map["Squeeze"] = SimpleConfirmationFunction();
+    confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
+        std::vector<int32> tf_axis;
+        GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
+//        std::cout << "sqeeze_dim size " <<  tf_axis.size() << std::endl;
+        *result = true;
+        //If Squeeze_dim is not provided do additional chhecks. 
+        if(tf_axis.size() == 0){
+            Node* tf_input;
+            int input_idx = 0;
+            TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input));
+            TensorShape t;
+            *result = false;
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input->attrs(), "shape", &t));
+            for (int i=0; i < t.dims(); i++){
+                if(t.dim_size(i) == 1)
+                    *result = true;
+            }
+        }
+        return tensorflow::Status::OK();
+    };
     confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
+    confirmation_function_map["Sum"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tile"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction(); // For unit tests

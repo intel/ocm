@@ -1,0 +1,109 @@
+diff --git a/tensorflow/python/kernel_tests/array_ops_test.py b/tensorflow/python/kernel_tests/array_ops_test.py
+index ce96ee4ad6..a73ebc7e5b 100644
+--- a/tensorflow/python/kernel_tests/array_ops_test.py
++++ b/tensorflow/python/kernel_tests/array_ops_test.py
+@@ -573,8 +573,7 @@ class StridedSliceChecker(object):
+ 
+ 
+ STRIDED_SLICE_TYPES = [
+-    dtypes.int32, dtypes.int64, dtypes.int16, dtypes.int8, dtypes.float32,
+-    dtypes.float64, dtypes.complex64, dtypes.complex128, dtypes.bool
++    dtypes.int32, dtypes.int64, dtypes.float32
+ ]
+ 
+ 
+diff --git a/tensorflow/python/kernel_tests/shape_ops_test.py b/tensorflow/python/kernel_tests/shape_ops_test.py
+index 7dde89c981..32904ac5e8 100644
+--- a/tensorflow/python/kernel_tests/shape_ops_test.py
++++ b/tensorflow/python/kernel_tests/shape_ops_test.py
+@@ -293,15 +293,16 @@ class ShapeOpsTest(test.TestCase):
+     self._compareSqueeze(x, squeeze_dims, True)
+ 
+   def testSqueeze(self):
+-    # Nothing to squeeze.
+-    self._compareSqueezeAll(np.zeros([2]))
+-    self._compareSqueezeAll(np.zeros([2, 3]))
++    for dtype in [np.int32, np.int64, np.float32]:
++      # Nothing to squeeze.
++      self._compareSqueezeAll(np.zeros([2], dtype=dtype))
++      self._compareSqueezeAll(np.zeros([2, 3], dtype=dtype))
+ 
+-    # Squeeze the middle element away.
+-    self._compareSqueezeAll(np.zeros([2, 1, 2]))
++      # Squeeze the middle element away.
++      self._compareSqueezeAll(np.zeros([2, 1, 2], dtype=dtype))
+ 
+-    # Squeeze on both ends.
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]))
++      # Squeeze on both ends.
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype))
+ 
+   def testSqueezeBool(self):
+     choice = lambda s: np.random.choice((False, True), size=s)
+@@ -316,15 +317,16 @@ class ShapeOpsTest(test.TestCase):
+     self._compareSqueezeAll(choice([1, 2, 1, 3, 1]))
+ 
+   def testSqueezeSpecificDimension(self):
+-    # Positive squeeze dim index.
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [0])
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [2, 4])
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [0, 4, 2])
++    for dtype in [np.int32, np.int64, np.float32]:
++      # Positive squeeze dim index.
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [0])
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [2, 4])
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [0, 4, 2])
+ 
+-    # Negative squeeze dim index.
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [-1])
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [-3, -5])
+-    self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1]), [-3, -5, -1])
++      # Negative squeeze dim index.
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [-1])
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [-3, -5])
++      self._compareSqueezeAll(np.zeros([1, 2, 1, 3, 1], dtype=dtype), [-3, -5, -1])
+ 
+   def testSqueezeSpecificDimensionBool(self):
+     choice = lambda s: np.random.choice((False, True), size=s)
+@@ -341,12 +343,13 @@ class ShapeOpsTest(test.TestCase):
+   def testSqueezeAllOnes(self):
+     # Numpy squeezes a 1 element tensor into a zero dimensional tensor.
+     # Verify that we do the same.
+-    for use_gpu in [False, True]:
+-      with self.cached_session(use_gpu=use_gpu):
+-        tensor = array_ops.squeeze(np.zeros([1, 1, 1]), [])
+-        self.assertEqual(np.shape(1), tensor.get_shape())
+-        tf_ans = self.evaluate(tensor)
+-        self.assertEqual(np.shape(1), tf_ans.shape)
++    for dtype in [np.int32, np.int64, np.float32]:
++      for use_gpu in [False, True]:
++        with self.cached_session(use_gpu=use_gpu):
++          tensor = array_ops.squeeze(np.zeros([1, 1, 1], dtype=dtype), [])
++          self.assertEqual(np.shape(1), tensor.get_shape())
++          tf_ans = self.evaluate(tensor)
++          self.assertEqual(np.shape(1), tf_ans.shape)
+ 
+   def testSqueezeAllOnesBool(self):
+     # Numpy squeezes a 1 element tensor into a zero dimensional tensor.
+@@ -360,13 +363,14 @@ class ShapeOpsTest(test.TestCase):
+ 
+   @test_util.run_deprecated_v1
+   def testSqueezeOnlyOnes(self):
+-    for use_gpu in [False, True]:
+-      with self.cached_session(use_gpu=use_gpu):
+-        input_1x1x3 = np.zeros([1, 1, 3])
+-        self._compareSqueezeAll(input_1x1x3)
+-        self._compareSqueezeAll(input_1x1x3, [0])
+-        self._compareSqueezeAll(input_1x1x3, [1])
+-        self.assertRaises(ValueError, array_ops.squeeze, input_1x1x3, [2])
++    for dtype in [np.int32, np.int64, np.float32]:
++      for use_gpu in [False, True]:
++        with self.cached_session(use_gpu=use_gpu):
++          input_1x1x3 = np.zeros([1, 1, 3], dtype=dtype)
++          self._compareSqueezeAll(input_1x1x3)
++          self._compareSqueezeAll(input_1x1x3, [0])
++          self._compareSqueezeAll(input_1x1x3, [1])
++          self.assertRaises(ValueError, array_ops.squeeze, input_1x1x3, [2])
+ 
+   @test_util.run_deprecated_v1
+   def testSqueezeErrors(self):
