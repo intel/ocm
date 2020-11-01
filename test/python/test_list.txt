@@ -64,6 +64,7 @@ cwise_ops_binary_test.BinaryOpTest.testPowNegativeExponent
 #Uint16 not supported 
 cwise_ops_binary_test.BinaryOpTest.testUint16Basic
 cwise_ops_binary_test.BinaryOpTest.testUint8Basic
+
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
 

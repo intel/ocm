@@ -107,6 +107,7 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["Fill"]["T"] = SupportedTypes();
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx();
     type_constraint_map["FloorMod"]["T"] = SupportedTypes();
+    type_constraint_map["FloorDiv"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
     type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
@@ -305,6 +306,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
+    confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();

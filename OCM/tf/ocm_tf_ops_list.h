@@ -23,6 +23,7 @@ std::set<std::string> common_supported_ops = {
     "ExpandDims", // Unittest
     "Fill", // Unittest
     "FloorMod", //Unit test - Softmax
+    "FloorDiv", //Unit test - cwise_math
     "FusedBatchNorm",
     "GatherV2", // Unittest
     "Greater", // Unittest - cwise_math
