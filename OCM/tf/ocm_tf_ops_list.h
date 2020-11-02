@@ -6,8 +6,10 @@
 
 namespace ocm{
 
-// OpenVINO 2021.1 supported TF ops, Refer following page:
-// https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
+/**
+ *  OpenVINO 2021.1 supported TF ops, Refer following page:
+ *  https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
+ */
 std::set<std::string> common_supported_ops = {
     "Abs", // Unittest - cwise_math
     "Add",
@@ -63,8 +65,10 @@ std::set<std::string> common_supported_ops = {
     "ZerosLike" // Unittest
 };
 
-// TF OPs supported through composite ops i.e. translated using multiple other available Ngraph OPs
-// and are not supported by MO route
+/**
+ *  TF OPs supported through composite ops i.e. translated using multiple other available Ngraph OPs
+ *  and are not supported by MO route
+ */
 std::set<std::string> composite_ops = {
     "ArgMin",
     "FusedBatchNormV3",

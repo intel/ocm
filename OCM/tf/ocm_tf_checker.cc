@@ -3,8 +3,11 @@
 
 namespace ocm{
 
-// Refer following page for type support: 
-// https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_Supported_Devices.html  
+/**
+ *  Refer following page for type support: 
+ *  https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_Supported_Devices.html  
+ *  @return supported datatypes set based on device_id
+ */
 const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
   const std::set<DataType> cpu_supported_inputTypes = {
@@ -52,6 +55,11 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   return cpu_supported_inputTypes;
 }
 
+/**
+ *  Refer following page for type support: 
+ *  https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_Supported_Devices.html  
+ *  @return supported datatypes set for the Indices attributes based on device_id
+ */
 const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
 
   const std::set<DataType> cpu_supported_inputTypes= {DT_INT32, DT_INT64};
@@ -63,6 +71,11 @@ const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
   return cpu_supported_inputTypes;
 }
 
+/**
+ * Generates Type (Data Type) constraints map for all the Tensorflow variables
+ * @return a map with key as "opname" string and value is again a map with key as
+ * TF data type notation string and value as a set of tensorflow datatypes
+ */
 const TypeConstraintMap& GetTypeConstraintMap() {
   //
   // A map of op types (e.g. "Add") to type constraint maps. For (fake)
@@ -173,9 +186,6 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
 	std::set<std::string> supported_ops = {};
 
   if (device_id == "CPU") {
-    // std::merge(common_supported_ops.begin(), common_supported_ops.end(),
-    //            cpu_only_ops.begin(), cpu_only_ops.end(),
-    //            std::inserter(supported_ops,supported_ops.begin()));
     supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
     supported_ops.insert(cpu_only_ops.begin(), cpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
@@ -192,10 +202,9 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
 }
 
 // Checks if the node meets the confirmation constraints
-static Status ConfirmationOk(
-        tensorflow::Node* node,
-        std::map<std::string, ConfirmationFunction>& confirmation_function_map,
-        bool& confirmation_ok) {
+static Status ConfirmationOk( tensorflow::Node* node,
+                              std::map<std::string, ConfirmationFunction>& confirmation_function_map,
+                              bool& confirmation_ok) {
     auto it = confirmation_function_map.find(node->type_string());
     if (it != confirmation_function_map.end()) {
         TF_RETURN_IF_ERROR(it->second(node, &confirmation_ok));
@@ -203,19 +212,7 @@ static Status ConfirmationOk(
     return Status::OK();
 }
 
-static ConfirmationFunction FusedBatchNormConfirmationFunction() {
-  auto cf = [](Node* n, bool* result) {
-    bool tf_is_training;
-    if (GetNodeAttr(n->attrs(), "is_training", &tf_is_training) !=
-        Status::OK()) {
-      tf_is_training = true;
-    }
-    *result = !tf_is_training;
-    return Status::OK();
-  };
-  return cf;
-};
-
+// Implements a specific constraint on the input ops count
 static Status ValidateInputCountMin(const Node* op, tensorflow::int32 count, bool* result) {
   if (op->num_inputs() < count) {
     *result = false;
@@ -236,6 +233,26 @@ static ConfirmationFunction SimpleConfirmationFunction() {
   return cf;
 };
 
+// Generates confirmation function for fused BN as it requires separate checks
+static ConfirmationFunction FusedBatchNormConfirmationFunction() {
+  auto cf = [](Node* n, bool* result) {
+    bool tf_is_training;
+    if (GetNodeAttr(n->attrs(), "is_training", &tf_is_training) !=
+        Status::OK()) {
+      tf_is_training = true;
+    }
+    *result = !tf_is_training;
+    return Status::OK();
+  };
+  return cf;
+};
+
+/**
+ * Generates constraints map for all the Tensorflow Ops which check
+ * all the attributes
+ * @return a map with key as opname string and value as confirmation function 
+ * (it's a lmabda function)
+ */
 const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
   //
   // A map of op types (e.g. "Add") to confirmation functions. These can be
@@ -380,8 +397,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
   return confirmation_function_map;
 }
 
+// Check node's confirmation constraints
 static bool IsOpModeSupportedTF(Node* node, std::map<std::string, ConfirmationFunction>& confirmation_function_map){
-    // check node's confirmation constraints
     bool confirmation_constraint_ok = false;
     ConfirmationOk(node, confirmation_function_map,
                                     confirmation_constraint_ok);
@@ -392,6 +409,7 @@ static bool IsOpModeSupportedTF(Node* node, std::map<std::string, ConfirmationFu
     return confirmation_constraint_ok;
 }
 
+// Check node's Type (data type) constraints
 static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& type_constraint_map){
 
   bool type_constraints_ok=true;
