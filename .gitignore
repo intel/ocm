@@ -17,3 +17,4 @@ tf_infer_*
 env/
 pbfiles*
 test/python/tensorflow/
+setup/
