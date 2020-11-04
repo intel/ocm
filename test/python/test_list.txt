@@ -6,17 +6,81 @@
 #Inception V3
 #Inception V4
 
-#math_ops_test.AddNTest.*
-#argmax_op_test.ArgMaxTest.*
-#pooling_ops_test.PoolingTest.testAvgPooling
-#bias_op_test.BiasAddTest*
-#concat_op_test.ConcatOpTest.*
-#constant_op_test.ConstantTest.*
-#conv_ops_test.Conv2DTest.*
-#nn_fused_batchnorm_test.*
-#identity_op_py_test.IdentityOpTest.*
-#matmul_op_test.MatMulTest.*
-#pooling_ops_test.PoolingTest.testMaxPooling
+math_ops_test.AddNTest.*
+
+argmax_op_test.ArgMaxTest.testDefaultAxis
+argmax_op_test.ArgMaxTest.testDouble
+argmax_op_test.ArgMaxTest.testEmpty
+argmax_op_test.ArgMaxTest.testFloat
+argmax_op_test.ArgMaxTest.testFloatInt32Output
+argmax_op_test.ArgMaxTest.testInt32
+argmax_op_test.ArgMaxTest.testInt64
+argmax_op_test.ArgMaxTest.testOutputEmpty
+
+pooling_ops_test.PoolingTest.testAvgPooling
+
+# It did not capture any test 
+bias_op_test.BiasAddTest*
+
+concat_op_test.ConcatOpTest.testConcatAxisType
+concat_op_test.ConcatOpTest.testConcatEmpty
+concat_op_test.ConcatOpTest.testConcatLargeNumberOfTensors
+concat_op_test.ConcatOpTest.testConcatNegativeAxis
+concat_op_test.ConcatOpTest.testConcatTuple
+concat_op_test.ConcatOpTest.testHStack
+concat_op_test.ConcatOpTest.testInvalidConcatDimTypeAndShape
+concat_op_test.ConcatOpTest.testRandom
+concat_op_test.ConcatOpTest.testRefType
+concat_op_test.ConcatOpTest.testShapeWithUnknownConcatDim
+concat_op_test.ConcatOpTest.testVStack
+concat_op_test.ConcatOpTest.testZeroSize
+
+constant_op_test.ConstantTest.*
+
+conv_ops_test.Conv2DTest.testConv2D0x0Padding
+conv_ops_test.Conv2DTest.testConv2D1x1Filter
+conv_ops_test.Conv2DTest.testConv2D1x1Padding
+conv_ops_test.Conv2DTest.testConv2D1x2Filter
+conv_ops_test.Conv2DTest.testConv2D1x2FilterDilation
+conv_ops_test.Conv2DTest.testConv2D2x2Filter
+conv_ops_test.Conv2DTest.testConv2D2x2Filter2x1Dilation
+conv_ops_test.Conv2DTest.testConv2D2x2FilterDilation
+conv_ops_test.Conv2DTest.testConv2D2x2FilterStride1x2
+conv_ops_test.Conv2DTest.testConv2D2x2FilterStride2
+conv_ops_test.Conv2DTest.testConv2D2x2FilterStride2Same
+conv_ops_test.Conv2DTest.testConv2D2x2Padding
+conv_ops_test.Conv2DTest.testConv2DBackpropFilterWithEmptyInput
+conv_ops_test.Conv2DTest.testConv2DEmpty
+conv_ops_test.Conv2DTest.testConv2DEmptyBackpropFilter
+conv_ops_test.Conv2DTest.testConv2DEmptyBackpropInput
+conv_ops_test.Conv2DTest.testConv2DEmptyDilation
+conv_ops_test.Conv2DTest.testConv2DExplicitPaddingWithDilations
+conv_ops_test.Conv2DTest.testConv2DExplicitPaddingWithLayoutOptimizer
+conv_ops_test.Conv2DTest.testConv2DKernelSizeMatchesInputSize
+conv_ops_test.Conv2DTest.testConv2DKernelSizeMatchesInputSizeDilation
+conv_ops_test.Conv2DTest.testConv2DKernelSmallerThanStrideSame
+conv_ops_test.Conv2DTest.testConv2DKernelSmallerThanStrideValid
+conv_ops_test.Conv2DTest.testConv2DLotsPadding
+conv_ops_test.Conv2DTest.testConv2DOnlyBottomPadding
+conv_ops_test.Conv2DTest.testConv2DOnlyTopRightPadding
+conv_ops_test.Conv2DTest.testOpEdgeCases
+conv_ops_test.Conv2DTest.testShapeFunctionEdgeCases
+
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape1
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape3
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape4
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape5
+
+identity_op_py_test.IdentityOpTest.testCompositeTensor
+identity_op_py_test.IdentityOpTest.testIdentityShape
+identity_op_py_test.IdentityOpTest.testInt32_2_3
+identity_op_py_test.IdentityOpTest.testInt32_6
+identity_op_py_test.IdentityOpTest.testString
+
+matmul_op_test.MatMulTest.*
+
+pooling_ops_test.PoolingTest.testMaxPooling
 
 #Mul, Sub, Add, truediv, floordiv, atan2
 #cwise_ops_binary_test.*
@@ -67,17 +131,13 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
-
-
-
-
-#pad_op_test.PadOpTest.*
-#relu_op_test.Relu6Test.*
-#reshape_op_test.ReshapeTest.*
-#softmax_op_test.*
-#shape_ops_test.ShapeOpsTest.testSqueeze*
-#array_ops_test.StridedSliceTest.*
-#reduction_ops_test.MeanReductionTest.*
+pad_op_test.PadOpTest.*
+relu_op_test.Relu6Test.*
+reshape_op_test.ReshapeTest.*
+softmax_op_test.*
+shape_ops_test.ShapeOpsTest.testSqueeze*
+array_ops_test.StridedSliceTest.*
+reduction_ops_test.MeanReductionTest.*
 
 #Mean
 #Pack
