@@ -1,7 +1,10 @@
-OV_PATH=$INTEL_OPENVINO_DIR
-BUILD_TYPE=$1
-MODE=$2
-MODEL_PATH=$3
+OV_PATH=$1
+BUILD_TYPE=$2
+MODE=$3
+TEST_LIST=$4
+MODEL_PATH=$5
+
+source $OV_PATH/bin/setupvars.sh
 
 #Clean up
 echo "Clearing up existing logs"
@@ -12,7 +15,7 @@ source env/bin/activate
 generate_unittest_pbfiles(){
   rm -rf ./pbfiles
   #Run test script
-  python3 ./scripts/tf_unittest_runner.py --tensorflow_path ./tensorflow/tensorflow/python --run_tests_from_file test_list.txt
+  python3 ./scripts/tf_unittest_runner.py --tensorflow_path ./tensorflow/tensorflow/python --run_tests_from_file $TEST_LIST
 }
 #Run through model checker
 ocm_checker(){
@@ -47,10 +50,10 @@ if [[ $MODE == "UTEST" ]]; then
     else
       echo "PB file path is " + $MODEL_PATH
     fi
-    TEST_LIST='test_list.txt'
+   
 elif [[ $MODE == "MTEST" ]]; then
     echo "Model Testings"
-    TEST_LIST='test_model_list.txt'
+   
 
 else
     echo $MODE

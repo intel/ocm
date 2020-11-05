@@ -1,4 +1,4 @@
-OV_PATH=$INTEL_OPENVINO_DIR
+OV_PATH=$1
 
 #Download Tensorflow
 if [ -d "tensorflow" ]
