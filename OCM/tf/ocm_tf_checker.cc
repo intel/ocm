@@ -76,7 +76,7 @@ const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
  * @return a map with key as "opname" string and value is again a map with key as
  * TF data type notation string and value as a set of tensorflow datatypes
  */
-const TypeConstraintMap& GetTypeConstraintMap() {
+const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
   //
   // A map of op types (e.g. "Add") to type constraint maps. For (fake)
   // example:
@@ -116,6 +116,8 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
+    type_constraint_map["CropAndResize"]["T"] = SupportedTypes();
+    type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes();
     type_constraint_map["Fill"]["T"] = SupportedTypes();
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx();
@@ -130,6 +132,9 @@ const TypeConstraintMap& GetTypeConstraintMap() {
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Identity"]["T"] = SupportedTypes();
+    // LRN: If input is of type other then the mentioned types, TF itself throws an error
+    // there are other attributes too, but TF automatically typecasts them to required types
+    type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
     type_constraint_map["Less"]["T"] = SupportedTypes();
     type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
     type_constraint_map["MatMul"]["T"] = SupportedTypes();
@@ -251,9 +256,8 @@ static ConfirmationFunction FusedBatchNormConfirmationFunction() {
  * Generates constraints map for all the Tensorflow Ops which check
  * all the attributes
  * @return a map with key as opname string and value as confirmation function 
- * (it's a lmabda function)
  */
-const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
+const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::string device_id) {
   //
   // A map of op types (e.g. "Add") to confirmation functions. These can be
   // used to check arbitrary constraints. For example:
@@ -291,7 +295,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Atanh"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["ArgMax"] = [](Node* n, bool* result) {
+    confirmation_function_map["ArgMax"] = [device_id](Node* n, bool* result) {
       *result = true;
       // only Float32 input type is supported
       DataType dt;
@@ -320,6 +324,16 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["CropAndResize"] = [](Node* n, bool* result) {
+      // Currently OpenVINO supports on "bilinear" method for CropAndResize
+      *result = true;
+      std:string resize_method;
+      std::string type_attr_name = "method";
+      if (GetNodeAttr(n->attrs(), type_attr_name, &resize_method)!= Status::OK() || resize_method!="bilinear"){
+        *result = false;
+      };
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
@@ -331,6 +345,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
+    confirmation_function_map["LRN"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
@@ -362,6 +377,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap() {
     confirmation_function_map["Slice"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
+    // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
+    // divisible by "num_split" value 
     confirmation_function_map["Split"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["SplitV"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
@@ -445,10 +462,10 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
   //std::cout <<"TF OPS list generated" <<"\n";
   
   // Get the op type map based in the input device_id
-  const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap();
+  const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap(device_id);
 
   // Get the op mode confirmation map
-  static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap();
+  static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap(device_id);
 
 	for (auto node : graph->op_nodes()){
 		bool is_node_supported = true;
@@ -457,21 +474,21 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 			// CHECK_1: if the op is supported
 			is_node_supported &= IsOpSupported(node->type_string());
 			if(is_node_supported == false){
-			    std::cout << "Op: " << node->type_string() << " is not supported " << std::endl;
+			    std::cout << "Error: " << node->type_string() << " Op is not supported " << std::endl;
 				break;
 			}
 
 			// CHECK_2: OP Type and Dimensions Check...
       is_node_supported &= IsTypeSupported(node, type_constraint_map);
       if(is_node_supported == false){
-			    std::cout << "Op Type: " << node->type_string() << " is not supported " << std::endl;
+			    std::cout << "Error: " << node->type_string() << " Op Type is not supported " << std::endl;
   				break;
 			}
 
 			// CHECK_3: OP mode check based on attributes
       is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
       if(is_node_supported == false){
-			    std::cout << "Op Mode: " << node->type_string() << " is not supported " << std::endl;
+			    std::cout << "Error: " << node->type_string() << " Op Mode is not supported " << std::endl;
   				break;
 			}
 

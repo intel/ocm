@@ -82,7 +82,6 @@ int main(int argc, char** argv)
     for (auto node : nodes_list){
         //std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
     }
-    std::cout << "INFO All layers supported on CPU from " << graph_file_name << " model!!" << std::endl;
     std::cout<<"\n";
     return 0;
 }

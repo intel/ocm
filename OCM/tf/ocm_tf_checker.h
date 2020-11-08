@@ -12,10 +12,10 @@ using namespace tensorflow;
 namespace ocm{
 
 using ConfirmationFunction = std::function<tensorflow::Status(tensorflow::Node*, bool*)>;
-const std::map<std::string, ConfirmationFunction>& GetConfirmationMap();
+const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::string device_id);
 
 using TypeConstraintMap = std::map<std::string, std::map<std::string, std::set<DataType>>>;
-const TypeConstraintMap& GetTypeConstraintMap();
+const TypeConstraintMap& GetTypeConstraintMap(std::string device_id);
 
 /**
  * Generates the set of the Ops supported for tensorflow
