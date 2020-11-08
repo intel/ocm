@@ -3,7 +3,9 @@ import argparse
 import os
 import sys
 from mo.utils.summarize_graph import summarize_graph
-
+#import sys
+#sys.path.append('../')
+#import model_checker as mc
 
 '''
 Input: .pb files generated from unit test
@@ -69,6 +71,18 @@ def replace_input_to_placeholder(graph_def, node_to_replace):
             print("Replaced input with new placeholder")
             break
 
+#Skipping tests with complex inputs & tests with unsupported OV ops
+def skipTest(graph_def):
+    graph = tf.Graph()
+    with graph.as_default():
+        tf.import_graph_def(graph_def, name='')
+
+        #for op in graph.get_operations():
+            #if op.type not in mc.supported_ops:
+                #print("Unsupported op {}".format(op.type))
+                #return True
+
+        return False
 
 def process_graph(graph,file):
     #Disabled tests
@@ -109,22 +123,22 @@ def process_graph(graph,file):
 
         graph_def = tf.compat.v1.graph_util.extract_sub_graph(graph.as_graph_def(), [output])
 
-        #Add placeholder node, get new graph with placeholder node added & const op name
-        new_graph, node_to_replace = add_placeholder(graph_def)
-        new_graph_def = new_graph.as_graph_def()
+        if not skipTest(graph_def):
+            #Add placeholder node, get new graph with placeholder node added & const op name
+            new_graph, node_to_replace = add_placeholder(graph_def)
+            new_graph_def = new_graph.as_graph_def()
 
-        if not len(node_to_replace)==0:
-          replace_input_to_placeholder(new_graph_def, node_to_replace)
+            if not len(node_to_replace)==0:
+              replace_input_to_placeholder(new_graph_def, node_to_replace)
 
-        #Write the new graph
-        nodes = [node for node in new_graph_def.node]
-        if len(nodes) > 1:
-          new_graph_def = tf.compat.v1.graph_util.extract_sub_graph(new_graph_def, [output])
-          tf.io.write_graph(new_graph_def, out_dir, out_file , as_text=False)
-        else:
-          print(nodes)
-          print("Skipping graphs with just Placeholder/Const node")
-
+            #Write the new graph
+            nodes = [node for node in new_graph_def.node]
+            if len(nodes) > 1:
+              new_graph_def = tf.compat.v1.graph_util.extract_sub_graph(new_graph_def, [output])
+              tf.io.write_graph(new_graph_def, out_dir, out_file , as_text=False)
+            else:
+              print(nodes)
+              print("Skipping graphs with just Placeholder/Const node")
 
 def read_tests_from_file(filename):
     with open(filename) as list_of_tests:

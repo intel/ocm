@@ -20,7 +20,7 @@ def run_thru_mc():
   for f in files:
 
       #cmd = ["python3","../model_checker.py", "-i",f]
-      cmd = ["/home/rrajore/code/OCM/ocm/build/ov_ocm", f]
+      cmd = ["../../build/ov_ocm", f]
 
       mc_log = "./tf_mc_logs/" + f[10:].replace("/","_")
       mc_log, ext = os.path.splitext(mc_log)

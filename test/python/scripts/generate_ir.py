@@ -3,11 +3,12 @@ import pathlib
 import argparse
 import subprocess
 
-def run_thru_mo(ov_path, path, test_list,mode):
+def run_thru_mo(ov_path, path, test_list,mode, device):
 
   
   files=[]
-  os.system("mkdir -p tf_mo_logs")
+  mo_log_path = "tf_mo_logs/"+device
+  os.system("mkdir -p "+mo_log_path)
   for r,d,f in os.walk(path):
     for file in f:
       if '.pb' in file:
@@ -30,16 +31,27 @@ def run_thru_mo(ov_path, path, test_list,mode):
           break
       if match == 0:
         continue 
+   
+    mo_op_path = "pbfiles_mo/"+device
+
+    if not os.path.exists(mo_op_path):
+      os.system("mkdir -p "+ mo_op_path)
 
     mo_out = str(pathlib.Path(fname).parent.absolute())
-    
+    mo_out = mo_out.replace("pbfiles", mo_op_path)
+
     if mode == 'UTEST':
-      cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
-      #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out ]
+      if(device == "MYX"):
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
+      else:
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
+        #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out ]
     else:
-      #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out, "--data_type", "FP16" ]
-      cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out ]
-    mo_log = "./tf_mo_logs/" + fname[10:].replace("/","_")
+      if(device == "MYX"):
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out, "--data_type", "FP16" ]
+      else:
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out ]
+    mo_log = mo_log_path + "/" + fname[10:].replace("/","_")
     mo_log, ext = os.path.splitext(mo_log)
     mo_log += ".log"
 
@@ -68,6 +80,10 @@ if __name__ == '__main__':
                     '--mode',
                     help='Unit test=UTEST or Model Test=MTEST',
                     required=True)
+  parser.add_argument('-d',
+                    '--device',
+                    help='Device CPU, GPU, MYX or HDDL',
+                    required=True)
   args = parser.parse_args()
   ov_path = os.environ['INTEL_OPENVINO_DIR']
-  run_thru_mo(ov_path, args.model_path, args.test_list, args.mode)
+  run_thru_mo(ov_path, args.model_path, args.test_list, args.mode, args.device)

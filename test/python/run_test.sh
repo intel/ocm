@@ -2,13 +2,12 @@ OV_PATH=$1
 BUILD_TYPE=$2
 MODE=$3
 TEST_LIST=$4
-MODEL_PATH=$5
+DEVICES=$5
+MODEL_PATH=$6
 
 source $OV_PATH/bin/setupvars.sh
 
 #Clean up
-echo "Clearing up existing logs"
-
 echo "Activating python virtual env"
 source env/bin/activate
 
@@ -19,26 +18,31 @@ generate_unittest_pbfiles(){
 }
 #Run through model checker
 ocm_checker(){
-  rm -rf tf_ocm_logs
+  rm -rf tf_ocm_logs/$DEVICE
   echo "Running through OCM"
-  python3 ./scripts/run_ocm.py -i $MODEL_PATH
+  python3 ./scripts/run_ocm.py -i $MODEL_PATH -d $DEVICE
   echo "Finished running through OCM"
 }
 
 #Run through model optimizer
 model_optimize(){
-  rm -rf tf_mo_logs
+  rm -rf tf_mo_logs/$DEVICE
+  mo_op_path='pbfiles_mo/'$DEVICE
+  rm -rf $mo_op_path
   echo "Generating IR files"
-  python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE
+  python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE -d $DEVICE
   echo "End Generating IR files"
 }
 
 
 #Run inference
 run_infer(){
-  rm -rf tf_infer_logs
+  rm -rf tf_infer_logs/$DEVICE
+  
+  mo_op_path='pbfiles_mo/'$DEVICE
+
   echo "Running inference"
-  python3 ./scripts/run_inference.py -i $MODEL_PATH  
+  python3 ./scripts/run_inference.py -i $mo_op_path  -d $DEVICE
   echo "End Running inference"
 }
 
@@ -60,24 +64,47 @@ else
     echo "Sorry!! Wrong Mode Option."
 fi
 
+if [[ -n $DEVICES ]]; then
+    IFS=',' read -ra DEVICE_LIST <<< "$DEVICES"
+    for i in ${!DEVICE_LIST[@]}; do
+        #echo "Loop Count "$i" and value is "${DEVICE_LIST[i]}
+        if [[ ${DEVICE_LIST[i]} == "CPU" || ${DEVICE_LIST[i]} == "GPU" ||  ${DEVICE_LIST[i]} == "MYX"  ]]; then
+            echo "Device name "${DEVICE_LIST[i]}
+        else
+            echo "Device name "${DEVICE_LIST[i]}
+            echo "Sorry!! Wrong Device Option. Removing this from list"
+            unset DEVICE_LIST[i]
+        fi
+    done
+else
+    echo "No Device provided. Default setting to CPU!!"
+    DEVICE_LIST="CPU"
+fi
+if [[ -z ${DEVICE_LIST[@]} ]]; then
+    echo "No valid Device provided. Default setting to CPU!!"
+    DEVICE_LIST="CPU"
+fi
+
 if [[ $BUILD_TYPE  == "None" ]]; then
     echo "No Build type selected!!"
 else
-    IFS=',' read -ra BUILD_LIST <<< "$BUILD_TYPE"
-    for BUILD in ${BUILD_LIST[@]}; do
-	    if [[ $BUILD  == "OCM" ]]; then
-	        echo $BUILD
-	        ocm_checker
-	    elif [[ $BUILD  == "MO" ]]; then
-	        echo $BUILD
-	        model_optimize
-	    elif [[ $BUILD  == "INFER" ]]; then
-	        echo $BUILD
-	        run_infer
-	    else
-	        echo $BUILD
-	        echo "Sorry!! Wrong Build Option."
-	    fi
+    for DEVICE in ${DEVICE_LIST[@]}; do
+        IFS=',' read -ra BUILD_LIST <<< "$BUILD_TYPE"
+        for BUILD in ${BUILD_LIST[@]}; do
+	        if [[ $BUILD  == "OCM" ]]; then
+	            echo $BUILD
+	            ocm_checker
+	        elif [[ $BUILD  == "MO" ]]; then
+	            echo $BUILD
+	            model_optimize
+	        elif [[ $BUILD  == "INFER" ]]; then
+	            echo $BUILD
+	            run_infer
+	        else
+	            echo $BUILD
+	            echo "Sorry!! Wrong Build Option."
+	        fi
+        done
     done
 fi
     
