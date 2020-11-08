@@ -22,6 +22,7 @@ std::set<std::string> common_supported_ops = {
     "ConcatV2",
     "Const",
     "Conv2D",
+    "CropAndResize", // Unittest
     "ExpandDims", // Unittest
     "Fill", // Unittest
     "FloorMod", //Unit test - Softmax
@@ -30,6 +31,7 @@ std::set<std::string> common_supported_ops = {
     "GatherV2", // Unittest
     "Greater", // Unittest - cwise_math
     "Identity",
+    "LRN",
     "Less", //Unit test - Softmax
     "LogSoftmax",//Unit test - Softmax
     "MatMul",
@@ -53,7 +55,7 @@ std::set<std::string> common_supported_ops = {
     "Slice", // Unittest 
     "Softmax",
     "SpaceToDepth", // Unittest
-    "Split", // Unittest 
+    "Split", 
     "SplitV", // Unittest 
     "Squeeze",
     "StridedSlice",
