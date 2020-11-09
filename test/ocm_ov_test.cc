@@ -19,12 +19,13 @@ using namespace ocm;
 
 int main(int argc, char** argv)
 {
-    if(argc > 2 || argc < 2){
-        std::cout << "Incorrect arguments" << std::endl;
+    if(argc > 3 || argc < 3){
+        std::cerr << "Usage: " << argv[0] << " TF_FROZEN_GRAPH DEVICE_TYPE" << std::endl;
         return -1;
     }
 
-    std::string graph_file_name = argv[1];;
+    std::string graph_file_name = argv[1];
+    std::string input_device_type = argv[2];
 
     tensorflow::SessionOptions options;
     std::unique_ptr<tensorflow::Session> session(NewSession(options));
@@ -70,12 +71,13 @@ int main(int argc, char** argv)
         tensorflow::DataType dt;
         GetNodeAttr(node->attrs(), "dtype", &dt);
         std::cout  << node->type_string()  <<  "type is " << dt << std::endl;
-
     }
     */
 
     Framework_Names fName = Framework_Names::TF;
-    FrameworkNodesChecker FC(fName,"CPU", "2020_4", &graph);
+    std::string device_id = input_device_type;
+    std::string ov_version = "2021_1";
+    FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
     std::vector<void *> nodes_list = FC.MarkSupportedNodes();
     // cast back the nodes in the TF format
     //std::cout << "---List of Supported Nodes--- "<<"\n";

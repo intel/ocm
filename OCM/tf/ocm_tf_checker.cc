@@ -133,7 +133,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Identity"]["T"] = SupportedTypes();
     // LRN: If input is of type other then the mentioned types, TF itself throws an error
-    // there are other attributes too, but TF automatically typecasts them to required types
+    // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
     type_constraint_map["Less"]["T"] = SupportedTypes();
     type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
@@ -142,16 +142,16 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Mean"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
-    type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypes();  // For unit tests   
+    type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
     type_constraint_map["Neg"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["OneHot"]["axis"] = {DT_INT64};
     type_constraint_map["OneHot"]["T"] = SupportedTypes();
-    type_constraint_map["OneHot"]["TI"] = SupportedTypesIdx();
+    type_constraint_map["OneHot"]["TI"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
-    type_constraint_map["Pad"]["Tpaddings"] = SupportedTypes();
+    type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx();
     type_constraint_map["PadV2"]["T"] = SupportedTypes(); // For unit tests
-    type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypes(); // For unit tests
+    type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(); // For unit tests
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(); //cwise_math    
@@ -327,7 +327,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["CropAndResize"] = [](Node* n, bool* result) {
       // Currently OpenVINO supports on "bilinear" method for CropAndResize
       *result = true;
-      std:string resize_method;
+      std::string resize_method;
       std::string type_attr_name = "method";
       if (GetNodeAttr(n->attrs(), type_attr_name, &resize_method)!= Status::OK() || resize_method!="bilinear"){
         *result = false;

@@ -15,7 +15,7 @@ def run_inference(benchmark_app_path, path, device):
   infer_log_path = "tf_infer_logs/"+device
   os.system("mkdir -p "+infer_log_path)
   for f in files:
-      cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "10"]
+      cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
 
       infer_log = "./tf_infer_logs/" + device + "/" + f[15:].replace("/","_")
       infer_log, ext = os.path.splitext(infer_log)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
   parser.add_argument('-d',
                     '--device',
-                    help='Device CPU, GPU, MYX or HDDL',
+                    help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
                       
   #Build benchmark app

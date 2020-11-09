@@ -44,7 +44,7 @@ if __name__ == '__main__':
                       required=True)
   parser.add_argument('-d',
                     '--device',
-                    help='Device CPU, GPU, MYX or HDDL',
+                    help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
 
   args = parser.parse_args()

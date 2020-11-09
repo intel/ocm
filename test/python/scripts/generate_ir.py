@@ -41,13 +41,13 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
     mo_out = mo_out.replace("pbfiles", mo_op_path)
 
     if mode == 'UTEST':
-      if(device == "MYX"):
+      if(device == "MYRIAD"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       else:
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
         #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out ]
     else:
-      if(device == "MYX"):
+      if(device == "MYRIAD"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out, "--data_type", "FP16" ]
       else:
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out ]
@@ -82,7 +82,7 @@ if __name__ == '__main__':
                     required=True)
   parser.add_argument('-d',
                     '--device',
-                    help='Device CPU, GPU, MYX or HDDL',
+                    help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
   args = parser.parse_args()
   ov_path = os.environ['INTEL_OPENVINO_DIR']
