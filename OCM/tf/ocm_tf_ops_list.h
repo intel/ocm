@@ -30,6 +30,7 @@ std::set<std::string> common_supported_ops = {
     "FusedBatchNorm",
     "GatherV2", // Unittest
     "Greater", // Unittest - cwise_math
+    "GreaterEqual",
     "Identity",
     "LRN",
     "Less", //Unit test - Softmax
@@ -44,7 +45,8 @@ std::set<std::string> common_supported_ops = {
     "PadV2",
     "Placeholder",
     "Range", // Unittest - Softmax
-    "RealDiv", // Unittest - cwise_math
+    "RandomUniform",
+    "RealDiv", 
     "Relu",
     "Relu6", // Unittest - Relu
     "Reshape",
