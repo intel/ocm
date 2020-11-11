@@ -93,8 +93,8 @@ std::set<std::string> cpu_only_ops = {
     "Mean",
     "Neg", // Unittest - cwise_math    
     "Sinh", // Unittest - cwise_math
-    "SparseToDense"
-    "Tanh", // Unittest - cwise_math   
+    "SparseToDense",
+    "Tanh" // Unittest - cwise_math   
 };
 
 std::set<std::string> gpu_only_ops = {
@@ -107,7 +107,7 @@ std::set<std::string> gpu_only_ops = {
     "Mean",
     "Neg", // Unittest - cwise_math 
     "Sinh", // Unittest - cwise_math       
-    "Tanh", // Unittest - cwise_math
+    "Tanh" // Unittest - cwise_math
 };
 
 std::set<std::string> vpu_only_ops = {

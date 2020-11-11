@@ -147,7 +147,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
     type_constraint_map["Neg"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["OneHot"]["axis"] = {DT_INT64};
+    type_constraint_map["OneHot"]["axis"] = {DT_INT32, DT_INT64};
     type_constraint_map["OneHot"]["T"] = SupportedTypes();
     type_constraint_map["OneHot"]["TI"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
