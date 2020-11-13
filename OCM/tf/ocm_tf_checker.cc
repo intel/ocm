@@ -401,7 +401,38 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         }
         return tensorflow::Status::OK();
     };
-    confirmation_function_map["StridedSlice"] = SimpleConfirmationFunction();
+    confirmation_function_map["StridedSlice"] =[device_id](Node* n, bool* result) {
+        *result = true;
+        // First dimension of the input cannot be zero
+        Node* tf_input_node;
+        int input_idx = 3;
+        
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+        if(tf_input_node->type_string() ==  "Const"){
+            // get stride  values
+            Tensor values;
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+
+            // Stride values are not specified exit
+            for (int i=0; i < values.dims(); i++){
+                if(values.dim_size(i) == 0){
+                    *result = false;
+                    return tensorflow::Status::OK();
+                }
+            }
+            //get the underlying array
+            // auto array = values.data();
+            // int* int_array = static_cast<int*>(array);
+            // for(int i=0; i< sizeof(int_array);i++){
+            //     std::cout << " Value "  << *(int_array+i) << std::endl;
+            //     if(values.dim_size(i) == 0){
+            //         *result = false;
+            //         return tensorflow::Status::OK();
+            //     }
+            // }
+        }
+        return tensorflow::Status::OK();
+    };
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
@@ -454,11 +485,11 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
 }
 
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
-	
+
   std::vector<void *> node_list;
 
   // Get OV supported ops list for TF
-	supported_ops = GetTFSupportedOPs(device_id, ov_version);
+  supported_ops = GetTFSupportedOPs(device_id, ov_version);
   //std::cout <<"TF OPS list generated" <<"\n";
   
   // Get the op type map based in the input device_id
@@ -467,38 +498,38 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
   // Get the op mode confirmation map
   static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap(device_id);
 
-	for (auto node : graph->op_nodes()){
-		bool is_node_supported = true;
-		// check if the optype supported
-		do{
-			// CHECK_1: if the op is supported
-			is_node_supported &= IsOpSupported(node->type_string());
-			if(is_node_supported == false){
-			    std::cout << "Error: " << node->type_string() << " Op is not supported " << std::endl;
-				break;
-			}
+    for (auto node : graph->op_nodes()){
+        bool is_node_supported = true;
+        // check if the optype supported
+        do{
+            // CHECK_1: if the op is supported
+            is_node_supported &= IsOpSupported(node->type_string());
+            if(is_node_supported == false){
+                std::cout << "Error: " << node->type_string() << " Op is not supported " << std::endl;
+                break;
+            }
 
-			// CHECK_2: OP Type and Dimensions Check...
-      is_node_supported &= IsTypeSupported(node, type_constraint_map);
-      if(is_node_supported == false){
-			    std::cout << "Error: " << node->type_string() << " Op Type is not supported " << std::endl;
-  				break;
-			}
+                    // CHECK_2: OP Type and Dimensions Check...
+            is_node_supported &= IsTypeSupported(node, type_constraint_map);
+            if(is_node_supported == false){
+                        std::cout << "Error: " << node->type_string() << " Op Type is not supported " << std::endl;
+                        break;
+                    }
 
-			// CHECK_3: OP mode check based on attributes
-      is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
-      if(is_node_supported == false){
-			    std::cout << "Error: " << node->type_string() << " Op Mode is not supported " << std::endl;
-  				break;
-			}
+                    // CHECK_3: OP mode check based on attributes
+            is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
+            if(is_node_supported == false){
+                        std::cout << "Error: " << node->type_string() << " Op Mode is not supported " << std::endl;
+                        break;
+                    }
 
-		} while(false);
-		if(is_node_supported){
-			node_list.push_back((void *)node);
-		}
-         
-	}
-	return node_list;
+        } while(false);
+        if(is_node_supported){
+            node_list.push_back((void *)node);
+        }
+        
+    }
+    return node_list;
 }
 
 } //namespace ocm 

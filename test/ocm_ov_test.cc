@@ -81,9 +81,11 @@ int main(int argc, char** argv)
     std::vector<void *> nodes_list = FC.MarkSupportedNodes();
     // cast back the nodes in the TF format
     //std::cout << "---List of Supported Nodes--- "<<"\n";
-    for (auto node : nodes_list){
-        //std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
-    }
-    std::cout<<"\n";
+    // for (auto node : nodes_list){
+    //     //std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
+    // }
+    
+    if(nodes_list.size() == graph.num_op_nodes())
+        std::cout<<"All nodes are supported" << std::endl;
     return 0;
 }
