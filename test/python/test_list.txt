@@ -147,4 +147,36 @@ reduction_ops_test.MeanReductionTest.*
 #####shape_ops_test.OperatorShapeTest._compareShape*
 #array_ops_test.OperatorShapeTest.testSqueeze*
 
+# Delta ops in Sprint 2 
+lrn_op_test.LRNOpTest.testCompute  
+
+cast_op_test.CastOpTest.testBasic
+cast_op_test.CastOpTest.testBfloat16
+cast_op_test.CastOpTest.testRandom
+cast_op_test.CastOpTest.testIntToFloatBoundary
+cast_op_test.CastOpTest.testInfNan
+cast_op_test.CastOpTest.testCastToTypeOfVariable
+
+#cwise_ops_tes.ComparisonOpTest.testBCastGreaterEqual # was seen intially but in the updated scripts it is not part of TF frozen model
+
+# Didn't find any tests for Conv2DBackpropInput yet
+
+split_op_test.SplitOpTest.testShapeInference
+split_op_test.SplitOpTest.testFailWithoutExplicitNum
+split_op_test.SplitOpTest.testExplicitNum
+split_op_test.SplitOpTest.testListOfScalarTensors
+split_op_test.SplitOpTest.testSpecialCasesVariable
+split_op_test.SplitOpTest.testDegenerateVariable
+split_op_test.SplitOpTest.testOutputShape
+split_op_test.SplitOpTest.testSplitRows
+split_op_test.SplitOpTest.testSplitCols
+split_op_test.SplitOpTest.testEmpty
+split_op_test.SplitOpTest.testIdentity
+split_op_test.SplitOpTest.testSplitDim0
+split_op_test.SplitOpTest.testRandom
+split_op_test.SplitOpTest.testVariableShapeFunction
+split_op_test.SplitOpTest.testNonexistentDimTensor
+split_op_test.SplitOpTest.testShapeFunctionEdgeCases
+
+
 

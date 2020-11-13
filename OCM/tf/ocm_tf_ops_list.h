@@ -22,14 +22,16 @@ std::set<std::string> common_supported_ops = {
     "ConcatV2",
     "Const",
     "Conv2D",
+    "Conv2DBackpropInput",
     "CropAndResize", // Unittest
     "ExpandDims", // Unittest
     "Fill", // Unittest
     "FloorMod", //Unit test - Softmax
-    "FloorDiv", //Unit test - cwise_math
+    // "FloorDiv", //Unit test - cwise_math
     "FusedBatchNorm",
     "GatherV2", // Unittest
     "Greater", // Unittest - cwise_math
+    "GreaterEqual",
     "Identity",
     "LRN",
     "Less", //Unit test - Softmax
@@ -44,7 +46,7 @@ std::set<std::string> common_supported_ops = {
     "PadV2",
     "Placeholder",
     "Range", // Unittest - Softmax
-    "RealDiv", // Unittest - cwise_math
+    "RealDiv", 
     "Relu",
     "Relu6", // Unittest - Relu
     "Reshape",
@@ -81,18 +83,18 @@ std::set<std::string> composite_ops = {
 //Op supported only on CPU and not supported on VPU
 std::set<std::string> cpu_only_ops = {
     "Acos", // Unittest - cwise_math
-    "Acosh", // Unittest - cwise_math
+    // "Acosh", // Unittest - cwise_math
     "Asin", // Unittest - cwise_math
-    "Asinh", // Unittest - cwise_math
+    // "Asinh", // Unittest - cwise_math
     "Atan", // Unittest - cwise_math
-    "Atanh", // Unittest - cwise_math
+    // "Atanh", // Unittest - cwise_math
     "Bucketize",
     "ExperimentalSparseWeightedSum",
     "Mean",
     "Neg", // Unittest - cwise_math    
     "Sinh", // Unittest - cwise_math
-    "SparseToDense"
-    "Tanh", // Unittest - cwise_math   
+    "SparseToDense",
+    "Tanh" // Unittest - cwise_math   
 };
 
 std::set<std::string> gpu_only_ops = {
@@ -105,7 +107,7 @@ std::set<std::string> gpu_only_ops = {
     "Mean",
     "Neg", // Unittest - cwise_math 
     "Sinh", // Unittest - cwise_math       
-    "Tanh", // Unittest - cwise_math
+    "Tanh" // Unittest - cwise_math
 };
 
 std::set<std::string> vpu_only_ops = {

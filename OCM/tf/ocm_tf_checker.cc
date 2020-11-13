@@ -116,6 +116,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
     type_constraint_map["Const"]["dtype"] = SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
+    type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes();
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes();
     type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes();
@@ -131,6 +132,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
+    type_constraint_map["GreaterEqual"]["T"] = SupportedTypes(); 
     type_constraint_map["Identity"]["T"] = SupportedTypes();
     // LRN: If input is of type other then the mentioned types, TF itself throws an error
     // For other attributes TF automatically typecasts them to required types
@@ -145,7 +147,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
     type_constraint_map["Neg"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["OneHot"]["axis"] = {DT_INT64};
+    type_constraint_map["OneHot"]["axis"] = {DT_INT32, DT_INT64};
     type_constraint_map["OneHot"]["T"] = SupportedTypes();
     type_constraint_map["OneHot"]["TI"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
@@ -324,6 +326,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["Conv2DBackpropInput"] = SimpleConfirmationFunction();
     confirmation_function_map["CropAndResize"] = [](Node* n, bool* result) {
       // Currently OpenVINO supports on "bilinear" method for CropAndResize
       *result = true;
@@ -342,8 +345,9 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
-    confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
+    confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
     confirmation_function_map["LRN"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
@@ -364,10 +368,10 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
     confirmation_function_map["PadV2"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
+    confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["RealDiv"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
-    confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Sign"] = SimpleConfirmationFunction(); //cwise_math
