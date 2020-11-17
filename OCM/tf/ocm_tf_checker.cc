@@ -292,11 +292,6 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] = SimpleConfirmationFunction();
-    confirmation_function_map["Asin"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Atanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["ArgMax"] = [device_id](Node* n, bool* result) {
       *result = true;
       // only Float32 input type is supported
@@ -306,19 +301,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         *result = false;
         return tensorflow::Status::OK();
       };
-      // First dimension of the input cannot be zero
-      Node* tf_input_node;
-      int input_idx = 0;
-      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-      TensorShape t;
-      TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "shape", &t));
-      if (t.dim_size(0)==0){
-        *result = false;
-      }
       return tensorflow::Status::OK();
     };
     
     confirmation_function_map["ArgMin"] = confirmation_function_map["ArgMax"];
+    confirmation_function_map["Asin"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["Atanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
@@ -498,8 +488,12 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node){
             TensorShape t;
             if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
                 // Check dim of any of the input is ZERO.
-                if (t.dim_size(0)==0){
-                    is_input_dim_zero &= false;
+                for (int index=0; index<t.dims(); index++){
+                  if (t.dim_size(index)==0){
+                      is_input_dim_zero &= false;
+                      // no further checks required, return from the function
+                      return is_input_dim_zero;
+                  }
                 }
             }
         }
