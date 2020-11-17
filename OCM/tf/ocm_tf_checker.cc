@@ -421,19 +421,20 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             for (int i=0; i < values.dims(); i++){
                 if(values.dim_size(i) == 0){
                     *result = false;
+                    std::cout << " ERROR : " << n->type_string() << " Op has empty Stride values." << std::endl;
                     return tensorflow::Status::OK();
                 }
             }
-            //get the underlying array
-            // auto array = values.data();
-            // int* int_array = static_cast<int*>(array);
-            // for(int i=0; i< sizeof(int_array);i++){
-            //     std::cout << " Value "  << *(int_array+i) << std::endl;
-            //     if(values.dim_size(i) == 0){
-            //         *result = false;
-            //         return tensorflow::Status::OK();
-            //     }
-            // }
+            //From MC. Need to check/create a test case for this.
+            auto array = values.data();
+            int* int_array = static_cast<int*>(array);
+            for(int i=0; i< sizeof(int_array);i++){
+                if(*(int_array+i) < 0){
+                    *result = false;
+                    std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
+                    return tensorflow::Status::OK();
+                }
+            }
         }
         return tensorflow::Status::OK();
     };
@@ -455,7 +456,7 @@ static bool IsOpModeSupportedTF(Node* node, std::map<std::string, ConfirmationFu
     ConfirmationOk(node, confirmation_function_map,
                                     confirmation_constraint_ok);
     if (!confirmation_constraint_ok) {
-        std::cout << "Node does not meet confirmation constraints: "
+        std::cout << " ERROR : Node does not meet confirmation constraints: "
                 << node->type_string() << std::endl;
     }
     return confirmation_constraint_ok;
@@ -488,6 +489,23 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
   return type_constraints_ok;
 }
 
+static bool IsOpInputDimZeroTF(tensorflow::Node* node){
+    bool is_input_dim_zero = true;
+    int num_ips = node->num_inputs();
+    for(int input_idx=0; input_idx < num_ips; input_idx++){
+        Node* tf_input_node;
+        if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
+            TensorShape t;
+            if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
+                // Check dim of any of the input is ZERO.
+                if (t.dim_size(0)==0){
+                    is_input_dim_zero &= false;
+                }
+            }
+        }
+    }
+    return is_input_dim_zero;
+}
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 
   std::vector<void *> node_list;
@@ -509,23 +527,30 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
             // CHECK_1: if the op is supported
             is_node_supported &= IsOpSupported(node->type_string());
             if(is_node_supported == false){
-                std::cout << "Error: " << node->type_string() << " Op is not supported " << std::endl;
+                std::cout << " ERROR : " << node->type_string() << " Op is not supported " << std::endl;
                 break;
             }
 
                     // CHECK_2: OP Type and Dimensions Check...
             is_node_supported &= IsTypeSupported(node, type_constraint_map);
             if(is_node_supported == false){
-                        std::cout << "Error: " << node->type_string() << " Op Type is not supported " << std::endl;
-                        break;
-                    }
+                std::cout << " ERROR : " << node->type_string() << " Op Type is not supported " << std::endl;
+                break;
+            }
 
-                    // CHECK_3: OP mode check based on attributes
+            // CHECK_3: OP mode check based on attributes
             is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
             if(is_node_supported == false){
-                        std::cout << "Error: " << node->type_string() << " Op Mode is not supported " << std::endl;
-                        break;
-                    }
+                std::cout << " ERROR : " << node->type_string() << " Op Mode is not supported " << std::endl;
+                break;
+            }
+
+            // Input dimension check
+            is_node_supported &= IsOpInputDimZeroTF(node);
+            if(is_node_supported == false){
+                std::cout << " ERROR : " << node->type_string() << " Op - Input node Dim is ZERO " << std::endl;
+                break;
+            }
 
         } while(false);
         if(is_node_supported){
