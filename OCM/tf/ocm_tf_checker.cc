@@ -485,15 +485,21 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node){
     for(int input_idx=0; input_idx < num_ips; input_idx++){
         Node* tf_input_node;
         if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
-            TensorShape t;
-            if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
-                // Check dim of any of the input is ZERO.
-                for (int index=0; index<t.dims(); index++){
-                  if (t.dim_size(index)==0){
-                      is_input_dim_zero &= false;
-                      // no further checks required, return from the function
-                      return is_input_dim_zero;
-                  }
+            if(tf_input_node->type_string() != "Const" && tf_input_node->type_string() != "ConcatV2"){
+                TensorShape t;
+                if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
+                    if(t.dims() == 0){
+                        is_input_dim_zero &= false;
+                        return is_input_dim_zero;
+                    }
+                    // Check dim of any of the input is ZERO.
+                    for (int index=0; index<t.dims(); index++){
+                        if (t.dim_size(index)==0){
+                            is_input_dim_zero &= false;
+                            // no further checks required, return from the function
+                            return is_input_dim_zero;
+                        }
+                    }
                 }
             }
         }
