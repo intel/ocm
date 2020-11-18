@@ -137,7 +137,22 @@ reshape_op_test.ReshapeTest.*
 softmax_op_test.*
 shape_ops_test.ShapeOpsTest.testSqueeze*
 array_ops_test.StridedSliceTest.*
-reduction_ops_test.MeanReductionTest.*
+
+
+#reduction_ops_test.MeanReductionTest.*
+reduction_ops_test.MeanReductionTest.testAxesType
+reduction_ops_test.MeanReductionTest.testEmptyGradients
+reduction_ops_test.MeanReductionTest.testGradient
+reduction_ops_test.MeanReductionTest.testInt32
+reduction_ops_test.MeanReductionTest.testSizeOverflowInt8
+reduction_ops_test.MeanReductionTest.testSizeOverflowUint8
+reduction_ops_test.MeanReductionTest.testDegenerate
+reduction_ops_test.MeanReductionTest.testFloat32
+reduction_ops_test.MeanReductionTest.testInfinity
+reduction_ops_test.MeanReductionTest.testSizeOverflowInt16
+reduction_ops_test.MeanReductionTest.testSizeOverflowUint16
+reduction_ops_test.MeanReductionTest.testUint8
+
 
 #Mean
 #Pack

@@ -418,7 +418,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             //From MC. Need to check/create a test case for this.
             auto array = values.data();
             int* int_array = static_cast<int*>(array);
-            for(int i=0; i< sizeof(int_array);i++){
+            for(int i=0; i< values.NumElements() ;i++){
                 if(*(int_array+i) < 0){
                     *result = false;
                     std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
@@ -485,8 +485,30 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node){
     for(int input_idx=0; input_idx < num_ips; input_idx++){
         Node* tf_input_node;
         if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
-            if(tf_input_node->type_string() != "Const" && tf_input_node->type_string() != "ConcatV2"){
+            if(node->type_string() == "Max" || node->type_string() == "Mean" || 
+               node->type_string() == "Sum"  || node->type_string() == "EuclideanNorm"){
+                Tensor t;
+                if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
+                    std::cout << " Dim is " << t.dims() << " DimSize(0) " << t.dim_size(0) << std::endl;
+                    // if(t.dims() == 0){
+                    //     is_input_dim_zero &= false;
+                    //     return is_input_dim_zero;
+                    // }
+                    // Check dim of any of the input is ZERO.
+                    for (int index=0; index<t.dims(); index++){
+                        if (t.dim_size(index)==0){
+                            is_input_dim_zero &= false;
+                            // no further checks required, return from the function
+                            return is_input_dim_zero;
+                        }
+                    }
+                }
+            }
+            // ToDo: Added Placeholder for now. Not needed
+            if(tf_input_node->type_string() != "Const" && 
+                    tf_input_node->type_string() != "ConcatV2"){ 
                 TensorShape t;
+
                 if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
                     if(t.dims() == 0){
                         is_input_dim_zero &= false;
