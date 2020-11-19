@@ -197,13 +197,13 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
     supported_ops.insert(cpu_only_ops.begin(), cpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
   } else if (device_id == "GPU") {
-    std::merge(common_supported_ops.begin(), common_supported_ops.end(),
-               gpu_only_ops.begin(), gpu_only_ops.end(),
-               std::inserter(supported_ops, supported_ops.begin()));
+    supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
+    supported_ops.insert(gpu_only_ops.begin(), gpu_only_ops.end());
+    supported_ops.insert(composite_ops.begin(), composite_ops.end());
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
-    std::merge(common_supported_ops.begin(), common_supported_ops.end(),
-               vpu_only_ops.begin(), vpu_only_ops.end(),
-               std::inserter(supported_ops, supported_ops.begin()));
+    supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
+    supported_ops.insert(vpu_only_ops.begin(), vpu_only_ops.end());
+    supported_ops.insert(composite_ops.begin(), composite_ops.end());
   }
   return supported_ops;
 }
