@@ -38,6 +38,7 @@ std::set<std::string> common_supported_ops = {
     "LogSoftmax",//Unit test - Softmax
     "MatMul",
     "MaxPool",
+    "Mean",
     "MirrorPad",
     "Mul",
     "OneHot", // Unittest
@@ -90,7 +91,6 @@ std::set<std::string> cpu_only_ops = {
     // "Atanh", // Unittest - cwise_math
     "Bucketize",
     "ExperimentalSparseWeightedSum",
-    "Mean",
     "Neg", // Unittest - cwise_math    
     "Sinh", // Unittest - cwise_math
     "SparseToDense",
@@ -104,7 +104,6 @@ std::set<std::string> gpu_only_ops = {
     "Asinh", // Unittest - cwise_math
     "Atan", // Unittest - cwise_math
     "Atanh", // Unittest - cwise_math
-    "Mean",
     "Neg", // Unittest - cwise_math 
     "Sinh", // Unittest - cwise_math       
     "Tanh" // Unittest - cwise_math
