@@ -8,7 +8,7 @@ else
   git clone https://github.com/tensorflow/tensorflow.git
   cd tensorflow; git checkout r2.2; 
   git apply ../scripts/tf_test_update.patch
-  git apply ../script/scripts/tf_rem_unsupported_op_update.patch
+  git apply ../scripts/tf_rem_unsupported_op_update.patch
   cd ..
 fi 
 
