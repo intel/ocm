@@ -128,6 +128,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
+    type_constraint_map["Gather"]["Tparams"] = SupportedTypes();
+    type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx();
+    type_constraint_map["Gather"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
@@ -335,6 +338,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
+    confirmation_function_map["Gather"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
     confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction(); //cwise_math
