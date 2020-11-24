@@ -47,12 +47,12 @@ std::set<std::string> common_supported_ops = {
     "Pad",
     "PadV2",
     "Placeholder",
-    "Range", // Unittest - Softmax
+    //"Range", // Unittest - Softmax.. Commented as Not supported in Bridge
     "RealDiv", 
     "Relu",
     "Relu6", // Unittest - Relu
     "Reshape",
-    "ResizeBilinear",
+    //"ResizeBilinear", Sprint-3 ...Commented as Not supported in Bridge
     "Rsqrt", // Unittest
     "Shape",
     "Sign", // Unittest - cwise_math

@@ -61,7 +61,6 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
  *  @return supported datatypes set for the Indices attributes based on device_id
  */
 const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
-
   const std::set<DataType> cpu_supported_inputTypes= {DT_INT32, DT_INT64};
 
   if(device_id=="CPU"){
@@ -114,7 +113,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Cast"]["DstT"] = SupportedTypes();
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
-    type_constraint_map["Const"]["dtype"] = SupportedTypes();
+    type_constraint_map["Const"]["dtype"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};//SupportedTypes();
     type_constraint_map["Conv2D"]["T"] = SupportedTypes();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes();
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes();
@@ -130,13 +129,12 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
     type_constraint_map["Gather"]["Tparams"] = SupportedTypes();
     type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx();
-    type_constraint_map["Gather"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
     type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["GreaterEqual"]["T"] = SupportedTypes(); 
-    type_constraint_map["Identity"]["T"] = SupportedTypes();
+    type_constraint_map["Identity"]["T"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL};//SupportedTypes();
     // LRN: If input is of type other then the mentioned types, TF itself throws an error
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
