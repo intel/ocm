@@ -196,7 +196,7 @@ split_op_test.SplitOpTest.testShapeFunctionEdgeCases
 
 #Sprint-3 ops
 constant_op_test.ZerosLikeTest.*
-control_flow_ops_py_test.ControlFlowTest.*
+#control_flow_ops_py_test.ControlFlowTest.*
 gather_op_test.GatherTest.
 math_ops_test.RangeTest.*
 math_ops_test.EqualityTest.*
