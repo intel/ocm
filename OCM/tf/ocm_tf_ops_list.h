@@ -15,6 +15,7 @@ std::set<std::string> common_supported_ops = {
     "Add",
     "AddN",
     "AddV2",  // implemented using ngraph ADD
+    "All", // the TF api for this is tf.math.reduce_all
     "ArgMax",
     "AvgPool",
     "BiasAdd",
@@ -24,6 +25,9 @@ std::set<std::string> common_supported_ops = {
     "Conv2D",
     "Conv2DBackpropInput",
     "CropAndResize", // Unittest
+    "DepthwiseConv2dNative",
+    "Equal",
+    "Exp",
     "ExpandDims", // Unittest
     "Fill", // Unittest
     "FloorMod", //Unit test - Softmax
@@ -38,8 +42,10 @@ std::set<std::string> common_supported_ops = {
     "Less", //Unit test - Softmax
     "LogSoftmax",//Unit test - Softmax
     "MatMul",
+    "Maximum",
     "MaxPool",
     "Mean",
+    "Minimum",
     "MirrorPad",
     "Mul",
     "OneHot", // Unittest
@@ -50,7 +56,7 @@ std::set<std::string> common_supported_ops = {
     "Range", // Unittest - Softmax
     "RealDiv", 
     "Relu",
-    "Relu6", // Unittest - Relu
+    "Relu6", 
     "Reshape",
     "ResizeBilinear",
     "Rsqrt", // Unittest

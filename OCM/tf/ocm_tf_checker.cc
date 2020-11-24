@@ -100,6 +100,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Add"]["T"] = SupportedTypes();
     type_constraint_map["AddN"]["T"] = SupportedTypes();
     type_constraint_map["AddV2"]["T"] = SupportedTypes();
+    // need not to put input any constraint on input tensor, TF by default make sure the
+    // the input tensor is of type bool, otherwise throws an error
+    type_constraint_map["All"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["ArgMax"]["T"] = SupportedTypes();
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["Asin"]["T"] = SupportedTypes(); //cwise_math
@@ -119,6 +122,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes();
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes();
     type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
+    type_constraint_map["DepthwiseConv2dNative"]["T"] = SupportedTypes();
+    type_constraint_map["Equal"]["T"] = SupportedTypes();
+    type_constraint_map["Exp"]["T"] = SupportedTypes();
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes();
     type_constraint_map["Fill"]["T"] = SupportedTypes();
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx();
@@ -144,8 +150,10 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
     type_constraint_map["MatMul"]["T"] = SupportedTypes();
     type_constraint_map["MaxPool"]["T"] = SupportedTypes();
+    type_constraint_map["Maximum"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["T"] = SupportedTypes();
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx();    
+    type_constraint_map["Minimum"]["T"] = SupportedTypes();
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx();  // For unit tests   
     type_constraint_map["Mul"]["T"] = SupportedTypes();
@@ -333,7 +341,10 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       };
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["DepthwiseConv2dNative"] = SimpleConfirmationFunction();
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
+    confirmation_function_map["Equal"] = SimpleConfirmationFunction();
+    confirmation_function_map["Exp"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
@@ -351,7 +362,9 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
+    confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
     confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction(); // For unit tests
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
@@ -538,6 +551,7 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node){
     }
     return is_input_dim_zero;
 }
+
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 
   std::vector<void *> node_list;
