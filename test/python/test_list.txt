@@ -208,4 +208,4 @@ split_op_test.SplitOpTest.*
 topk_op_test.TopKTest.*
 transpose_op_test.TransposeTest.*
 unstack_op_test.UnstackOpTest.*
-
+image_grad_test.ResizeBilinearOpTest.*

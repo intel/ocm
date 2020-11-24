@@ -52,10 +52,12 @@ std::set<std::string> common_supported_ops = {
     "Relu",
     "Relu6", // Unittest - Relu
     "Reshape",
+    "ResizeBilinear",
     "Rsqrt", // Unittest
     "Shape",
     "Sign", // Unittest - cwise_math
     "Size", // Unittest
+    "Sigmoid", // Unittest
     "Slice", // Unittest 
     "Softmax",
     "SpaceToDepth", // Unittest
@@ -66,6 +68,7 @@ std::set<std::string> common_supported_ops = {
     "Sub",
     "Sum", // Unittest - cwise_math
     "Tile", // Unittest 
+    "TopKV2", // Unittest 
     "Transpose", // Unittest - Softmax
     "Unpack", // Unittest 
     "ZerosLike" // Unittest

@@ -155,25 +155,27 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["OneHot"]["TI"] = SupportedTypes();
     type_constraint_map["Pack"]["T"] = SupportedTypes();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx();
-    type_constraint_map["PadV2"]["T"] = SupportedTypes(); // For unit tests
-    type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(); // For unit tests
+    type_constraint_map["PadV2"]["T"] = SupportedTypes();
+    type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx();
     type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Relu"]["T"] = SupportedTypes();
     type_constraint_map["Relu6"]["T"] = SupportedTypes();
     type_constraint_map["Reshape"]["T"] = SupportedTypes();
+    type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes();
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["T"] = SupportedTypes();
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(); 
-    type_constraint_map["Sign"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["Sinh"]["T"] = SupportedTypes(); //cwise_math    
+    type_constraint_map["Sigmoid"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Sign"]["T"] = SupportedTypes(); //cwise_math
+    type_constraint_map["Sinh"]["T"] = SupportedTypes(); //cwise_math
     type_constraint_map["Size"]["T"] = SupportedTypes(); 
     type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(); 
-    type_constraint_map["Slice"]["T"] = SupportedTypes(); // Added for unit tests
+    type_constraint_map["Slice"]["T"] = SupportedTypes();
     type_constraint_map["Softmax"]["T"] = SupportedTypes();
     type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes();
-    type_constraint_map["Split"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["Split"]["T"] = SupportedTypes();
     type_constraint_map["SplitV"]["T"] = SupportedTypes(); // For unit tests
     type_constraint_map["Sub"]["T"] = SupportedTypes();
     type_constraint_map["Squeeze"]["T"] = SupportedTypes();
@@ -182,11 +184,12 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Sub"]["T"] = SupportedTypes();  
     type_constraint_map["Sum"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Tanh"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["Tile"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["Tile"]["T"] = SupportedTypes(); 
+    type_constraint_map["TopKV2"]["T"] = SupportedTypes(); 
     type_constraint_map["Transpose"]["T"] = SupportedTypes();
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
-    type_constraint_map["Unpack"]["T"] = SupportedTypes(); // For unit tests
-    type_constraint_map["ZerosLike"]["T"] = SupportedTypes(); // For unit tests
+    type_constraint_map["Unpack"]["T"] = SupportedTypes();
+    type_constraint_map["ZerosLike"]["T"] = SupportedTypes();
   }
   return type_constraint_map;
 }
@@ -360,25 +363,27 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       return tensorflow::Status::OK();
     };
     confirmation_function_map["Pad"] = SimpleConfirmationFunction();
-    confirmation_function_map["PadV2"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["PadV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["RealDiv"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
     confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
+    confirmation_function_map["ResizeBilinear"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
+    confirmation_function_map["Sigmoid"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Sign"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Sinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
     confirmation_function_map["Size"] = SimpleConfirmationFunction();
-    confirmation_function_map["Slice"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["Slice"] = SimpleConfirmationFunction();
     confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
     // divisible by "num_split" value 
-    confirmation_function_map["Split"] = SimpleConfirmationFunction(); // For unit tests
-    confirmation_function_map["SplitV"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["Split"] = SimpleConfirmationFunction();
+    confirmation_function_map["SplitV"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
         std::vector<int32> tf_axis;
         GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
@@ -435,10 +440,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Tile"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["Tile"] = SimpleConfirmationFunction();
+    confirmation_function_map["TopKV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
-    confirmation_function_map["Unpack"] = SimpleConfirmationFunction(); // For unit tests
-    confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
+    confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
     initialized = true;
   }
   return confirmation_function_map;
