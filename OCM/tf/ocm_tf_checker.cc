@@ -394,7 +394,35 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
     // divisible by "num_split" value 
     confirmation_function_map["Split"] = SimpleConfirmationFunction();
-    confirmation_function_map["SplitV"] = SimpleConfirmationFunction();
+    confirmation_function_map["SplitV"] = [device_id](Node* n, bool* result) {
+        *result = true;
+        // First dimension of the input cannot be zero
+        Node* tf_input_node;
+        int input_idx = 1;
+        
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+        if(tf_input_node->type_string() ==  "Const"){
+            // get size_splits  values
+            Tensor values;
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+
+            //From Bridge translation. Need to check/create a test case for this.
+            auto array = values.data();
+            int* int_array = static_cast<int*>(array);
+            bool found_neg_val = false;
+            for(int i=0; i< values.NumElements() ;i++){
+                if(*(int_array+i) < 0){
+                    if(found_neg_val){
+                        *result = false;
+                        std::cout << " ERROR : " << n->type_string() << " Op has multiple negatve value in size_splits." << std::endl;
+                        return tensorflow::Status::OK();
+                    }
+                    found_neg_val = true;
+                }
+            }
+        }
+        return tensorflow::Status::OK();
+    };
     confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
         std::vector<int32> tf_axis;
         GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
