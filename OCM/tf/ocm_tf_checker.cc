@@ -510,7 +510,17 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         }
         return tensorflow::Status::OK();
     };
-    confirmation_function_map["TopKV2"] = SimpleConfirmationFunction();
+    // Adapted from Bridge Translation, "sorted" parameter doesn't supports
+    // false value as of now
+    confirmation_function_map["TopKV2"] = [](Node* n, bool* result) {
+      *result = true;
+      bool sorted_value;
+      TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "sorted", &sorted_value));
+      if (!sorted_value){
+        *result = false;
+      }
+      return Status::OK();
+    };
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
     confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
