@@ -193,14 +193,13 @@ split_op_test.SplitOpTest.testVariableShapeFunction
 split_op_test.SplitOpTest.testNonexistentDimTensor
 split_op_test.SplitOpTest.testShapeFunctionEdgeCases
 
+#Sprint-3 ops
 
-#Sprint-3 ops
-#Sprint-3 ops
-constant_op_test.ZerosLikeTest.*
-control_flow_ops_py_test.ControlFlowTest.*
+#No valid tests in these
+#constant_op_test.ZerosLikeTest.*
+#math_ops_test.EqualityTest.*
+
 gather_op_test.GatherTest.
-math_ops_test.RangeTest.*
-math_ops_test.EqualityTest.*
 
 #--------------------Partially completed------------------------------
 relu_op_test.ReluTest.testNumbersCPU
@@ -234,5 +233,10 @@ slice_op_test.SliceTest.testSlicingWithInt64Index
 split_op_test.SplitOpTest.*
 topk_op_test.TopKTest.*
 transpose_op_test.TransposeTest.*
-unstack_op_test.UnstackOpTest.*
-image_grad_test.ResizeBilinearOpTest.*
+
+unstack_op_test.UnstackOpTest.testAgainstNumpy
+unstack_op_test.UnstackOpTest.testAxis0Default
+unstack_op_test.UnstackOpTest.testInferNum
+unstack_op_test.UnstackOpTest.testSimple
+unstack_op_test.UnstackOpTest.testUnknownShapeOkWithNum
+unstack_op_test.UnstackOpTest.testZeroLengthDim
