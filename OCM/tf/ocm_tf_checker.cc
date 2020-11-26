@@ -479,7 +479,37 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Tile"] = SimpleConfirmationFunction();
+    confirmation_function_map["Tile"] = [device_id](Node* n, bool* result) {
+        *result = true;
+        // First dimension of the input cannot be zero
+        Node* tf_input_node;
+        int input_idx = 1;
+        
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+        if(tf_input_node->type_string() ==  "Const"){
+            // get multiple  values
+            Tensor values;
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+
+            //From Bridge translation. Need to check/create a test case for this.
+            auto array = values.data();
+            int* int_array = static_cast<int*>(array);
+            bool found_invalid_val = false;
+            int loopCnt=0;
+            for(loopCnt=0; loopCnt< values.NumElements() ;loopCnt++){
+                if(*(int_array+loopCnt) <= 0){
+                    found_invalid_val = true;
+                    break;
+                }
+            }
+            if(found_invalid_val){
+                *result = false;
+                std::cout << " ERROR : " << n->type_string() << " Op has invalid value=" <<  *(int_array+loopCnt) << " of param-multple" << std::endl;
+                return tensorflow::Status::OK();
+            }
+        }
+        return tensorflow::Status::OK();
+    };
     confirmation_function_map["TopKV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
