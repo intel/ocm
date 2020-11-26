@@ -201,7 +201,8 @@ gather_op_test.GatherTest.
 math_ops_test.RangeTest.*
 math_ops_test.EqualityTest.*
 relu_op_test.ReluTest.*
-shape_ops_test.ShapeOpsTest.testExpandDims*
+shape_ops_test.ShapeOpsTest.testExpandDims
+shape_ops_test.ShapeOpsTest.testExpandDimsDimType
 shape_ops_test.TileTest.*
 slice_op_test.SliceTest.*
 split_op_test.SplitOpTest.*
