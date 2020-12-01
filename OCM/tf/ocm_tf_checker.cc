@@ -12,7 +12,6 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
   const std::set<DataType> cpu_supported_inputTypes = {
     DT_FLOAT,
-    //DT_INT8, 
     DT_INT16,
     DT_INT32, 
     DT_INT64, 
@@ -25,7 +24,6 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_HALF,  
     DT_FLOAT, 
     DT_UINT8
-    //DT_INT8,
     };
 
   const std::set<DataType> myriad_supported_inputTypes = {
@@ -93,112 +91,112 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     //
     // Initialize type constraint map.
     //
-    type_constraint_map["Abs"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Acos"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Acosh"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Add"]["T"] = SupportedTypes();
-    type_constraint_map["AddN"]["T"] = SupportedTypes();
-    type_constraint_map["AddV2"]["T"] = SupportedTypes();
+    type_constraint_map["Abs"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Acos"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Acosh"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Add"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["AddN"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["AddV2"]["T"] = SupportedTypes(device_id);
     // need not to put input any constraint on input tensor, TF by default make sure the
     // the input tensor is of type bool, otherwise throws an error
     type_constraint_map["All"]["Tidx"] = SupportedTypesIdx();
-    type_constraint_map["ArgMax"]["T"] = SupportedTypes();
+    type_constraint_map["ArgMax"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx();
-    type_constraint_map["Asin"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Asinh"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Atan"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Atanh"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["ArgMin"]["T"] = SupportedTypes();
+    type_constraint_map["Asin"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Asinh"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Atan"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Atanh"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["ArgMin"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ArgMin"]["Tidx"] = SupportedTypesIdx();
-    type_constraint_map["AvgPool"]["T"] = SupportedTypes();
-    type_constraint_map["BiasAdd"]["T"] = SupportedTypes();
-    type_constraint_map["Cast"]["SrcT"] = SupportedTypes();
-    type_constraint_map["Cast"]["DstT"] = SupportedTypes();
-    type_constraint_map["ConcatV2"]["T"] = SupportedTypes();
+    type_constraint_map["AvgPool"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cast"]["SrcT"] = SupportedTypes(device_id);
+    type_constraint_map["Cast"]["DstT"] = SupportedTypes(device_id);
+    type_constraint_map["ConcatV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx();    
-    type_constraint_map["Const"]["dtype"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};//SupportedTypes();
-    type_constraint_map["Conv2D"]["T"] = SupportedTypes();
-    type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes();
-    type_constraint_map["CropAndResize"]["T"] = SupportedTypes();
+    type_constraint_map["Const"]["dtype"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};//SupportedTypes(device_id);
+    type_constraint_map["Conv2D"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
     type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
-    type_constraint_map["DepthwiseConv2dNative"]["T"] = SupportedTypes();
-    type_constraint_map["Equal"]["T"] = SupportedTypes();
-    type_constraint_map["Exp"]["T"] = SupportedTypes();
-    type_constraint_map["ExpandDims"]["T"] = SupportedTypes();
-    type_constraint_map["Fill"]["T"] = SupportedTypes();
+    type_constraint_map["DepthwiseConv2dNative"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Equal"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx();
-    type_constraint_map["FloorMod"]["T"] = SupportedTypes();
-    type_constraint_map["FloorDiv"]["T"] = SupportedTypes();
-    type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes();
-    type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes();
-    type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
-    type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(); // formed after TF optimization pass, not in original graph
-    type_constraint_map["Gather"]["Tparams"] = SupportedTypes();
+    type_constraint_map["FloorMod"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FloorDiv"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
+    type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
+    type_constraint_map["Gather"]["Tparams"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx();
-    type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes();
+    type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes(device_id);
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx();
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx();
-    type_constraint_map["Greater"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["GreaterEqual"]["T"] = SupportedTypes(); 
-    type_constraint_map["Identity"]["T"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL};//SupportedTypes();
+    type_constraint_map["Greater"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["GreaterEqual"]["T"] = SupportedTypes(device_id); 
+    type_constraint_map["Identity"]["T"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL};//SupportedTypes(device_id);
     // LRN: If input is of type other then the mentioned types, TF itself throws an error
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
-    type_constraint_map["Less"]["T"] = SupportedTypes();
-    type_constraint_map["LogSoftmax"]["T"] = SupportedTypes();
-    type_constraint_map["MatMul"]["T"] = SupportedTypes();
-    type_constraint_map["MaxPool"]["T"] = SupportedTypes();
-    type_constraint_map["Maximum"]["T"] = SupportedTypes();
-    type_constraint_map["Mean"]["T"] = SupportedTypes();
+    type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogSoftmax"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MatMul"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MaxPool"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Maximum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Mean"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx();    
-    type_constraint_map["Minimum"]["T"] = SupportedTypes();
-    type_constraint_map["MirrorPad"]["T"] = SupportedTypes();  // For unit tests  
+    type_constraint_map["Minimum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MirrorPad"]["T"] = SupportedTypes(device_id);  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx();  // For unit tests   
-    type_constraint_map["Mul"]["T"] = SupportedTypes();
-    type_constraint_map["Neg"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["OneHot"]["axis"] = {DT_INT32, DT_INT64};
-    type_constraint_map["OneHot"]["T"] = SupportedTypes();
-    type_constraint_map["OneHot"]["TI"] = SupportedTypes();
-    type_constraint_map["Pack"]["T"] = SupportedTypes();
+    type_constraint_map["Mul"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Neg"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx();
+    type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
+    type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx();
-    type_constraint_map["PadV2"]["T"] = SupportedTypes();
+    type_constraint_map["PadV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx();
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Placeholder"]["dtype"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
-    type_constraint_map["RealDiv"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["Relu"]["T"] = SupportedTypes();
-    type_constraint_map["Relu6"]["T"] = SupportedTypes();
-    type_constraint_map["Reshape"]["T"] = SupportedTypes();
-    type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes();
-    type_constraint_map["Rsqrt"]["T"] = SupportedTypes();
-    type_constraint_map["Shape"]["T"] = SupportedTypes();
+    type_constraint_map["RealDiv"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["Relu"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Relu6"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Reshape"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(); 
-    type_constraint_map["Sigmoid"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Sign"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Sinh"]["T"] = SupportedTypes(); //cwise_math
-    type_constraint_map["Size"]["T"] = SupportedTypes(); 
+    type_constraint_map["Sigmoid"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Sign"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Sinh"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Size"]["T"] = SupportedTypes(device_id); 
     type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(); 
-    type_constraint_map["Slice"]["T"] = SupportedTypes();
-    type_constraint_map["Softmax"]["T"] = SupportedTypes();
-    type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes();
-    type_constraint_map["Split"]["T"] = SupportedTypes();
-    type_constraint_map["SplitV"]["T"] = SupportedTypes(); // For unit tests
-    type_constraint_map["Sub"]["T"] = SupportedTypes();
-    type_constraint_map["Squeeze"]["T"] = SupportedTypes();
-    type_constraint_map["StridedSlice"]["T"] = SupportedTypes();
+    type_constraint_map["Slice"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Softmax"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id); // For unit tests
+    type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Squeeze"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["StridedSlice"]["T"] = SupportedTypes(device_id);
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx();  
-    type_constraint_map["Sub"]["T"] = SupportedTypes();  
-    type_constraint_map["Sum"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["Tanh"]["T"] = SupportedTypes(); //cwise_math    
-    type_constraint_map["Tile"]["T"] = SupportedTypes(); 
-    type_constraint_map["TopKV2"]["T"] = SupportedTypes(); 
+    type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);  
+    type_constraint_map["Sum"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["Tanh"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["Tile"]["T"] = SupportedTypes(device_id); 
+    type_constraint_map["TopKV2"]["T"] = SupportedTypes(device_id); 
 
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Transpose"]["T"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
-    type_constraint_map["Unpack"]["T"] = SupportedTypes();
-    type_constraint_map["ZerosLike"]["T"] = SupportedTypes();
+    type_constraint_map["Unpack"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ZerosLike"]["T"] = SupportedTypes(device_id);
   }
   return type_constraint_map;
 }

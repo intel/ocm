@@ -11,7 +11,7 @@ namespace ocm{
  *  https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
  */
 std::set<std::string> common_supported_ops = {
-    "Abs", // Unittest - cwise_math
+    // "Abs", // Unittest - cwise_math  // Not supported by OV
     "Add",
     "AddN",
     "AddV2",  // implemented using ngraph ADD
@@ -61,7 +61,7 @@ std::set<std::string> common_supported_ops = {
     //"ResizeBilinear", Sprint-3 ...Commented as Not supported in Bridge
     "Rsqrt", // Unittest
     "Shape",
-    "Sign", // Unittest - cwise_math
+    //"Sign", // Unittest - cwise_math // Not supported by OV
     "Size", // Unittest
     "Sigmoid", // Unittest
     "Slice", // Unittest 
