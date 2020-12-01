@@ -20,7 +20,7 @@ def run_thru_ocm(path, device):
   for f in files:
       cmd = ["../../build/ov_ocm", f, device]
 
-      ocm_log_path = "./tf_ocm_logs/" + device + "/" + f[8:].replace("/","_")
+      ocm_log_path = "./tf_ocm_logs/" + device + "/" + f[10:].replace("/","_")
       ocm_log_path, ext = os.path.splitext(ocm_log_path)
       ocm_log_path += ".log"
 

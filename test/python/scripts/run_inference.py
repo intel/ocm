@@ -17,7 +17,8 @@ def run_inference(benchmark_app_path, path, device):
   for f in files:
       cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
 
-      infer_log = "./tf_infer_logs/" + device + "/" + f[15:].replace("/","_")
+      start=12+len(device)
+      infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")
       infer_log, ext = os.path.splitext(infer_log)
       infer_log += ".log"
 
