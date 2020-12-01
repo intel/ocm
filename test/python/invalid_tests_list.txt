@@ -220,8 +220,8 @@ pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-34
 pad_op_test_PadOpTest_testPaddingsDim_testPaddingsDim-0
 pad_op_test_PadOpTest_testPaddingsDim_testPaddingsDim-1
 
-#Argument element types do not match (input arg element type. File bug in OpenVINO.
-pad_op_test_PadOpTest_testIntTypes_testIntTypes-24
+#Argument element types do not match (input arg element type. https://jira.devtools.intel.com/browse/CVS-44200).
+#pad_op_test_PadOpTest_testIntTypes_testIntTypes-24
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-29
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-36
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-41
@@ -414,3 +414,30 @@ reduction_ops_test_MeanReductionTest_testGradient_testGradient-42
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-43
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-44
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-45
+
+#fp16
+topk_op_test_TopKTest_testLargeTopK_testLargeTopK-1
+topk_op_test_TopKTest_testLargeSort_testLargeSort-1
+topk_op_test_TopKTest_testMediumTopK_testMediumTopK-1
+topk_op_test_TopKTest_testTop3_testTop3-0
+
+#Gradient checks... Has unsupported ops. And even Fails. Disbaling for now.
+topk_op_test_TopKTest_testTopKGradients_testTopKGradients-0
+
+#Unknown error Incorrect input data/index values precision. Raise OpenVINO bug
+topk_op_test_TopKTest_testStableSort_testStableSort-0
+topk_op_test_TopKTest_testStableSort_testStableSort-1
+topk_op_test_TopKTest_testStableSort_testStableSort-2
+topk_op_test_TopKTest_testStableSort_testStableSort-3
+
+#Skippingthese tests of transpose because perm input ([0,1], [0,1,2]) results into same matric hence MO optiomise transpose
+transpose_op_test_TransposeTest_testHalf_testHalf-0
+transpose_op_test_TransposeTest_testHalf_testHalf-4
+transpose_op_test_TransposeTest_testInt32_testInt32-0
+transpose_op_test_TransposeTest_testInt32_testInt32-5
+transpose_op_test_TransposeTest_testInt32_testInt32-6
+transpose_op_test_TransposeTest_testInt32_testInt32-10
+transpose_op_test_TransposeTest_testInt64_testInt64-0
+transpose_op_test_TransposeTest_testInt64_testInt64-5
+transpose_op_test_TransposeTest_testInt64_testInt64-6
+transpose_op_test_TransposeTest_testInt64_testInt64-10

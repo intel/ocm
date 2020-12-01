@@ -12,11 +12,94 @@ index ce96ee4ad6..a73ebc7e5b 100644
  ]
  
  
+diff --git a/tensorflow/python/kernel_tests/gather_op_test.py b/tensorflow/python/kernel_tests/gather_op_test.py
+index 953f18bb07..453648a4c7 100644
+--- a/tensorflow/python/kernel_tests/gather_op_test.py
++++ b/tensorflow/python/kernel_tests/gather_op_test.py
+@@ -33,8 +33,8 @@ from tensorflow.python.ops import resource_variable_ops
+ from tensorflow.python.ops import variables
+ from tensorflow.python.platform import test
+ 
+-_TEST_TYPES = (dtypes.int64, dtypes.float32,
+-               dtypes.complex64, dtypes.complex128)
++_TEST_TYPES = (dtypes.int64, dtypes.float32)
++#               dtypes.complex64, dtypes.complex128)
+ 
+ # TODO(virimia): Add a benchmark for gather_v2, with batch_dims and axis set.
+ 
 diff --git a/tensorflow/python/kernel_tests/shape_ops_test.py b/tensorflow/python/kernel_tests/shape_ops_test.py
-index 7dde89c981..32904ac5e8 100644
+index 7dde89c981..ab18da05de 100644
 --- a/tensorflow/python/kernel_tests/shape_ops_test.py
 +++ b/tensorflow/python/kernel_tests/shape_ops_test.py
-@@ -293,15 +293,16 @@ class ShapeOpsTest(test.TestCase):
+@@ -187,25 +187,26 @@ class ShapeOpsTest(test.TestCase):
+     self._compareExpandDims(x, dim, True)
+ 
+   def testExpandDims(self):
+-    self._compareExpandDimsAll(np.zeros([2]), 0)
+-    self._compareExpandDimsAll(np.zeros([2]), 1)
+-    self._compareExpandDimsAll(np.zeros([2]), -1)
+-
+-    self._compareExpandDimsAll(np.zeros([2, 3]), 0)
+-    self._compareExpandDimsAll(np.zeros([2, 3]), 1)
+-    self._compareExpandDimsAll(np.zeros([2, 3]), 2)
+-    self._compareExpandDimsAll(np.zeros([2, 3]), -1)
+-    self._compareExpandDimsAll(np.zeros([2, 3]), -2)
+-
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), 0)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), 1)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), 2)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), 3)
+-
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), -1)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), -2)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), -3)
+-    self._compareExpandDimsAll(np.zeros([2, 3, 5]), -4)
++    for dtype in [np.int32, np.int64, np.float32]:
++        self._compareExpandDimsAll(np.zeros([2], dtype=dtype), 0)
++        self._compareExpandDimsAll(np.zeros([2], dtype=dtype), 1)
++        self._compareExpandDimsAll(np.zeros([2], dtype=dtype), -1)
++
++        self._compareExpandDimsAll(np.zeros([2, 3], dtype=dtype), 0)
++        self._compareExpandDimsAll(np.zeros([2, 3], dtype=dtype), 1)
++        self._compareExpandDimsAll(np.zeros([2, 3], dtype=dtype), 2)
++        self._compareExpandDimsAll(np.zeros([2, 3], dtype=dtype), -1)
++        self._compareExpandDimsAll(np.zeros([2, 3], dtype=dtype), -2)
++
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), 0)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), 1)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), 2)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), 3)
++
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), -1)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), -2)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), -3)
++        self._compareExpandDimsAll(np.zeros([2, 3, 5], dtype=dtype), -4)
+ 
+   def testExpandDimsBool(self):
+     choice = lambda s: np.random.choice((False, True), size=s)
+@@ -265,13 +266,14 @@ class ShapeOpsTest(test.TestCase):
+ 
+   def testExpandDimsDimType(self):
+     for dtype in [dtypes.int32, dtypes.int64]:
+-      x = np.zeros([2])
+-      np_ans = np.expand_dims(x, axis=0)
+-      with self.cached_session(use_gpu=True):
+-        tensor = array_ops.expand_dims(x, constant_op.constant(0, dtype))
+-        tf_ans = self.evaluate(tensor)
+-      self.assertShapeEqual(np_ans, tensor)
+-      self.assertAllEqual(np_ans, tf_ans)
++      for npdtype in [np.int32, np.int64]:
++        x = np.zeros([2], dtype=npdtype)
++        np_ans = np.expand_dims(x, axis=0)
++        with self.cached_session(use_gpu=True):
++            tensor = array_ops.expand_dims(x, constant_op.constant(0, dtype))
++            tf_ans = self.evaluate(tensor)
++        self.assertShapeEqual(np_ans, tensor)
++        self.assertAllEqual(np_ans, tf_ans)
+ 
+   def _compareSqueeze(self, x, squeeze_dims, use_gpu):
+     with self.cached_session(use_gpu=use_gpu):
+@@ -293,15 +295,16 @@ class ShapeOpsTest(test.TestCase):
      self._compareSqueeze(x, squeeze_dims, True)
  
    def testSqueeze(self):
@@ -40,7 +123,7 @@ index 7dde89c981..32904ac5e8 100644
  
    def testSqueezeBool(self):
      choice = lambda s: np.random.choice((False, True), size=s)
-@@ -316,15 +317,16 @@ class ShapeOpsTest(test.TestCase):
+@@ -316,15 +319,16 @@ class ShapeOpsTest(test.TestCase):
      self._compareSqueezeAll(choice([1, 2, 1, 3, 1]))
  
    def testSqueezeSpecificDimension(self):
@@ -65,7 +148,7 @@ index 7dde89c981..32904ac5e8 100644
  
    def testSqueezeSpecificDimensionBool(self):
      choice = lambda s: np.random.choice((False, True), size=s)
-@@ -341,12 +343,13 @@ class ShapeOpsTest(test.TestCase):
+@@ -341,12 +345,13 @@ class ShapeOpsTest(test.TestCase):
    def testSqueezeAllOnes(self):
      # Numpy squeezes a 1 element tensor into a zero dimensional tensor.
      # Verify that we do the same.
@@ -85,7 +168,7 @@ index 7dde89c981..32904ac5e8 100644
  
    def testSqueezeAllOnesBool(self):
      # Numpy squeezes a 1 element tensor into a zero dimensional tensor.
-@@ -360,13 +363,14 @@ class ShapeOpsTest(test.TestCase):
+@@ -360,13 +365,14 @@ class ShapeOpsTest(test.TestCase):
  
    @test_util.run_deprecated_v1
    def testSqueezeOnlyOnes(self):
@@ -107,3 +190,52 @@ index 7dde89c981..32904ac5e8 100644
  
    @test_util.run_deprecated_v1
    def testSqueezeErrors(self):
+diff --git a/tensorflow/python/kernel_tests/split_op_test.py b/tensorflow/python/kernel_tests/split_op_test.py
+index 14c5b53de9..ec7a0a7cf0 100644
+--- a/tensorflow/python/kernel_tests/split_op_test.py
++++ b/tensorflow/python/kernel_tests/split_op_test.py
+@@ -30,8 +30,7 @@ from tensorflow.python.ops import gradients_impl
+ from tensorflow.python.ops import math_ops
+ from tensorflow.python.platform import test
+ 
+-_TEST_DTYPES = (dtypes.float32, dtypes.float64, dtypes.complex64,
+-                dtypes.complex128)
++_TEST_DTYPES = (dtypes.int32, dtypes.float32)
+ 
+ 
+ class SplitOpTest(test.TestCase):
+diff --git a/tensorflow/python/kernel_tests/unstack_op_test.py b/tensorflow/python/kernel_tests/unstack_op_test.py
+index 7a15888686..ac788f2e74 100644
+--- a/tensorflow/python/kernel_tests/unstack_op_test.py
++++ b/tensorflow/python/kernel_tests/unstack_op_test.py
+@@ -43,7 +43,7 @@ class UnstackOpTest(test.TestCase):
+     np.random.seed(7)
+     for shape in (2,), (3,), (2, 3), (3, 2), (4, 3, 2):
+       for dtype in [
+-          np.bool, np.float16, np.float32, np.float64, np.uint8, np.int32,
++          np.float32, np.int32,
+           np.int64
+       ]:
+         data = np.random.randn(*shape).astype(dtype)
+@@ -132,13 +132,14 @@ class UnstackOpTest(test.TestCase):
+       array_ops.unstack(x)
+ 
+   def testAgainstNumpy(self):
+-    # For 1 to 5 dimensions.
+-    for i in range(1, 6):
+-      a = np.random.random(np.random.permutation(i) + 1)
+-
+-      # For all the possible axis to split it, including negative indices.
+-      for j in range(-i, i):
+-        expected = np_split_squeeze(a, j)
++    for dtype in [np.int32, np.int64, np.float32]:
++      # For 1 to 5 dimensions.
++      for i in range(1, 6):
++        a = np.random.random(np.random.permutation(i) + 1).astype(dtype)
++
++        # For all the possible axis to split it, including negative indices.
++        for j in range(-i, i):
++          expected = np_split_squeeze(a, j)
+ 
+         actual_unstack = self.evaluate(array_ops.unstack(a, axis=j))
+ 

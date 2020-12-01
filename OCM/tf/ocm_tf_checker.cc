@@ -163,7 +163,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx();
     type_constraint_map["PadV2"]["T"] = SupportedTypes();
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx();
-    type_constraint_map["Placeholder"]["dtype"] = SupportedTypes();
+    //Additonal DT_HALF is needed. Need to handle this at common place.
+    type_constraint_map["Placeholder"]["dtype"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx();
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Relu"]["T"] = SupportedTypes();
@@ -192,7 +193,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Tanh"]["T"] = SupportedTypes(); //cwise_math    
     type_constraint_map["Tile"]["T"] = SupportedTypes(); 
     type_constraint_map["TopKV2"]["T"] = SupportedTypes(); 
-    type_constraint_map["Transpose"]["T"] = SupportedTypes();
+
+    //Additonal DT_HALF is needed. Need to handle this at common place.
+    type_constraint_map["Transpose"]["T"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx();
     type_constraint_map["Unpack"]["T"] = SupportedTypes();
     type_constraint_map["ZerosLike"]["T"] = SupportedTypes();

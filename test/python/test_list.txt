@@ -204,6 +204,7 @@ gather_op_test.GatherTest.
 #--------------------Partially completed------------------------------
 relu_op_test.ReluTest.testNumbersCPU
 relu_op_test.ReluTest.testNoElement
+
 shape_ops_test.ShapeOpsTest.testExpandDims
 shape_ops_test.ShapeOpsTest.testExpandDimsDimType
 shape_ops_test.TileTest.testEmpty
@@ -213,6 +214,7 @@ shape_ops_test.TileTest.testScalar
 shape_ops_test.TileTest.testSimple
 shape_ops_test.TileTest.testTypes
 shape_ops_test.TileTest.testUnknownInputShape
+
 slice_op_test.SliceTest.test3Dimension
 slice_op_test.SliceTest.testComplex
 slice_op_test.SliceTest.testComputedShape
@@ -228,11 +230,16 @@ slice_op_test.SliceTest.testSliceMatrixDim0
 slice_op_test.SliceTest.testSliceOfSlice
 slice_op_test.SliceTest.testSlicingInt64Tensor
 slice_op_test.SliceTest.testSlicingWithInt64Index
-#--------------------------------------------------
 
 split_op_test.SplitOpTest.*
+
 topk_op_test.TopKTest.*
-transpose_op_test.TransposeTest.*
+
+transpose_op_test.TransposeTest.test1D
+transpose_op_test.TransposeTest.testHalf
+transpose_op_test.TransposeTest.testInt32
+transpose_op_test.TransposeTest.testInt64
+transpose_op_test.TransposeTest.testPermType
 
 unstack_op_test.UnstackOpTest.testAgainstNumpy
 unstack_op_test.UnstackOpTest.testAxis0Default
@@ -240,3 +247,4 @@ unstack_op_test.UnstackOpTest.testInferNum
 unstack_op_test.UnstackOpTest.testSimple
 unstack_op_test.UnstackOpTest.testUnknownShapeOkWithNum
 unstack_op_test.UnstackOpTest.testZeroLengthDim
+#--------------------------------------------------
