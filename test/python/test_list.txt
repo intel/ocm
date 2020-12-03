@@ -199,21 +199,18 @@ split_op_test.SplitOpTest.testShapeFunctionEdgeCases
 #constant_op_test.ZerosLikeTest.*
 #math_ops_test.EqualityTest.*
 
-#gather_op_test.GatherTest.testBadAxis
-#gather_op_test.GatherTest.testBadIndicesCPU
-#gather_op_test.GatherTest.testEmptySlices
-#gather_op_test.GatherTest.testGatherResourceVariable
-#ather_op_test.GatherTest.testHigherRank
-##gather_op_test.GatherTest.testScalar1D
-#gather_op_test.GatherTest.testScalar2D
-#gather_op_test.GatherTest.testSimpleTwoD32
-#gather_op_test.GatherTest.testString
-#gather_op_test.GatherTest.testUInt32AndUInt64
-#gather_op_test.GatherTest.testUnknownAxis
-#gather_op_test.GatherTest.testUnknownIndices
+gather_op_test.GatherTest.testBadAxis
+gather_op_test.GatherTest.testBadIndicesCPU
+gather_op_test.GatherTest.testEmptySlices
+gather_op_test.GatherTest.testHigherRank
+gather_op_test.GatherTest.testScalar1D
+gather_op_test.GatherTest.testScalar2D
+gather_op_test.GatherTest.testSimpleTwoD32
+gather_op_test.GatherTest.testString
+gather_op_test.GatherTest.testUInt32AndUInt64
+gather_op_test.GatherTest.testUnknownAxis
+gather_op_test.GatherTest.testUnknownIndices
 
-
-#--------------------Partially completed------------------------------
 relu_op_test.ReluTest.testNumbersCPU
 relu_op_test.ReluTest.testNoElement
 
