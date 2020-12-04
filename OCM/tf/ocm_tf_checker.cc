@@ -146,7 +146,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
       return supported_types;
       }();
 
-    type_constraint_map["FloorDiv"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FloorDiv"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.erase(DT_UINT16);
+      }
+      return supported_types;
+    }();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes(device_id);
     type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes(device_id);
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
@@ -170,24 +176,38 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Mean"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
-        supported_types.erase(DT_INT32); 
-        supported_types.erase(DT_INT64);   
+        supported_types.erase(DT_INT32);
+        supported_types.erase(DT_INT64);
+      }else if (device_id=="CPU"){
+        supported_types.erase(DT_INT16);
+        supported_types.erase(DT_UINT16);
       }
       return supported_types;
-      }();
-
+    }();
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx(device_id);    
     type_constraint_map["Minimum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes(device_id);  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx(device_id);  // For unit tests   
-    type_constraint_map["Mul"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Mul"]["T"] =  [device_id](){ 
+    std::set<DataType> supported_types = SupportedTypes(device_id);
+    if (device_id=="CPU"){
+        supported_types.erase(DT_UINT16);
+      }
+      return supported_types;
+      }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx(device_id);
-    type_constraint_map["PadV2"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["PadV2"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.erase(DT_UINT8); 
+      }
+      return supported_types;
+      }();
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(device_id);
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Placeholder"]["dtype"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
