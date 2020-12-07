@@ -1,3 +1,5 @@
 {
-    "MYRIAD": { "VPU_DETECT_NETWORK_BATCH": "NO"}
+    "MYRIAD": { "VPU_DETECT_NETWORK_BATCH": "NO",​​​
+                ​​​​​​​​​​ "MYRIAD_ENABLE_FORCE_RESET": "YES"​​​​​​​​​​​​​​​​​
+            }​​​​​​​​​  ​​​​​​​​
 }

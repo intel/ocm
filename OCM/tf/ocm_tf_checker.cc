@@ -104,14 +104,22 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     // need not to put input any constraint on input tensor, TF by default make sure the
     // the input tensor is of type bool, otherwise throws an error
     type_constraint_map["All"]["Tidx"] = SupportedTypesIdx(device_id);
-    type_constraint_map["ArgMax"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ArgMax"]["T"] = [device_id]() {
+      // only Float32 input type is supported
+      std::set<DataType> supported_types = {DT_FLOAT};
+      return supported_types;
+    }();
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx(device_id);
+    type_constraint_map["ArgMin"]["T"] = [device_id]() {
+      // only Float32 input type is supported
+      std::set<DataType> supported_types = {DT_FLOAT};
+      return supported_types;
+    }();
+    type_constraint_map["ArgMin"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["Asin"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Asinh"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Atan"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Atanh"]["T"] = SupportedTypes(device_id); //cwise_math
-    type_constraint_map["ArgMin"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["ArgMin"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["AvgPool"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = SupportedTypes(device_id);
@@ -253,7 +261,15 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);  
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["Tanh"]["T"] = SupportedTypes(device_id); //cwise_math    
-    type_constraint_map["Tile"]["T"] = SupportedTypes(device_id); 
+    type_constraint_map["Tile"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="MYRIAD"){
+        supported_types.erase(DT_INT32);  
+        supported_types.erase(DT_INT64);  
+      }
+      return supported_types;
+      }(); 
+
     type_constraint_map["TopKV2"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
@@ -376,19 +392,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] = [device_id](Node* n, bool* result) {
-      *result = true;
-      // only Float32 input type is supported
-      DataType dt;
-      std::string type_attr_name = "T";
-      if (GetNodeAttr(n->attrs(), type_attr_name, &dt)!= Status::OK() || dt!=DT_FLOAT){
-        *result = false;
-        return tensorflow::Status::OK();
-      };
-      return tensorflow::Status::OK();
-    };
-    
-    confirmation_function_map["ArgMin"] = confirmation_function_map["ArgMax"];
+    confirmation_function_map["ArgMax"] =  SimpleConfirmationFunction();
+    confirmation_function_map["ArgMin"] =  SimpleConfirmationFunction();
     confirmation_function_map["Asin"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
@@ -435,7 +440,26 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
-    confirmation_function_map["MirrorPad"] = SimpleConfirmationFunction(); // For unit tests
+    confirmation_function_map["MirrorPad"] = [device_id](Node* n, bool* result) {
+      // for VPU num of input dimension has to be 4, otherwise getting following
+      // error with OV, AssertionFailed: layer->pads_begin.size() == 4
+      *result = true;
+      Node* tf_pad_input_node;
+      int input_idx = 1;
+        
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_pad_input_node));
+      if(tf_pad_input_node->type_string() ==  "Const"){
+        // get pad values
+        Tensor values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_pad_input_node->attrs(), "value", &values));
+        // check the first dimension
+        if(values.dim_size(0) != 4){
+            *result = false;
+        }
+      }
+
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
@@ -445,8 +469,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       TF_RETURN_IF_ERROR(ValidateInputCountMin(n, count, result));
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["Pad"] = SimpleConfirmationFunction();
-    confirmation_function_map["PadV2"] = SimpleConfirmationFunction();
+    confirmation_function_map["Pad"] = confirmation_function_map["MirrorPad"];
+    confirmation_function_map["PadV2"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["RealDiv"] = SimpleConfirmationFunction(); //cwise_math
@@ -498,9 +522,9 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
         std::vector<int32> tf_axis;
         GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
-//        std::cout << "sqeeze_dim size " <<  tf_axis.size() << std::endl;
         *result = true;
-        //If Squeeze_dim is not provided do additional chhecks. 
+        // If Squeeze_dim is not provided check if atleast one of the
+        // dimension value is 1 (and that would be squeezed out)
         if(tf_axis.size() == 0){
             Node* tf_input;
             int input_idx = 0;
