@@ -15,7 +15,8 @@ def run_inference(benchmark_app_path, path, device):
   infer_log_path = "tf_infer_logs/"+device
   os.system("mkdir -p "+infer_log_path)
   for f in files:
-      cmd = [benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
+      # timeout of 60 seconds 
+      cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
 
       start=12+len(device)
       infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")
