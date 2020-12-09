@@ -492,7 +492,6 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Split"] = SimpleConfirmationFunction();
     confirmation_function_map["SplitV"] = [device_id](Node* n, bool* result) {
         *result = true;
-        // First dimension of the input cannot be zero
         Node* tf_input_node;
         int input_idx = 1;
         
@@ -586,7 +585,6 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tile"] = [device_id](Node* n, bool* result) {
         *result = true;
-        // First dimension of the input cannot be zero
         Node* tf_input_node;
         int input_idx = 1;
         
@@ -596,6 +594,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             Tensor values;
             TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
 
+            // For Myriad the number of dimensions in the values cannot be greater than 6
+            if (device_id=="MYRIAD"){
+              if (values.NumElements()>=6){
+                *result=false;
+                return tensorflow::Status::OK();
+              }
+            }
+            
             //From Bridge translation. Need to check/create a test case for this.
             auto array = values.data();
             int* int_array = static_cast<int*>(array);
@@ -624,7 +630,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       if (!sorted_value){
         *result = false;
       }
-      return Status::OK();
+      return tensorflow::Status::OK();
     };
     confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();

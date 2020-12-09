@@ -33,6 +33,35 @@ array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-98
 array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-99
 
 # IE fails with: [ ERROR ] AssertionFailed: !sortedLayers.empty()
+# Graph with only Cast OP is not supported, MO modifies the graph
+# in a way that IE throws error (analysed for VPU)
+cast_op_test_CastOpTest_testBasic_testBasic-10
+cast_op_test_CastOpTest_testBasic_testBasic-15
+cast_op_test_CastOpTest_testBasic_testBasic-17
+cast_op_test_CastOpTest_testBasic_testBasic-31
+cast_op_test_CastOpTest_testBasic_testBasic-43
+cast_op_test_CastOpTest_testBasic_testBasic-48
+cast_op_test_CastOpTest_testBasic_testBasic-50
+cast_op_test_CastOpTest_testBasic_testBasic-64
+cast_op_test_CastOpTest_testBasic_testBasic-74
+cast_op_test_CastOpTest_testBasic_testBasic-87
+cast_op_test_CastOpTest_testRandom_testRandom-10
+cast_op_test_CastOpTest_testRandom_testRandom-109
+cast_op_test_CastOpTest_testRandom_testRandom-15
+cast_op_test_CastOpTest_testRandom_testRandom-17
+cast_op_test_CastOpTest_testRandom_testRandom-31
+cast_op_test_CastOpTest_testRandom_testRandom-41
+cast_op_test_CastOpTest_testRandom_testRandom-54
+cast_op_test_CastOpTest_testRandom_testRandom-65
+cast_op_test_CastOpTest_testRandom_testRandom-70
+cast_op_test_CastOpTest_testRandom_testRandom-72
+cast_op_test_CastOpTest_testRandom_testRandom-86
+cast_op_test_CastOpTest_testRandom_testRandom-96
+
+# Edge case, TF itself fails on this case
+conv_ops_test_Conv2DTest_testShapeFunctionEdgeCases_testShapeFunctionEdgeCases-7
+
+# IE fails with: [ ERROR ] AssertionFailed: !sortedLayers.empty()
 # Graph with only identity OP is not supported, MO modifies the graph
 # in a way that IE throws error
 identity_op_py_test_IdentityOpTest_testCompositeTensor_testCompositeTensor-0
