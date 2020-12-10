@@ -428,7 +428,27 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
-    confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
+    //confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
+    confirmation_function_map["GatherV2"] = [device_id](Node* n, bool* result) {
+        *result = true;
+        // First dimension of the input cannot be zero
+        Node* tf_input_node;
+        int input_idx = 1;
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+        if(tf_input_node->type_string() ==  "Const"){
+          // get size_splits  values
+          Tensor values;
+          TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+          if(values.NumElements()==0)
+          {
+            *result = false;
+            std::cout << " ERROR : " << n->type_string() << " Op has dimension " << values.NumElements() << std::endl;
+            return tensorflow::Status::OK();
+          }
+            
+        }
+        return tensorflow::Status::OK();
+    };
     confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
