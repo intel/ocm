@@ -428,7 +428,6 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
-    //confirmation_function_map["GatherV2"] = SimpleConfirmationFunction();  
     confirmation_function_map["GatherV2"] = [device_id](Node* n, bool* result) {
         *result = true;
         // First dimension of the input cannot be zero
@@ -439,13 +438,15 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
           // get size_splits  values
           Tensor values;
           TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
-          if(values.NumElements()==0)
+          for(int i=0; i< values.dims() ;i++) /// `TensorShape` in `tensor_shape.h`.
           {
-            *result = false;
-            std::cout << " ERROR : " << n->type_string() << " Op has dimension " << values.NumElements() << std::endl;
-            return tensorflow::Status::OK();
+            if(values.dim_size(i)==0) /// Convenience accessor for the tensor shape.
+            {
+              *result = false;
+              std::cout << " ERROR : " << n->type_string() << " Op has dimension size " << values.dim_size(i) << std::endl;
+              return tensorflow::Status::OK();
+            }
           }
-            
         }
         return tensorflow::Status::OK();
     };
@@ -652,7 +653,28 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["Transpose"] = SimpleConfirmationFunction();
+    confirmation_function_map["Transpose"] = [device_id](Node* n, bool* result) {
+      *result = true;
+      if(device_id=="GPU")
+      {
+        // First dimension of the input cannot be zero
+        Node* tf_input_node;
+        int input_idx = 1;
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+        if(tf_input_node->type_string() ==  "Const"){
+            // get size_splits  values
+            Tensor values;
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+            if(values.NumElements()>=8) // 
+            {
+              *result = false;
+              std::cout << " ERROR : " << n->type_string() << " Op has permutation shape " << values.NumElements() << std::endl;
+              return tensorflow::Status::OK();
+            }
+        }
+      }
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
     confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
     initialized = true;
