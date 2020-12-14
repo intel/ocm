@@ -617,7 +617,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
 
             // For Myriad the number of dimensions in the values cannot be greater than 6
             if (device_id=="MYRIAD"){
-              if (values.NumElements()>=6){
+              if (values.NumElements()>6){
                 *result=false;
                 return tensorflow::Status::OK();
               }
