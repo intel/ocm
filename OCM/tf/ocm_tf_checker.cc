@@ -208,6 +208,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Pad"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx(device_id);
     type_constraint_map["PadV2"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -328,7 +329,22 @@ static Status ValidateInputCountMin(const Node* op, tensorflow::int32 count, boo
                                    " instead";
   }
   *result = true;
-  return Status::OK();
+  return tensorflow::Status::OK();
+}
+
+// Validate the dimension of the input tensor of the node
+static Status ValidateNodeInputDim(const Node* n, tensorflow::int32 count, bool* result){
+  Node* tf_input_node;
+  int input_idx = 0;
+  TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+  // get input shape
+  TensorShape t;
+  TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "shape", &t));
+  // check the first dimension
+  if(t.dims()>count){
+      *result = false;
+  }
+  return tensorflow::Status::OK();
 }
 
 // Generates a "simple" confirmation function which always returns true,
@@ -336,20 +352,6 @@ static ConfirmationFunction SimpleConfirmationFunction() {
   auto cf = [](tensorflow::Node *, bool* result) {
     *result = true;
     return tensorflow::Status::OK();
-  };
-  return cf;
-};
-
-// Generates confirmation function for fused BN as it requires separate checks
-static ConfirmationFunction FusedBatchNormConfirmationFunction() {
-  auto cf = [](Node* n, bool* result) {
-    bool tf_is_training;
-    if (GetNodeAttr(n->attrs(), "is_training", &tf_is_training) !=
-        Status::OK()) {
-      tf_is_training = true;
-    }
-    *result = !tf_is_training;
-    return Status::OK();
   };
   return cf;
 };
@@ -423,8 +425,16 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
-    confirmation_function_map["FusedBatchNorm"] = FusedBatchNormConfirmationFunction();
-    confirmation_function_map["FusedBatchNormV3"] = FusedBatchNormConfirmationFunction();
+    confirmation_function_map["FusedBatchNorm"] = [device_id](Node* n, bool* result) {
+      bool tf_is_training;
+      if (GetNodeAttr(n->attrs(), "is_training", &tf_is_training) !=
+          Status::OK()) {
+        tf_is_training = true;
+      }
+      *result = !tf_is_training;
+      return tensorflow::Status::OK();
+    };
+    confirmation_function_map["FusedBatchNormV3"] = confirmation_function_map["FusedBatchNorm"];
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
@@ -462,28 +472,43 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
     confirmation_function_map["MirrorPad"] = [device_id](Node* n, bool* result) {
-      // for VPU num of input dimension has to be 4, otherwise getting following
-      // error with OV, AssertionFailed: layer->pads_begin.size() == 4
       *result = true;
-      Node* tf_pad_input_node;
-      int input_idx = 1;
-        
-      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_pad_input_node));
-      if(tf_pad_input_node->type_string() ==  "Const"){
-        // get pad values
-        Tensor values;
-        TF_RETURN_IF_ERROR(GetNodeAttr(tf_pad_input_node->attrs(), "value", &values));
-        // check the first dimension
-        if(values.dim_size(0) != 4){
-            *result = false;
+      // for VPU num of padding dimension has to be 4, otherwise getting following
+      // error with OV, AssertionFailed: layer->pads_begin.size() == 4
+      if (device_id=="MYRIAD"){
+        Node* tf_pad_paddings_node;
+        int input_idx = 1;
+          
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_pad_paddings_node));
+        if(tf_pad_paddings_node->type_string() ==  "Const"){
+          // get pad values
+          Tensor values;
+          TF_RETURN_IF_ERROR(GetNodeAttr(tf_pad_paddings_node->attrs(), "value", &values));
+          // check the first dimension
+          if(values.dim_size(0) != 4){
+              *result = false;
+          }
         }
       }
 
+      // GPU doesn't supports input dimension greater than 5
+      if (device_id=="GPU"){
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
       return tensorflow::Status::OK();
     };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["OneHot"] = SimpleConfirmationFunction();
+    confirmation_function_map["OneHot"] = [device_id](Node* n, bool* result) {
+      *result = true;
+      // GPU doesn't supports input dimension greater than 5
+      if (device_id=="GPU"){
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Pack"] = [](Node* n, bool* result) {
       // num of inputs
       tensorflow::int32 count = 1;
@@ -506,7 +531,15 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Shape"] = SimpleConfirmationFunction();
     confirmation_function_map["Size"] = SimpleConfirmationFunction();
     confirmation_function_map["Slice"] = SimpleConfirmationFunction();
-    confirmation_function_map["Softmax"] = SimpleConfirmationFunction();
+    confirmation_function_map["Softmax"] = [device_id](Node* n, bool* result) {
+      *result = true;
+      // GPU doesn't supports input dimension greater than 5
+      if (device_id=="GPU"){
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
     // divisible by "num_split" value 
@@ -561,14 +594,21 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     };
     confirmation_function_map["StridedSlice"] =[device_id](Node* n, bool* result) {
         *result = true;
-        Node* tf_input_node;
+
+        // GPU doesn't supports input dimension greater than 5
+        if (device_id=="GPU"){
+          tensorflow::int32 count = 5;
+          TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+
+        // Check on stride values
+        Node* tf_input_stride_node;
         int input_idx = 3;
-        
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-        if(tf_input_node->type_string() ==  "Const"){
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_stride_node));
+        if(tf_input_stride_node->type_string() ==  "Const"){
             // get stride  values
             Tensor values;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_stride_node->attrs(), "value", &values));
 
             // Stride values are not specified exit
             for (int i=0; i < values.dims(); i++){
@@ -615,8 +655,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             Tensor values;
             TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
 
-            // For Myriad the number of dimensions in the values cannot be greater than 6
-            if (device_id=="MYRIAD"){
+            // For Myriad or GPU, the number of dimensions in the values cannot be greater than 6
+            if ((device_id=="MYRIAD")||(device_id=="GPU")){
               if (values.NumElements()>6){
                 *result=false;
                 return tensorflow::Status::OK();
@@ -657,21 +697,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       *result = true;
       if(device_id=="GPU")
       {
-        // First dimension of the input cannot be zero
-        Node* tf_input_node;
-        int input_idx = 1;
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-        if(tf_input_node->type_string() ==  "Const"){
-            // get size_splits  values
-            Tensor values;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
-            if(values.NumElements()>=8) // 
-            {
-              *result = false;
-              std::cout << " ERROR : " << n->type_string() << " Op has permutation shape " << values.NumElements() << std::endl;
-              return tensorflow::Status::OK();
-            }
-        }
+        tensorflow::int32 count = 6;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
       return tensorflow::Status::OK();
     };
