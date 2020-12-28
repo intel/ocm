@@ -22,6 +22,7 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   const std::set<DataType> gpu_supported_inputTypes = {
     DT_BFLOAT16,
     DT_HALF,  
+    DT_INT32,
     DT_FLOAT,
     DT_UINT8
     };
@@ -126,7 +127,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Cast"]["DstT"] = SupportedTypes(device_id);
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);    
-    type_constraint_map["Const"]["dtype"] = {DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};//SupportedTypes(device_id);
+    type_constraint_map["Const"]["dtype"] = [device_id](){
+      std::set<DataType> supported_types = SupportedTypes(device_id);      
+      if (device_id=="CPU"){
+        supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
+      }
+      return supported_types;
+    }();
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
@@ -134,8 +141,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_INT64);  
       }
       return supported_types;
-      }();
-
+    }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
     type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
@@ -145,15 +151,18 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
-    type_constraint_map["FloorMod"]["T"] =  [device_id](){ 
+    type_constraint_map["FloorMod"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32); 
         supported_types.erase(DT_INT64);   
       }
+      if (device_id=="CPU"){
+        // Floor_mod supports only I32 precision of inputs for CPU
+        supported_types = {DT_INT32};
+      }
       return supported_types;
-      }();
-
+    }();
     type_constraint_map["FloorDiv"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
@@ -196,13 +205,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Minimum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["MirrorPad"]["T"] = SupportedTypes(device_id);  // For unit tests  
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx(device_id);  // For unit tests   
-    type_constraint_map["Mul"]["T"] =  [device_id](){ 
-    std::set<DataType> supported_types = SupportedTypes(device_id);
-    if (device_id=="CPU"){
-        supported_types.erase(DT_UINT16);
+    type_constraint_map["Mul"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+          supported_types.erase(DT_UINT16);
       }
       return supported_types;
-      }();
+    }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
@@ -216,7 +225,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_UINT8); 
       }
       return supported_types;
-      }();
+    }();
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(device_id);
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Placeholder"]["dtype"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
@@ -229,8 +238,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_INT64);  
       }
       return supported_types;
-      }();
-
+    }();
     type_constraint_map["Relu6"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
@@ -238,8 +246,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_INT64);  
       }
       return supported_types;
-      }();
-
+    }();
     type_constraint_map["Reshape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
@@ -269,8 +276,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_INT64);  
       }
       return supported_types;
-      }(); 
-
+    }(); 
     type_constraint_map["TopKV2"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
@@ -278,8 +284,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
         supported_types.erase(DT_INT64);  
       }
       return supported_types;
-      }(); 
-
+    }(); 
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Transpose"]["T"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx(device_id);
@@ -313,11 +318,11 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_ve
 static Status ConfirmationOk( tensorflow::Node* node,
                               std::map<std::string, ConfirmationFunction>& confirmation_function_map,
                               bool& confirmation_ok) {
-    auto it = confirmation_function_map.find(node->type_string());
-    if (it != confirmation_function_map.end()) {
-        TF_RETURN_IF_ERROR(it->second(node, &confirmation_ok));
-    }
-    return Status::OK();
+  auto it = confirmation_function_map.find(node->type_string());
+  if (it != confirmation_function_map.end()) {
+      TF_RETURN_IF_ERROR(it->second(node, &confirmation_ok));
+  }
+  return Status::OK();
 }
 
 // Implements a specific constraint on the input ops count
@@ -439,26 +444,24 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();  
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherV2"] = [device_id](Node* n, bool* result) {
-        *result = true;
-        // First dimension of the input cannot be zero
-        Node* tf_input_node;
-        int input_idx = 1;
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-        if(tf_input_node->type_string() ==  "Const"){
-          // get size_splits  values
-          Tensor values;
-          TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
-          for(int i=0; i< values.dims() ;i++) /// `TensorShape` in `tensor_shape.h`.
-          {
-            if(values.dim_size(i)==0) /// Convenience accessor for the tensor shape.
-            {
-              *result = false;
-              std::cout << " ERROR : " << n->type_string() << " Op has dimension size " << values.dim_size(i) << std::endl;
-              return tensorflow::Status::OK();
-            }
+      *result = true;
+      // First dimension of the input cannot be zero
+      Node* tf_input_node;
+      int input_idx = 1;
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+      if(tf_input_node->type_string() ==  "Const"){
+        // get size_splits  values
+        Tensor values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+        for(int i=0; i< values.dims() ;i++) { /// `TensorShape` in `tensor_shape.h`.
+          if(values.dim_size(i)==0){ /// Convenience accessor for the tensor shape.
+            *result = false;
+            std::cout << " ERROR : " << n->type_string() << " Op has dimension size " << values.dim_size(i) << std::endl;
+            return tensorflow::Status::OK();
           }
         }
-        return tensorflow::Status::OK();
+      }
+      return tensorflow::Status::OK();
     };
     confirmation_function_map["Greater"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction(); //cwise_math
@@ -545,142 +548,145 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     // divisible by "num_split" value 
     confirmation_function_map["Split"] = SimpleConfirmationFunction();
     confirmation_function_map["SplitV"] = [device_id](Node* n, bool* result) {
-        *result = true;
-        Node* tf_input_node;
-        int input_idx = 1;
+      *result = true;
+      Node* tf_input_node;
+      int input_idx = 1;
         
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-        if(tf_input_node->type_string() ==  "Const"){
-            // get size_splits  values
-            Tensor values;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+      if(tf_input_node->type_string() ==  "Const"){
+        // get size_splits  values
+        Tensor values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
 
-            //From Bridge translation. Need to check/create a test case for this.
-            auto array = values.data();
-            int* int_array = static_cast<int*>(array);
-            bool found_neg_val = false;
-            for(int i=0; i< values.NumElements() ;i++){
-                if(*(int_array+i) < 0){
-                    if(found_neg_val){
-                        *result = false;
-                        std::cout << " ERROR : " << n->type_string() << " Op has multiple negatve value in size_splits." << std::endl;
-                        return tensorflow::Status::OK();
-                    }
-                    found_neg_val = true;
-                }
+        //From Bridge translation. Need to check/create a test case for this.
+        auto array = values.data();
+        int* int_array = static_cast<int*>(array);
+        bool found_neg_val = false;
+        for(int i=0; i< values.NumElements() ;i++){
+          if(*(int_array+i) < 0){
+            if(found_neg_val){
+              *result = false;
+              std::cout << " ERROR : " << n->type_string() << " Op has multiple negatve value in size_splits." << std::endl;
+              return tensorflow::Status::OK();
             }
+            found_neg_val = true;
+          }
         }
-        return tensorflow::Status::OK();
+      }
+      return tensorflow::Status::OK();
     };
-    confirmation_function_map["Squeeze"] = [](Node* n, bool* result) {
-        std::vector<int32> tf_axis;
-        GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
-        *result = true;
-        // If Squeeze_dim is not provided check if atleast one of the
-        // dimension value is 1 (and that would be squeezed out)
-        if(tf_axis.size() == 0){
-            Node* tf_input;
-            int input_idx = 0;
-            TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input));
-            TensorShape t;
-            *result = false;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input->attrs(), "shape", &t));
-            for (int i=0; i < t.dims(); i++){
-                if(t.dim_size(i) == 1)
-                    *result = true;
-            }
+    confirmation_function_map["Squeeze"] = [device_id](Node* n, bool* result) {
+      std::vector<int32> tf_axis;
+      GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
+      *result = true;
+      // If Squeeze_dim is not provided check if atleast one of the
+      // dimension value is 1 (and that would be squeezed out)
+      if(tf_axis.size() == 0){
+        Node* tf_input;
+        int input_idx = 0;
+        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input));
+        if (tf_input->type_string()=="Const" || tf_input->type_string()=="Placeholder"){
+          TensorShape t;
+          *result = false;
+          TF_RETURN_IF_ERROR(GetNodeAttr(tf_input->attrs(), "shape", &t));
+          for (int i=0; i < t.dims(); i++){
+            if(t.dim_size(i) == 1)
+              *result = true;
+          }
         }
-        return tensorflow::Status::OK();
+      }
+      return tensorflow::Status::OK();
     };
     confirmation_function_map["StridedSlice"] =[device_id](Node* n, bool* result) {
-        *result = true;
+      *result = true;
 
-        // GPU doesn't supports input dimension greater than 5
-        if (device_id=="GPU"){
-          tensorflow::int32 count = 5;
-          TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      // GPU doesn't supports input dimension greater than 5
+      if (device_id=="GPU"){
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+
+      // Check on stride values
+      Node* tf_input_stride_node;
+      int input_idx = 3;
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_stride_node));
+      if(tf_input_stride_node->type_string()=="Const"){
+        // get stride  values
+        Tensor values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_stride_node->attrs(), "value", &values));
+
+        // Stride values are not specified exit
+        for (int i=0; i < values.dims(); i++){
+          if(values.dim_size(i) == 0){
+            *result = false;
+            std::cout << " ERROR : " << n->type_string() << " Op has empty Stride values." << std::endl;
+            return tensorflow::Status::OK();
+          }
         }
-
-        // Check on stride values
-        Node* tf_input_stride_node;
-        int input_idx = 3;
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_stride_node));
-        if(tf_input_stride_node->type_string() ==  "Const"){
-            // get stride  values
-            Tensor values;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_stride_node->attrs(), "value", &values));
-
-            // Stride values are not specified exit
-            for (int i=0; i < values.dims(); i++){
-                if(values.dim_size(i) == 0){
-                    *result = false;
-                    std::cout << " ERROR : " << n->type_string() << " Op has empty Stride values." << std::endl;
-                    return tensorflow::Status::OK();
-                }
-            }
-            //From MC. Need to check/create a test case for this.
-            // Check: Negative stride values are not supported
-            auto array = values.data();
-            int* int_array = static_cast<int*>(array);
-            for(int i=0; i< values.NumElements() ;i++){
-                if(*(int_array+i) < 0){
-                    *result = false;
-                    std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
-                    return tensorflow::Status::OK();
-                }
-            }
+        //From MC. Need to check/create a test case for this.
+        // Check: Negative stride values are not supported
+        auto array = values.data();
+        int* int_array = static_cast<int*>(array);
+        for(int i=0; i< values.NumElements() ;i++){
+          if(*(int_array+i) < 0){
+            *result = false;
+            std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
+            return tensorflow::Status::OK();
+          }
         }
+      }
 
-        // shrink_axis_mask attribute is not supported
+      // shrink_axis_mask attribute is not supported for MYRIAD and CPU
+      if (device_id=="MYRIAD" || device_id=="CPU"){
         int shrink_axis_mask;
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "shrink_axis_mask", &shrink_axis_mask));
         if (shrink_axis_mask){
           *result = false;
           std::cout << " ERROR : " << n->type_string() << " shrink_axis_mask is set ." << std::endl;
         }
-
-        return tensorflow::Status::OK();
+      }
+      return tensorflow::Status::OK();
     };
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Tile"] = [device_id](Node* n, bool* result) {
-        *result = true;
-        Node* tf_input_node;
-        int input_idx = 1;
-        
-        TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-        if(tf_input_node->type_string() ==  "Const"){
-            // get multiple  values
-            Tensor values;
-            TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+      *result = true;
+      Node* tf_input_node;
+      int input_idx = 1;
+      
+      TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+      if(tf_input_node->type_string() ==  "Const"){
+        // get multiple  values
+        Tensor values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
 
-            // For Myriad or GPU, the number of dimensions in the values cannot be greater than 6
-            if ((device_id=="MYRIAD")||(device_id=="GPU")){
-              if (values.NumElements()>6){
-                *result=false;
-                return tensorflow::Status::OK();
-              }
-            }
-            
-            //From Bridge translation. Need to check/create a test case for this.
-            auto array = values.data();
-            int* int_array = static_cast<int*>(array);
-            bool found_invalid_val = false;
-            int loopCnt=0;
-            for(loopCnt=0; loopCnt< values.NumElements() ;loopCnt++){
-                if(*(int_array+loopCnt) <= 0){
-                    found_invalid_val = true;
-                    break;
-                }
-            }
-            if(found_invalid_val){
-                *result = false;
-                std::cout << " ERROR : " << n->type_string() << " Op has invalid value=" <<  *(int_array+loopCnt) << " of param-multple" << std::endl;
-                return tensorflow::Status::OK();
-            }
+        // For Myriad or GPU, the number of dimensions in the values cannot be greater than 6
+        if ((device_id=="MYRIAD")||(device_id=="GPU")){
+          if (values.NumElements()>6){
+            *result=false;
+            return tensorflow::Status::OK();
+          }
         }
-        return tensorflow::Status::OK();
+        
+        //From Bridge translation. Need to check/create a test case for this.
+        auto array = values.data();
+        int* int_array = static_cast<int*>(array);
+        bool found_invalid_val = false;
+        int loopCnt=0;
+        for(loopCnt=0; loopCnt< values.NumElements() ;loopCnt++){
+          if(*(int_array+loopCnt) <= 0){
+            found_invalid_val = true;
+            break;
+          }
+        }
+        if(found_invalid_val){
+          *result = false;
+          std::cout << " ERROR : " << n->type_string() << " Op has invalid value=" <<  *(int_array+loopCnt) << " of param-multple" << std::endl;
+          return tensorflow::Status::OK();
+        }
+      }
+      return tensorflow::Status::OK();
     };
     // Adapted from Bridge Translation, "sorted" parameter doesn't supports
     // false value as of now
@@ -711,14 +717,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
 
 // Check node's confirmation constraints
 static bool IsOpModeSupportedTF(Node* node, std::map<std::string, ConfirmationFunction>& confirmation_function_map){
-    bool confirmation_constraint_ok = false;
-    ConfirmationOk(node, confirmation_function_map,
-                                    confirmation_constraint_ok);
-    if (!confirmation_constraint_ok) {
-        std::cout << " ERROR : Node does not meet confirmation constraints: "
-                << node->type_string() << std::endl;
-    }
-    return confirmation_constraint_ok;
+  bool confirmation_constraint_ok = false;
+  ConfirmationOk(node, confirmation_function_map,
+                                  confirmation_constraint_ok);
+  if (!confirmation_constraint_ok) {
+    std::cout << " ERROR : Node does not meet confirmation constraints: "
+            << node->type_string() << std::endl;
+  }
+  return confirmation_constraint_ok;
 }
 
 // Check node's Type (data type) constraints
@@ -734,8 +740,8 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
       DataType dt;
 
       if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != Status::OK() ||
-          std::find(allowed_types.begin(), allowed_types.end(), dt) ==
-              allowed_types.end()) {
+        std::find(allowed_types.begin(), allowed_types.end(), dt) ==
+            allowed_types.end()) {
         std::cout<<node->type_string()<<" "<<type_attr_name<<": "<<dt<<"\n";
         type_constraints_ok = false;
         break;
@@ -749,53 +755,53 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
 }
 
 static bool IsOpInputDimZeroTF(tensorflow::Node* node){
-    bool is_input_dim_zero = true;
-    int num_ips = node->num_inputs();
-    for(int input_idx=0; input_idx < num_ips; input_idx++){
-        Node* tf_input_node;
-        if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
-            if(node->type_string() == "Max" || node->type_string() == "Mean" || 
-               node->type_string() == "Sum"  || node->type_string() == "EuclideanNorm"){
-                Tensor t;
-                if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
-                    std::cout << " Dim is " << t.dims() << " DimSize(0) " << t.dim_size(0) << std::endl;
-                    // if(t.dims() == 0){
-                    //     is_input_dim_zero &= false;
-                    //     return is_input_dim_zero;
-                    // }
-                    // Check dim of any of the input is ZERO.
-                    for (int index=0; index<t.dims(); index++){
-                        if (t.dim_size(index)==0){
-                            is_input_dim_zero &= false;
-                            // no further checks required, return from the function
-                            return is_input_dim_zero;
-                        }
-                    }
-                }
+  bool is_input_dim_zero = true;
+  int num_ips = node->num_inputs();
+  for(int input_idx=0; input_idx < num_ips; input_idx++){
+    Node* tf_input_node;
+    if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
+      if(node->type_string() == "Max" || node->type_string() == "Mean" || 
+        node->type_string() == "Sum"  || node->type_string() == "EuclideanNorm"){
+        Tensor t;
+        if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
+          std::cout << " Dim is " << t.dims() << " DimSize(0) " << t.dim_size(0) << std::endl;
+          // if(t.dims() == 0){
+          //     is_input_dim_zero &= false;
+          //     return is_input_dim_zero;
+          // }
+          // Check dim of any of the input is ZERO.
+          for (int index=0; index<t.dims(); index++){
+            if (t.dim_size(index)==0){
+              is_input_dim_zero &= false;
+              // no further checks required, return from the function
+              return is_input_dim_zero;
             }
-            // ToDo: Added Placeholder for now. Not needed
-            if(tf_input_node->type_string() != "Const" && 
-                    tf_input_node->type_string() != "ConcatV2"){ 
-                TensorShape t;
-
-                if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
-                    if(t.dims() == 0){
-                        is_input_dim_zero &= false;
-                        return is_input_dim_zero;
-                    }
-                    // Check dim of any of the input is ZERO.
-                    for (int index=0; index<t.dims(); index++){
-                        if (t.dim_size(index)==0){
-                            is_input_dim_zero &= false;
-                            // no further checks required, return from the function
-                            return is_input_dim_zero;
-                        }
-                    }
-                }
-            }
+          }
         }
+      }
+      // ToDo: Added Placeholder for now. Not needed
+      if(tf_input_node->type_string() != "Const" && 
+          tf_input_node->type_string() != "ConcatV2"){ 
+        TensorShape t;
+
+        if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
+          if(t.dims() == 0){
+            is_input_dim_zero &= false;
+            return is_input_dim_zero;
+          }
+          // Check dim of any of the input is ZERO.
+          for (int index=0; index<t.dims(); index++){
+            if (t.dim_size(index)==0){
+              is_input_dim_zero &= false;
+              // no further checks required, return from the function
+              return is_input_dim_zero;
+            }
+          }
+        }
+      }
     }
-    return is_input_dim_zero;
+  }
+  return is_input_dim_zero;
 }
 
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
@@ -812,45 +818,45 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
   // Get the op mode confirmation map
   static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap(device_id);
 
-    for (auto node : graph->op_nodes()){
-        bool is_node_supported = true;
-        // check if the optype supported
-        do{
-            // CHECK_1: if the op is supported
-            is_node_supported &= IsOpSupported(node->type_string());
-            if(is_node_supported == false){
-                std::cout << " ERROR : " << node->type_string() << " Op is not supported " << std::endl;
-                break;
-            }
+  for (auto node : graph->op_nodes()){
+    bool is_node_supported = true;
+    // check if the optype supported
+    do{
+      // CHECK_1: if the op is supported
+      is_node_supported &= IsOpSupported(node->type_string());
+      if(is_node_supported == false){
+        std::cout << " ERROR : " << node->type_string() << " Op is not supported " << std::endl;
+        break;
+      }
 
-                    // CHECK_2: OP Type and Dimensions Check...
-            is_node_supported &= IsTypeSupported(node, type_constraint_map);
-            if(is_node_supported == false){
-                std::cout << " ERROR : " << node->type_string() << " Op Type is not supported " << std::endl;
-                break;
-            }
+      // CHECK_2: OP Type and Dimensions Check...
+      is_node_supported &= IsTypeSupported(node, type_constraint_map);
+      if(is_node_supported == false){
+        std::cout << " ERROR : " << node->type_string() << " Op Type is not supported " << std::endl;
+        break;
+      }
 
-            // CHECK_3: OP mode check based on attributes
-            is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
-            if(is_node_supported == false){
-                std::cout << " ERROR : " << node->type_string() << " Op Mode is not supported " << std::endl;
-                break;
-            }
+      // CHECK_3: OP mode check based on attributes
+      is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
+      if(is_node_supported == false){
+        std::cout << " ERROR : " << node->type_string() << " Op Mode is not supported " << std::endl;
+        break;
+      }
 
-            // Input dimension check
-            is_node_supported &= IsOpInputDimZeroTF(node);
-            if(is_node_supported == false){
-                std::cout << " ERROR : " << node->type_string() << " Op - Input node Dim is ZERO " << std::endl;
-                break;
-            }
+      // Input dimension check
+      is_node_supported &= IsOpInputDimZeroTF(node);
+      if(is_node_supported == false){
+        std::cout << " ERROR : " << node->type_string() << " Op - Input node Dim is ZERO " << std::endl;
+        break;
+      }
 
-        } while(false);
-        if(is_node_supported){
-            node_list.push_back((void *)node);
-        }
-        
+    } while(false);
+    if(is_node_supported){
+      node_list.push_back((void *)node);
     }
-    return node_list;
+        
+  }
+  return node_list;
 }
 
 } //namespace ocm 
