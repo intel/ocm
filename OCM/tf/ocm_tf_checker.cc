@@ -108,12 +108,18 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["ArgMax"]["T"] = [device_id]() {
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
+      if (device_id=="GPU"){
+        supported_types.insert(DT_INT32);
+      }
       return supported_types;
     }();
     type_constraint_map["ArgMax"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["ArgMin"]["T"] = [device_id]() {
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
+      if (device_id=="GPU"){
+        supported_types.insert(DT_INT32);
+      }
       return supported_types;
     }();
     type_constraint_map["ArgMin"]["Tidx"] = SupportedTypesIdx(device_id);
@@ -128,7 +134,10 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);    
     type_constraint_map["Const"]["dtype"] = [device_id](){
-      std::set<DataType> supported_types = SupportedTypes(device_id);      
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="GPU" || device_id=="MYRIAD"){
+        supported_types.insert(DT_INT64);
+      }      
       if (device_id=="CPU"){
         supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
       }
