@@ -19,13 +19,14 @@ using namespace ocm;
 
 int main(int argc, char** argv)
 {
-    if(argc > 3 || argc < 3){
-        std::cerr << "Usage: " << argv[0] << " TF_FROZEN_GRAPH DEVICE_TYPE" << std::endl;
+    if(argc > 4 || argc < 4){
+        std::cerr << "Usage: " << argv[0] << " TF_FROZEN_GRAPH DEVICE_TYPE OpenVINO_VERSION" << std::endl;
         return -1;
     }
-
+    //OV_2021_1/2/3
     std::string graph_file_name = argv[1];
     std::string input_device_type = argv[2];
+    std::string ov_version = argv[3];
 
     tensorflow::SessionOptions options;
     std::unique_ptr<tensorflow::Session> session(NewSession(options));
@@ -76,7 +77,7 @@ int main(int argc, char** argv)
 
     Framework_Names fName = Framework_Names::TF;
     std::string device_id = input_device_type;
-    std::string ov_version = "2021_1";
+    std::cout << "OpenVINO version " << ov_version << std::endl;
     FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
     std::vector<void *> nodes_list = FC.MarkSupportedNodes();
     // cast back the nodes in the TF format

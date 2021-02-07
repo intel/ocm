@@ -3,7 +3,7 @@ import pathlib
 import argparse
 import subprocess
 
-def run_inference(benchmark_app_path, path, device):
+def run_inference(benchmark_app_path, path, device, ov_name):
 
   files=[]
   
@@ -18,7 +18,7 @@ def run_inference(benchmark_app_path, path, device):
       # timeout of 60 seconds 
       cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
 
-      start=12+len(device)
+      start=13+len(device)+len(ov_name)
       infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")
       infer_log, ext = os.path.splitext(infer_log)
       infer_log += ".log"
@@ -49,10 +49,11 @@ if __name__ == '__main__':
   #Build benchmark app
   print("Building benchmark app")
   ov_path = os.environ['INTEL_OPENVINO_DIR']
+  ov_name=os.path.basename(ov_path)
   #cmd=[ov_path+"/deployment_tools/inference_engine/samples/cpp/build_samples.sh", 'benchmark_app']
   #print[subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
   
   args = parser.parse_args()
   home=os.environ['HOME']
   benchmark_app_path=home + "/inference_engine_python_samples_build/intel64/Release"
-  run_inference(benchmark_app_path, args.model_path, args.device)
+  run_inference(benchmark_app_path, args.model_path, args.device, ov_name)

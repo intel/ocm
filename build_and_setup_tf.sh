@@ -52,7 +52,7 @@ bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --loca
 bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --local_cpu_resources=8 --local_ram_resources 10240 --jobs=8  //tensorflow:libtensorflow_cc.so
 
 # echo "Installing the built Tensorflow python package"
-pip install /tmp/tensorflow_pkg/tensorflow-2.2.1-cp36-cp36m-linux_x86_64.whl
+pip install /tmp/tensorflow_pkg/tensorflow-2.2.*.whl
 
 echo "Deactivating the virtual environment"
 deactivate

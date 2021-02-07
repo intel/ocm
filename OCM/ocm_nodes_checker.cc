@@ -18,7 +18,15 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw, std::string dev
             throw std::runtime_error("Invalid Framework type");
     }
     ocmFrameworkObj->SetGraph(graph);
+    if((device_id != "CPU") &&  (device_id != "GPU") && (device_id != "MYRIAD") && (device_id != "HDDL")){
+      std::cerr << "Invalid Device - " << device_id << ". Allowed options are CPU, GPU, MYRIAD or HDDL"  << std::endl;
+      return;
+    }
     ocmFrameworkObj->device_id = device_id;
+    if((ov_version != "2021.1") && (ov_version != "2021.2") ){
+      std::cerr << "Invalid OpenVINO version - " << device_id << ". Allowed options are 2021.1 or 2021.2"  << std::endl;
+      return;
+    }
     ocmFrameworkObj->ov_version = ov_version;
 }
 
@@ -40,4 +48,8 @@ bool OpCheck(const std::string &op_name, std::set<std::string> oplist){
     return check_passed;
 }
 
-} //namespace ocm 
+void FrameworkNodesChecker::SetDisabledOps(const std::set<std::string> disabled_ops){
+    ocmFrameworkObj->disabled_ops = disabled_ops;
+}
+
+} // namespace ocm 

@@ -64,15 +64,19 @@ public:
 
 public:
 	/**
-	 * device_id can be "CPU", "GPU", "VPU", "HETERO"
+	 * device_id can be "CPU", "GPU", "MYRIAD", "HDDL"
 	 */
 	std::string device_id;
 
-	// ov_version: MVP supports 2021.1
+	// ov_version: MVP supports 2021.2
 	std::string ov_version;
 
 	// Generated internally
 	std::set<std::string> supported_ops;
+
+	// set of ops marked unsupported for the graph
+	std::set<std::string> disabled_ops;
+
 };
 
 
@@ -102,6 +106,12 @@ public:
 	 * @return the list of unsupported nodes indices  
 	 */
 	std::vector<unsigned int> GetUnSupportedNodesIndices();
+
+	/**
+	 * set disabled ops
+	 * @param disabled_ops Set of disabled ops name 
+	*/
+	void SetDisabledOps(const std::set<std::string>); 
 
 private:
 	// Vector to store the supported nodes

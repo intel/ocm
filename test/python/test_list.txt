@@ -1,13 +1,3 @@
-#based on ops of models
-#Resent50
-#Resent50_v1
-#Resent50_v1_5
-#Resent50_v2 
-#Inception V3
-#Inception V4
-
-math_ops_test.AddNTest.*
-
 argmax_op_test.ArgMaxTest.testDefaultAxis
 argmax_op_test.ArgMaxTest.testDouble
 argmax_op_test.ArgMaxTest.testEmpty
@@ -17,10 +7,19 @@ argmax_op_test.ArgMaxTest.testInt32
 argmax_op_test.ArgMaxTest.testInt64
 argmax_op_test.ArgMaxTest.testOutputEmpty
 
-pooling_ops_test.PoolingTest.testAvgPooling
+array_ops_test.StridedSliceTest.*
 
 # It did not capture any test 
 bias_op_test.BiasAddTest*
+
+cast_op_test.CastOpTest.testBasic
+cast_op_test.CastOpTest.testBfloat16
+cast_op_test.CastOpTest.testRandom
+cast_op_test.CastOpTest.testIntToFloatBoundary
+cast_op_test.CastOpTest.testInfNan
+cast_op_test.CastOpTest.testCastToTypeOfVariable
+
+# Didn't find any tests for Conv2DBackpropInput yet
 
 concat_op_test.ConcatOpTest.testConcatAxisType
 concat_op_test.ConcatOpTest.testConcatEmpty
@@ -36,6 +35,8 @@ concat_op_test.ConcatOpTest.testVStack
 concat_op_test.ConcatOpTest.testZeroSize
 
 constant_op_test.ConstantTest.*
+#No valid tests in these
+#constant_op_test.ZerosLikeTest.*
 
 conv_ops_test.Conv2DTest.testConv2D0x0Padding
 conv_ops_test.Conv2DTest.testConv2D1x1Filter
@@ -65,22 +66,6 @@ conv_ops_test.Conv2DTest.testConv2DOnlyBottomPadding
 conv_ops_test.Conv2DTest.testConv2DOnlyTopRightPadding
 conv_ops_test.Conv2DTest.testOpEdgeCases
 conv_ops_test.Conv2DTest.testShapeFunctionEdgeCases
-
-nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape1
-nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
-nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape3
-nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape4
-nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape5
-
-identity_op_py_test.IdentityOpTest.testCompositeTensor
-identity_op_py_test.IdentityOpTest.testIdentityShape
-identity_op_py_test.IdentityOpTest.testInt32_2_3
-identity_op_py_test.IdentityOpTest.testInt32_6
-identity_op_py_test.IdentityOpTest.testString
-
-matmul_op_test.MatMulTest.*
-
-pooling_ops_test.PoolingTest.testMaxPooling
 
 #Mul, Sub, Add, truediv, floordiv, atan2
 #cwise_ops_binary_test.*
@@ -131,13 +116,42 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
-pad_op_test.PadOpTest.*
-relu_op_test.Relu6Test.*
-reshape_op_test.ReshapeTest.*
-softmax_op_test.*
-shape_ops_test.ShapeOpsTest.testSqueeze*
-array_ops_test.StridedSliceTest.*
+gather_op_test.GatherTest.testBadAxis
+gather_op_test.GatherTest.testBadIndicesCPU
+gather_op_test.GatherTest.testEmptySlices
+gather_op_test.GatherTest.testHigherRank
+gather_op_test.GatherTest.testScalar1D
+gather_op_test.GatherTest.testScalar2D
+gather_op_test.GatherTest.testSimpleTwoD32
+gather_op_test.GatherTest.testString
+gather_op_test.GatherTest.testUInt32AndUInt64
+gather_op_test.GatherTest.testUnknownAxis
+gather_op_test.GatherTest.testUnknownIndices
 
+identity_op_py_test.IdentityOpTest.testCompositeTensor
+identity_op_py_test.IdentityOpTest.testIdentityShape
+identity_op_py_test.IdentityOpTest.testInt32_2_3
+identity_op_py_test.IdentityOpTest.testInt32_6
+identity_op_py_test.IdentityOpTest.testString
+
+# Delta ops in Sprint 2 
+lrn_op_test.LRNOpTest.testCompute  
+
+#No valid tests in these
+#math_ops_test.EqualityTest.*
+math_ops_test.AddNTest.*
+matmul_op_test.MatMulTest.*
+
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape1
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape3
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape4
+nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape5
+
+pad_op_test.PadOpTest.*
+
+pooling_ops_test.PoolingTest.testAvgPooling
+pooling_ops_test.PoolingTest.testMaxPooling
 
 #reduction_ops_test.MeanReductionTest.*
 reduction_ops_test.MeanReductionTest.testAxesType
@@ -153,69 +167,17 @@ reduction_ops_test.MeanReductionTest.testSizeOverflowInt16
 reduction_ops_test.MeanReductionTest.testSizeOverflowUint16
 reduction_ops_test.MeanReductionTest.testUint8
 
-
-#Mean
-#Pack
-#Placeholder
-#random_ops_test.RandomUniformTest.*
-#####
-#####shape_ops_test.OperatorShapeTest._compareShape*
-#array_ops_test.OperatorShapeTest.testSqueeze*
-
-# Delta ops in Sprint 2 
-lrn_op_test.LRNOpTest.testCompute  
-
-cast_op_test.CastOpTest.testBasic
-cast_op_test.CastOpTest.testBfloat16
-cast_op_test.CastOpTest.testRandom
-cast_op_test.CastOpTest.testIntToFloatBoundary
-cast_op_test.CastOpTest.testInfNan
-cast_op_test.CastOpTest.testCastToTypeOfVariable
-
-#cwise_ops_tes.ComparisonOpTest.testBCastGreaterEqual # was seen intially but in the updated scripts it is not part of TF frozen model
-
-# Didn't find any tests for Conv2DBackpropInput yet
-
-split_op_test.SplitOpTest.testShapeInference
-split_op_test.SplitOpTest.testFailWithoutExplicitNum
-split_op_test.SplitOpTest.testExplicitNum
-split_op_test.SplitOpTest.testListOfScalarTensors
-split_op_test.SplitOpTest.testSpecialCasesVariable
-split_op_test.SplitOpTest.testDegenerateVariable
-split_op_test.SplitOpTest.testOutputShape
-split_op_test.SplitOpTest.testSplitRows
-split_op_test.SplitOpTest.testSplitCols
-split_op_test.SplitOpTest.testEmpty
-split_op_test.SplitOpTest.testIdentity
-split_op_test.SplitOpTest.testSplitDim0
-split_op_test.SplitOpTest.testRandom
-split_op_test.SplitOpTest.testVariableShapeFunction
-split_op_test.SplitOpTest.testNonexistentDimTensor
-split_op_test.SplitOpTest.testShapeFunctionEdgeCases
-
-#Sprint-3 ops
-
-#No valid tests in these
-#constant_op_test.ZerosLikeTest.*
-#math_ops_test.EqualityTest.*
-
-gather_op_test.GatherTest.testBadAxis
-gather_op_test.GatherTest.testBadIndicesCPU
-gather_op_test.GatherTest.testEmptySlices
-gather_op_test.GatherTest.testHigherRank
-gather_op_test.GatherTest.testScalar1D
-gather_op_test.GatherTest.testScalar2D
-gather_op_test.GatherTest.testSimpleTwoD32
-gather_op_test.GatherTest.testString
-gather_op_test.GatherTest.testUInt32AndUInt64
-gather_op_test.GatherTest.testUnknownAxis
-gather_op_test.GatherTest.testUnknownIndices
-
+relu_op_test.Relu6Test.*
 relu_op_test.ReluTest.testNumbersCPU
 relu_op_test.ReluTest.testNoElement
 
+reshape_op_test.ReshapeTest.*
+
 shape_ops_test.ShapeOpsTest.testExpandDims
 shape_ops_test.ShapeOpsTest.testExpandDimsDimType
+
+shape_ops_test.ShapeOpsTest.testSqueeze*
+
 shape_ops_test.TileTest.testEmpty
 shape_ops_test.TileTest.testIdentityTileAndGrad
 shape_ops_test.TileTest.testRandom
@@ -239,6 +201,25 @@ slice_op_test.SliceTest.testSliceMatrixDim0
 slice_op_test.SliceTest.testSliceOfSlice
 slice_op_test.SliceTest.testSlicingInt64Tensor
 slice_op_test.SliceTest.testSlicingWithInt64Index
+
+softmax_op_test.*
+
+split_op_test.SplitOpTest.testShapeInference
+split_op_test.SplitOpTest.testFailWithoutExplicitNum
+split_op_test.SplitOpTest.testExplicitNum
+split_op_test.SplitOpTest.testListOfScalarTensors
+split_op_test.SplitOpTest.testSpecialCasesVariable
+split_op_test.SplitOpTest.testDegenerateVariable
+split_op_test.SplitOpTest.testOutputShape
+split_op_test.SplitOpTest.testSplitRows
+split_op_test.SplitOpTest.testSplitCols
+split_op_test.SplitOpTest.testEmpty
+split_op_test.SplitOpTest.testIdentity
+split_op_test.SplitOpTest.testSplitDim0
+split_op_test.SplitOpTest.testRandom
+split_op_test.SplitOpTest.testVariableShapeFunction
+split_op_test.SplitOpTest.testNonexistentDimTensor
+split_op_test.SplitOpTest.testShapeFunctionEdgeCases
 
 topk_op_test.TopKTest.*
 

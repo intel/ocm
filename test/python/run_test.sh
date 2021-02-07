@@ -6,10 +6,23 @@ DEVICES=$5
 MODEL_PATH=$6
 
 source $OV_PATH/bin/setupvars.sh
+ov_name=$(basename $OV_PATH)
 
 #Clean up
 echo "Activating python virtual env"
 source env/bin/activate
+
+#Build benchmark app
+echo "Building benchmark app"
+$OV_PATH/deployment_tools/inference_engine/samples/cpp/build_samples.sh benchmark_app
+
+#Applying TF patch 
+echo "Applying TF Unit test update patch"
+cd tensorflow
+git checkout tensorflow/python/kernel_tests/
+git apply ../scripts/tf_test_update.patch
+git apply ../scripts/tf_rem_unsupported_op_update.patch
+cd ..
 
 generate_unittest_pbfiles(){
   rm -rf ./pbfiles
@@ -27,7 +40,7 @@ ocm_checker(){
 #Run through model optimizer
 model_optimize(){
   rm -rf tf_mo_logs/$DEVICE
-  mo_op_path='pbfiles_mo/'$DEVICE
+  mo_op_path=("pbfiles_mo/"$ov_name"/"$device)
   rm -rf $mo_op_path
   echo "Generating IR files"
   python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE -d $DEVICE
@@ -38,11 +51,9 @@ model_optimize(){
 #Run inference
 run_infer(){
   rm -rf tf_infer_logs/$DEVICE
-  
-  mo_op_path='pbfiles_mo/'$DEVICE
-
+  mo_op_path=("pbfiles_mo/"$ov_name"/"$device)
   echo "Running inference"
-  python3 ./scripts/run_inference.py -i $mo_op_path  -d $DEVICE
+  python3 ./scripts/run_inference.py -i $mo_op_path -d $DEVICE
   echo "End Running inference"
 }
 

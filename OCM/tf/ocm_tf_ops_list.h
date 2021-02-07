@@ -18,22 +18,24 @@ std::set<std::string> common_supported_ops = {
     "All", // the TF api for this is tf.math.reduce_all
     "ArgMax",
     "AvgPool",
+    "BatchToSpaceND",
     "BiasAdd",
     "Cast", // Unittest
     "ConcatV2",
     "Const",
     "Conv2D",
     "Conv2DBackpropInput",
-    "CropAndResize", // Unittest
+    "CropAndResize",
     "DepthwiseConv2dNative",
+    "DepthToSpace", // Unittest
     "Equal",
     "Exp",
-    "ExpandDims", // Unittest
+    "ExpandDims",
     "Fill", // Unittest
-    "FloorMod", //Unit test - Softmax
+    "FloorMod",
     // "FloorDiv", //Unit test - cwise_math
     "FusedBatchNorm",
-    //"Gather",  Commented as Not supported in Bridge
+    "Gather",
     "GatherV2",
     "Greater", // Unittest - cwise_math
     "GreaterEqual",
@@ -41,7 +43,9 @@ std::set<std::string> common_supported_ops = {
     "LRN",
     "Less", //Unit test - Softmax
     "LogSoftmax",//Unit test - Softmax
+    "LogicalAnd",
     "MatMul",
+    "Max",
     "Maximum",
     "MaxPool",
     "Mean",
@@ -53,30 +57,34 @@ std::set<std::string> common_supported_ops = {
     "Pad",
     "PadV2",
     "Placeholder",
-    //"Range", // Unittest - Softmax.. Commented as Not supported in Bridge
-    "RealDiv", 
+    "Range",
+    "RealDiv",
     "Relu",
-    "Relu6", 
+    "Relu6",
     "Reshape",
-    //"ResizeBilinear", Sprint-3 ...Commented as Not supported in Bridge
+    //"ResizeBilinear", //Sprint-3 ...Commented as Not supported in Bridge
+    //"ResizeNearestNeighbor", // New models...Commented as Not supported in Bridge
+    "Round",
     "Rsqrt", // Unittest
     "Shape",
     //"Sign", // Unittest - cwise_math // Not supported by OV
     "Size", // Unittest
     "Sigmoid", // Unittest
-    "Slice", // Unittest 
+    "Slice",
     "Softmax",
-    "SpaceToDepth", // Unittest
-    "Split", 
-    "SplitV", // Unittest 
+    "SpaceToBatchND",
+    "SpaceToDepth",
+    "Split",
+    "SplitV",
     "Squeeze",
     "StridedSlice",
     "Sub",
     "Sum", // Unittest - cwise_math
-    "Tile", // Unittest 
-    "TopKV2", // Unittest 
-    "Transpose", // Unittest - Softmax
-    "Unpack", // Unittest 
+    "Tile",
+    "TopKV2",
+    "Transpose",
+    "Unpack",
+    //"Where",  // Commented as Not supported in Bridge
     "ZerosLike" // Unittest
 };
 
@@ -89,16 +97,17 @@ std::set<std::string> composite_ops = {
     "FusedBatchNormV3",
     "_FusedConv2D",
     "_FusedMatMul",
+    "NonMaxSuppressionV2",
 };
 
 //Op supported only on CPU and not supported on VPU
 std::set<std::string> cpu_only_ops = {
     "Acos", // Unittest - cwise_math
-    // "Acosh", // Unittest - cwise_math
+    "Acosh", // Unittest - cwise_math
     "Asin", // Unittest - cwise_math
-    // "Asinh", // Unittest - cwise_math
+    "Asinh", // Unittest - cwise_math
     "Atan", // Unittest - cwise_math
-    // "Atanh", // Unittest - cwise_math
+    "Atanh", // Unittest - cwise_math
     "Bucketize",
     "ExperimentalSparseWeightedSum",
     "Neg", // Unittest - cwise_math    
@@ -120,6 +129,24 @@ std::set<std::string> gpu_only_ops = {
 };
 
 std::set<std::string> vpu_only_ops = {
+};
+
+const std::map<std::string, std::set<string>> ov_2021_2_op_update_cpu = {
+  {"add", {}},    //Ops newly added by OpenVINO in this version 
+  {"remove", {}}, //Ops removed by OpenVINO in this version
+  {"update", {"Abs","FloorDiv", "Sign"}}  // Ops for which OCM has enabled support.
+};
+
+const std::map<std::string, std::set<string>> ov_2021_2_op_update_gpu = {
+  {"add", {}},    //Ops newly added by OpenVINO in this version 
+  {"remove", {}}, //Ops removed by OpenVINO in this version
+  {"update", {}}  // Ops for which OCM has enabled support.
+};
+
+const std::map<std::string, std::set<string>> ov_2021_2_op_update_vpu = {
+  {"add", {}},    //Ops newly added by OpenVINO in this version 
+  {"remove", {}}, //Ops removed by OpenVINO in this version
+  {"update", {"FloorDiv"}}  // Ops for which OCM has enabled support.
 };
 
 } //namespace ocm 

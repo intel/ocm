@@ -5,7 +5,7 @@ import subprocess
 
 def run_thru_mo(ov_path, path, test_list,mode, device):
 
-  
+  ov_name=os.path.basename(ov_path)
   files=[]
   mo_log_path = "tf_mo_logs/"+device
   os.system("mkdir -p "+mo_log_path)
@@ -14,6 +14,9 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
       if '.pb' in file:
         files.append(os.path.join(r,file))
   
+  inv_file="invalid_tests_list_%s.txt"%device
+  invalid_test=open(inv_file, 'r') 
+  invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
   for fname in files:
     if mode == 'UTEST':
       mo_args = " --input_model " + fname
@@ -32,15 +35,18 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
       if match == 0:
         continue 
    
-    mo_op_path = "pbfiles_mo/"+device
+    mo_op_path = "pbfiles_mo/"+ov_name+"/"+device
 
     if not os.path.exists(mo_op_path):
       os.system("mkdir -p "+ mo_op_path)
 
     mo_out = str(pathlib.Path(fname).parent.absolute())
     mo_out = mo_out.replace("pbfiles", mo_op_path)
-
+    test_name, ext=os.path.splitext(fname[10:].replace("/","_"))
+    
     if mode == 'UTEST':
+      if test_name in invalid_list:
+        continue
       if(device == "MYRIAD"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       elif(device == "GPU"):
@@ -53,8 +59,8 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out, "--data_type", "FP16" ]
       else:
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out ]
-    mo_log = mo_log_path + "/" + fname[10:].replace("/","_")
-    mo_log, ext = os.path.splitext(mo_log)
+    mo_log = mo_log_path + "/" + test_name
+    #mo_log, ext = os.path.splitext(mo_log)
     mo_log += ".log"
 
     print("File log {} exists?: {}".format(mo_log,os.path.exists(mo_log)))

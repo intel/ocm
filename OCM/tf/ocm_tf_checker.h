@@ -18,6 +18,22 @@ using TypeConstraintMap = std::map<std::string, std::map<std::string, std::set<D
 const TypeConstraintMap& GetTypeConstraintMap(std::string device_id);
 
 /**
+ * Check if the value of a constant tensor is zero or negative 
+ * @param values is the constant tensor values
+ * @param result is a bool pointer, which is set false based on the condition
+ */
+template <typename T>
+static void CheckTensorValues(const Tensor& values, bool* result){
+	const T* array = static_cast<T*>(values.data());
+	for (T i=0; i<values.NumElements(); i++){
+		if (T(array[i])<=0){
+			*result = false;
+			break;
+		}
+	}                
+}
+
+/**
  * Generates the set of the Ops supported for tensorflow
  * @param device_id string with device info for e.g. "CPU", "GPU" etc
  * @param ov_version string with ov version info for e.g. "2021.1"

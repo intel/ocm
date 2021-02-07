@@ -32,7 +32,6 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_HALF, 
     DT_FLOAT,
     DT_INT32,
-    DT_INT64,  
     DT_UINT8
     };
   
@@ -78,7 +77,7 @@ const std::set<DataType> SupportedTypesIdx(const std::string device_id="CPU"){
  * @return a map with key as "opname" string and value is again a map with key as
  * TF data type notation string and value as a set of tensorflow datatypes
  */
-const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
+const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string ov_version) {
   //
   // A map of op types (e.g. "Add") to type constraint maps. For (fake)
   // example:
@@ -96,7 +95,16 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     //
     // Initialize type constraint map.
     //
-    type_constraint_map["Abs"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Abs"]["T"] = [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        if(ov_version == "2021.1"){
+          supported_types.erase(DT_UINT32);
+          supported_types.erase(DT_UINT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Acos"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Acosh"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Add"]["T"] = SupportedTypes(device_id);
@@ -127,20 +135,48 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     type_constraint_map["Asinh"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Atan"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Atanh"]["T"] = SupportedTypes(device_id); //cwise_math
-    type_constraint_map["AvgPool"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["AvgPool"]["T"] =  [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Cast"]["SrcT"] = SupportedTypes(device_id);
-    type_constraint_map["Cast"]["DstT"] = SupportedTypes(device_id);
+    type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cast"]["SrcT"] =  [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      else if (device_id=="MYRIAD"){
+        // checked using bridge code, it's working 
+        supported_types.insert(DT_UINT16);
+      }
+      return supported_types;
+    }();
+    type_constraint_map["Cast"]["DstT"] =  [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
     type_constraint_map["ConcatV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);    
     type_constraint_map["Const"]["dtype"] = [device_id](){
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="GPU" || device_id=="MYRIAD"){
-        supported_types.insert(DT_INT64);
-      }      
       if (device_id=="CPU"){
-        supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
+        //modified as test cases with bridge were failing, though CPU
+        //supports DT_STRING, so could be a data type issue on the bridge side too
+        //supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
+        supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL}; 
       }
+      else if (device_id=="MYRIAD"){
+        supported_types.insert(DT_INT64);
+        // checked using bridge code, it's working 
+        supported_types.insert(DT_UINT16);
+      }      
       return supported_types;
     }();
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
@@ -153,34 +189,58 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["CropAndResize"]["extrapolation_value"] = {DT_FLOAT};
     type_constraint_map["DepthwiseConv2dNative"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["DepthToSpace"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      return supported_types;
+    }();
     type_constraint_map["Equal"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
-    type_constraint_map["FloorMod"]["T"] = [device_id](){ 
+    type_constraint_map["FloorMod"]["T"] = [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
+      if (device_id=="CPU"){
+        // Floor_mod supports only I32 precision of inputs for CPU
+        supported_types = {DT_INT32,DT_FLOAT};
+        if(ov_version == "2021.1"){
+          supported_types.erase(DT_FLOAT);
+        }
+      }
+      else if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32); 
         supported_types.erase(DT_INT64);   
       }
-      if (device_id=="CPU"){
-        // Floor_mod supports only I32 precision of inputs for CPU
-        supported_types = {DT_INT32};
+      else if (device_id=="GPU"){
+        supported_types.erase(DT_INT32);
+        supported_types.erase(DT_UINT8);
       }
       return supported_types;
     }();
-    type_constraint_map["FloorDiv"]["T"] = [device_id](){ 
+    type_constraint_map["FloorDiv"]["T"] = [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+        if(ov_version == "2021.1"){
+          supported_types.erase(DT_UINT32);
+          supported_types.erase(DT_UINT64);
+        }
         supported_types.erase(DT_UINT16);
+      }
+      else if (device_id=="MYRIAD"){
+        supported_types.erase(DT_INT32);
+        supported_types.erase(DT_UINT8);
       }
       return supported_types;
     }();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["FusedBatchNormV3"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FusedBatchNormV3"]["T"] = [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
     type_constraint_map["Gather"]["Tparams"] = SupportedTypes(device_id);
@@ -195,9 +255,23 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
     type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["LogSoftmax"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogSoftmax"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
     type_constraint_map["MatMul"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["MaxPool"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MaxPool"]["T"] = [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
+    type_constraint_map["Max"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Maximum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mean"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -221,7 +295,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
       }
       return supported_types;
     }();
-    type_constraint_map["Neg"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["Neg"]["T"] = SupportedTypes(device_id); //cwise_math  
+    type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph  
     type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
@@ -250,7 +325,10 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     }();
     type_constraint_map["Relu6"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      else if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32);  
         supported_types.erase(DT_INT64);  
       }
@@ -258,19 +336,37 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     }();
     type_constraint_map["Reshape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ResizeNearestNeighbor"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(device_id); 
     type_constraint_map["Sigmoid"]["T"] = SupportedTypes(device_id); //cwise_math
-    type_constraint_map["Sign"]["T"] = SupportedTypes(device_id); //cwise_math
+    type_constraint_map["Sign"]["T"] = [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        if(ov_version == "2021.1"){
+          supported_types.erase(DT_UINT32);
+          supported_types.erase(DT_UINT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Sinh"]["T"] = SupportedTypes(device_id); //cwise_math
     type_constraint_map["Size"]["T"] = SupportedTypes(device_id); 
     type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(device_id); 
     type_constraint_map["Slice"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Softmax"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Softmax"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      return supported_types;
+    }();
+    type_constraint_map["SpaceToBatchND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id); // For unit tests
+    type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Squeeze"]["T"] = SupportedTypes(device_id);
     type_constraint_map["StridedSlice"]["T"] = SupportedTypes(device_id);
@@ -288,15 +384,39 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
     }(); 
     type_constraint_map["TopKV2"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
+      if (device_id=="CPU"){ 
         supported_types.erase(DT_INT32);  
         supported_types.erase(DT_INT64);  
       }
+      else if (device_id=="MYRIAD"){ 
+        supported_types.erase(DT_INT32);  
+      }
+      else if (device_id=="GPU"){
+        //modified as test cases with bridge were failing, though GPU
+        //supports DT_HALF, so could be a data type issue on the bridge side too
+        supported_types.erase(DT_HALF);
+      }      
       return supported_types;
     }(); 
-    //Additonal DT_HALF is needed. Need to handle this at common place.
-    type_constraint_map["Transpose"]["T"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
+    
+    type_constraint_map["Transpose"]["T"] = [device_id](){ 
+      //TODO: Additonal DT_HALF is needed for CPU. Need to handle this at common place.
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_HALF);
+      }
+      else if (device_id=="MYRIAD"){
+        supported_types = {DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
+      }
+      else if (device_id=="GPU"){
+        //modified as test cases with bridge were failing, though GPU
+        //supports DT_HALF, so could be a data type issue on the bridge side too
+        supported_types.erase(DT_HALF);
+      }
+      return supported_types;
+    }(); 
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx(device_id);
+    type_constraint_map["Where"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Unpack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ZerosLike"]["T"] = SupportedTypes(device_id);
   }
@@ -306,19 +426,42 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id) {
 std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_version){
 	
 	std::set<std::string> supported_ops = {};
-
+  std::map<std::string, std::set<string>>  ov_based_op_list ={};
   if (device_id == "CPU") {
+    // For default OpenVINO 2021.1 version
     supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
     supported_ops.insert(cpu_only_ops.begin(), cpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
+    if(ov_version == "2021.2"){
+      ov_based_op_list = ov_2021_2_op_update_cpu;
+    }
   } else if (device_id == "GPU") {
     supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
     supported_ops.insert(gpu_only_ops.begin(), gpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
+    if(ov_version == "2021.2"){
+      ov_based_op_list = ov_2021_2_op_update_gpu;
+    }
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
     supported_ops.insert(common_supported_ops.begin(), common_supported_ops.end());
     supported_ops.insert(vpu_only_ops.begin(), vpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
+    if(ov_version == "2021.2"){
+      ov_based_op_list = ov_2021_2_op_update_vpu;
+    }
+  }
+  if(!ov_based_op_list.empty()){
+    for(auto it=ov_based_op_list.begin(); it!=ov_based_op_list.end(); ++it){
+      if ((it->first == "add") || ((it->first == "update"))){
+        if(!it->second.empty()){
+          supported_ops.insert(it->second.begin(), it->second.end());
+        }
+      } else if (it->first == "remove"){
+        if(!it->second.empty()){
+          supported_ops.erase(it->second.begin(), it->second.end());
+        }
+      }
+    }
   }
   return supported_ops;
 }
@@ -357,6 +500,9 @@ static Status ValidateNodeInputDim(const Node* n, tensorflow::int32 count, bool*
   // check the first dimension
   if(t.dims()>count){
       *result = false;
+      std::cout<<" ERROR : "<< n->name()<< "\" supports max  "<<
+                                count<< " input dims, got "<< t.dims()<<
+                                " instead" << std::endl;
   }
   return tensorflow::Status::OK();
 }
@@ -375,7 +521,7 @@ static ConfirmationFunction SimpleConfirmationFunction() {
  * all the attributes
  * @return a map with key as opname string and value as confirmation function 
  */
-const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::string device_id) {
+const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::string device_id, std::string ov_version) {
   //
   // A map of op types (e.g. "Add") to confirmation functions. These can be
   // used to check arbitrary constraints. For example:
@@ -415,6 +561,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Atanh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
@@ -433,6 +580,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       return tensorflow::Status::OK();
     };
     confirmation_function_map["DepthwiseConv2dNative"] = SimpleConfirmationFunction();
+    confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
@@ -477,9 +625,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
     confirmation_function_map["LRN"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
+    confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["Max"] = SimpleConfirmationFunction();
     confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
     confirmation_function_map["Mean"] = SimpleConfirmationFunction();
     confirmation_function_map["Minimum"] = SimpleConfirmationFunction();
@@ -512,6 +662,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
+    confirmation_function_map["NonMaxSuppressionV2"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = [device_id](Node* n, bool* result) {
       *result = true;
       // GPU doesn't supports input dimension greater than 5
@@ -536,11 +687,21 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Relu6"] = SimpleConfirmationFunction();
     confirmation_function_map["Reshape"] = SimpleConfirmationFunction();
     confirmation_function_map["ResizeBilinear"] = SimpleConfirmationFunction();
+    confirmation_function_map["ResizeNearestNeighbor"] = SimpleConfirmationFunction();
+    confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Sign"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Sinh"] = SimpleConfirmationFunction(); //cwise_math
-    confirmation_function_map["Shape"] = SimpleConfirmationFunction();
+    confirmation_function_map["Shape"] = [device_id](Node* n, bool* result) {
+      *result = true;
+      // Myriad doesn't supports input dimension greater than 5
+      if (device_id=="MYRIAD"){
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Size"] = SimpleConfirmationFunction();
     confirmation_function_map["Slice"] = SimpleConfirmationFunction();
     confirmation_function_map["Softmax"] = [device_id](Node* n, bool* result) {
@@ -552,6 +713,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       }
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
     // divisible by "num_split" value 
@@ -606,7 +768,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["StridedSlice"] =[device_id](Node* n, bool* result) {
+    confirmation_function_map["StridedSlice"] =[device_id,ov_version](Node* n, bool* result) {
       *result = true;
 
       // GPU doesn't supports input dimension greater than 5
@@ -632,26 +794,34 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             return tensorflow::Status::OK();
           }
         }
-        //From MC. Need to check/create a test case for this.
+
         // Check: Negative stride values are not supported
-        auto array = values.data();
-        int* int_array = static_cast<int*>(array);
-        for(int i=0; i< values.NumElements() ;i++){
-          if(*(int_array+i) < 0){
-            *result = false;
-            std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
-            return tensorflow::Status::OK();
+        if (device_id=="MYRIAD" || (device_id=="GPU" && ov_version == "2021.1")){
+          auto array = values.data();
+          int* int_array = static_cast<int*>(array);
+          for(int i=0; i< values.NumElements() ;i++){
+            if(*(int_array+i) < 0){
+              *result = false;
+              std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
+              return tensorflow::Status::OK();
+            }
           }
         }
       }
 
-      // shrink_axis_mask attribute is not supported for MYRIAD and CPU
-      if (device_id=="MYRIAD" || device_id=="CPU"){
+      // shrink_axis_mask attribute is not supported for MYRIAD
+      if (device_id=="MYRIAD"){
         int shrink_axis_mask;
+        int new_axis_mask;
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "shrink_axis_mask", &shrink_axis_mask));
+        TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "new_axis_mask", &new_axis_mask));
         if (shrink_axis_mask){
           *result = false;
           std::cout << " ERROR : " << n->type_string() << " shrink_axis_mask is set ." << std::endl;
+        }
+        if (new_axis_mask){
+          *result = false;
+          std::cout << " ERROR : " << n->type_string() << " new_axis_mask is set ." << std::endl;
         }
       }
       return tensorflow::Status::OK();
@@ -667,31 +837,40 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
       if(tf_input_node->type_string() ==  "Const"){
         // get multiple  values
-        Tensor values;
-        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
+        Tensor tensor_values;
+        TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &tensor_values));
 
-        // For Myriad or GPU, the number of dimensions in the values cannot be greater than 6
-        if ((device_id=="MYRIAD")||(device_id=="GPU")){
-          if (values.NumElements()>6){
-            *result=false;
-            return tensorflow::Status::OK();
-          }
+        // For Myriad/GPU, the number of dimensions in the values cannot be greater than 8/6
+        if (device_id=="MYRIAD"){
+          tensorflow::int32 count = 8;
+          TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
+        else if(device_id=="GPU"){
+          tensorflow::int32 count = 6;
+          TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+        if(*result == false)
+          return tensorflow::Status::OK();
         
-        //From Bridge translation. Need to check/create a test case for this.
-        auto array = values.data();
-        int* int_array = static_cast<int*>(array);
-        bool found_invalid_val = false;
-        int loopCnt=0;
-        for(loopCnt=0; loopCnt< values.NumElements() ;loopCnt++){
-          if(*(int_array+loopCnt) <= 0){
-            found_invalid_val = true;
+        DataType multiples_type = tensor_values.dtype();
+        switch(multiples_type){
+          case DataType::DT_INT32: {
+            CheckTensorValues<tensorflow::int32>(tensor_values, result);
+            // std::cout<<" Datatype is int32"<<"\n";
             break;
           }
+          case DataType::DT_INT64:{
+            CheckTensorValues<tensorflow::int64>(tensor_values, result);
+            // std::cout<<" Datatype is int64"<<"\n";
+            break;
+          }
+          default:
+            std::cout<<"Error: "<<n->type_string()<<" Unsupported datatype"<<"\n";
+            break;
         }
-        if(found_invalid_val){
-          *result = false;
-          std::cout << " ERROR : " << n->type_string() << " Op has invalid value=" <<  *(int_array+loopCnt) << " of param-multple" << std::endl;
+
+        if(!(*result)){
+          std::cout << " ERROR : " << n->type_string() << " Op has invalid value of param-multple" << std::endl;
           return tensorflow::Status::OK();
         }
       }
@@ -715,8 +894,14 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         tensorflow::int32 count = 6;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
+      if(device_id=="MYRIAD")
+      {
+        tensorflow::int32 count = 8;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["Where"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
     confirmation_function_map["ZerosLike"] = SimpleConfirmationFunction();
     initialized = true;
@@ -746,7 +931,7 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
       auto& type_attr_name = name_and_set.first;
       auto& allowed_types = name_and_set.second;
 
-      DataType dt;
+      DataType dt=DT_INVALID;
 
       if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != Status::OK() ||
         std::find(allowed_types.begin(), allowed_types.end(), dt) ==
@@ -822,10 +1007,21 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
   //std::cout <<"TF OPS list generated" <<"\n";
   
   // Get the op type map based in the input device_id
-  const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap(device_id);
+  const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap(device_id, ov_version);
 
   // Get the op mode confirmation map
-  static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap(device_id);
+  static std::map<std::string, ConfirmationFunction> confirmation_function_map = GetConfirmationMap(device_id, ov_version);
+
+  // remove the support for the disabled ops
+  if(!disabled_ops.empty()){
+    for (auto itr : disabled_ops){
+      auto supported_ops_itr = supported_ops.find(itr);
+      if(supported_ops_itr!=supported_ops.end()){
+        std::cout<<"INFO: Removing "<<itr<<" from the supported ops set \n";
+        supported_ops.erase(supported_ops_itr);
+      }
+    }
+  }
 
   for (auto node : graph->op_nodes()){
     bool is_node_supported = true;
