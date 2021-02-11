@@ -22,6 +22,6 @@ fi
 printf "\n---- Starting the OCM Build ------ \n"
 mkdir build
 cd build
-cmake .. -DTF_SRC_DIR=${TF_SRC_DIR}
+cmake .. -DTF_SRC_DIR=${TF_SRC_DIR} -DFLOAT16_SUPPORT=ON
 # the C library should be present at following path ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.2`
 make

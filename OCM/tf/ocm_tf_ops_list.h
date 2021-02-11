@@ -64,7 +64,7 @@ std::set<std::string> common_supported_ops = {
     "Reshape",
     //"ResizeBilinear", //Sprint-3 ...Commented as Not supported in Bridge
     //"ResizeNearestNeighbor", // New models...Commented as Not supported in Bridge
-    "Round",
+    //"Round", // New models...Commented as Not supported in Bridge
     "Rsqrt", // Unittest
     "Shape",
     //"Sign", // Unittest - cwise_math // Not supported by OV
