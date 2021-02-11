@@ -21,7 +21,9 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
 
   const std::set<DataType> gpu_supported_inputTypes = {
     DT_BFLOAT16,
-    DT_HALF,  
+#ifdef ENABLE_DT_HALF    
+    DT_HALF, 
+#endif
     DT_INT32,
     DT_FLOAT,
     DT_UINT8
@@ -29,7 +31,9 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
 
   const std::set<DataType> myriad_supported_inputTypes = {
     DT_BFLOAT16, 
+#ifdef ENABLE_DT_HALF    
     DT_HALF, 
+#endif
     DT_FLOAT,
     DT_INT32,
     DT_UINT8
@@ -37,7 +41,9 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
   
   const std::set<DataType> hddl_supported_inputTypes = {
     DT_BFLOAT16, 
+#ifdef ENABLE_DT_HALF    
     DT_HALF, 
+#endif
     DT_FLOAT,
     DT_INT32,
     DT_INT64,  
@@ -138,7 +144,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["AvgPool"]["T"] =  [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -147,7 +155,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Cast"]["SrcT"] =  [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       else if (device_id=="MYRIAD"){
         // checked using bridge code, it's working 
@@ -158,7 +168,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Cast"]["DstT"] =  [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#if ENABLE_DT_HALF      
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -169,7 +181,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       if (device_id=="CPU"){
         //modified as test cases with bridge were failing, though CPU
         //supports DT_STRING, so could be a data type issue on the bridge side too
-        //supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
+        // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
         supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL}; 
       }
       else if (device_id=="MYRIAD"){
@@ -237,7 +249,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["FusedBatchNormV3"]["T"] = [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -259,7 +273,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["LogSoftmax"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -267,7 +283,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["MaxPool"]["T"] = [device_id, ov_version](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -326,7 +344,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Relu6"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       else if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32);  
@@ -359,7 +379,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Softmax"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       return supported_types;
     }();
@@ -403,7 +425,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       //TODO: Additonal DT_HALF is needed for CPU. Need to handle this at common place.
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
+#ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
+#endif
       }
       else if (device_id=="MYRIAD"){
         supported_types = {DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};

@@ -19,7 +19,16 @@ project (ocm CXX)
 # set directory where the custom finders live
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 # find_package(Threads)
+
+option(FLOAT16_SUPPORT "Enable/Disable float16 support" OFF)
+if(FLOAT16_SUPPORT)
+    message("DT_HALF datatype support for all the devices will be enabled")
+    add_definitions(-DENABLE_DT_HALF)
+endif()
+unset(FLOAT16_SUPPORT CACHE)
+
 add_subdirectory(OCM)
+
 include(cmake/FindTensorFlow.cmake)
 if (DEFINED TF_SRC_DIR)
     message(STATUS "TensorFlow source directory: ${TF_SRC_DIR}")
@@ -64,7 +73,6 @@ else()
         PROPERTIES IMPORTED_LOCATION
         ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.1
     )
-    # set(TensorFlow_FRAMEWORK_LIBRARY ${TF_SRC_DIR}/bazel-bin/tensorflow/${TF_LIB_NAME})
 endif()
 
 
