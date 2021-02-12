@@ -22,6 +22,7 @@ import fnmatch
 import time
 from datetime import timedelta
 import warnings
+import checkmarx
 
 import tensorflow as tf
 import tf_test_modify_input as modify
@@ -76,12 +77,14 @@ def main():
 
     xml_report = arguments.xml_report
     if (arguments.list_tests):
+        checkmarx.checkmarx_validation_TestList(arguments.list_tests)
         test_list = get_test_list(arguments.tensorflow_path,
                                   arguments.list_tests)
         print('\n'.join(test_list[0]))
         return None, None
 
     if (arguments.run_test):
+        checkmarx.checkmarx_validation_TestList(arguments.run_test)
         invalid_list = []
         start = time.time()
         test_list = get_test_list(arguments.tensorflow_path, arguments.run_test)
@@ -98,6 +101,7 @@ def main():
         return check_and_print_summary(test_results, test_list[1])
 
     if (arguments.run_tests_from_file):
+        checkmarx.checkmarx_validation_TestList(arguments.run_tests_from_file)
         all_test_list = []
         invalid_list = []
         start = time.time()
