@@ -2,6 +2,7 @@ import os
 import pathlib
 import argparse
 import subprocess
+import checkmarx
 
 def run_thru_mo(ov_path, path, test_list,mode, device):
 
@@ -93,5 +94,9 @@ if __name__ == '__main__':
                     help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
   args = parser.parse_args()
+  checkmarx.checkmarx_validation_Mode(args.mode)
+  checkmarx.checkmarx_validation_Device(args.device)
+  checkmarx.checkmarx_validation_ModelPath(args.model_path)
+  checkmarx.checkmarx_validation_TestList(args.test_list)
   ov_path = os.environ['INTEL_OPENVINO_DIR']
   run_thru_mo(ov_path, args.model_path, args.test_list, args.mode, args.device)
