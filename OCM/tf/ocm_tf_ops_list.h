@@ -18,7 +18,7 @@ std::set<std::string> common_supported_ops = {
     "All", // the TF api for this is tf.math.reduce_all
     "ArgMax",
     "AvgPool",
-    "BatchToSpaceND",
+    //"BatchToSpaceND", // New models...Commented as Not supported in Bridge
     "BiasAdd",
     "Cast", // Unittest
     "ConcatV2",
@@ -72,7 +72,7 @@ std::set<std::string> common_supported_ops = {
     "Sigmoid", // Unittest
     "Slice",
     "Softmax",
-    "SpaceToBatchND",
+    //"SpaceToBatchND", // New models...Commented as Not supported in Bridge
     "SpaceToDepth",
     "Split",
     "SplitV",
