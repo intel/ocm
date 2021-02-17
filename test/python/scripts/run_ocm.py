@@ -64,7 +64,7 @@ if __name__ == '__main__':
                     required=True)
 
   args = parser.parse_args()
-  checkmarx.checkmarx_validation_Device(arg.device)
+  checkmarx.checkmarx_validation_Device(args.device)
   checkmarx.checkmarx_validation_ModelPath(args.model_path)
   in_path = args.model_path
   run_thru_ocm(in_path, args.device)

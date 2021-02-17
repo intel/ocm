@@ -188,7 +188,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.insert(DT_INT64);
         // checked using bridge code, it's working 
         supported_types.insert(DT_UINT16);
-      }      
+      }
+      else if (device_id=="GPU"){
+        supported_types.insert(DT_INT64);
+      }   
+
       return supported_types;
     }();
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
@@ -1043,6 +1047,9 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
       if(supported_ops_itr!=supported_ops.end()){
         std::cout<<"INFO: Removing "<<itr<<" from the supported ops set \n";
         supported_ops.erase(supported_ops_itr);
+      } else{
+        std::cout<<"Error: Cannot disable unsupported OP - "<< itr; 
+        break;
       }
     }
   }
