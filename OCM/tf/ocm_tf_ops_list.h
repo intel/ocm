@@ -25,7 +25,7 @@ std::set<std::string> common_supported_ops = {
     "Const",
     "Conv2D",
     "Conv2DBackpropInput",
-    "CropAndResize",
+    //"CropAndResize", // Commented as Not supported in Bridge
     "DepthwiseConv2dNative",
     "DepthToSpace", // Unittest
     "Equal",
