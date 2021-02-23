@@ -24,6 +24,16 @@ enum class Framework_Names{TF, ONNX} ;
  */
 bool OpCheck(const std::string &opname, std::set<std::string> oplist);
 
+enum class OCMStatus {
+  SUCCESS             = 0,
+  FAILURE             = 1,
+  INVALID_GRAPH       = 2,
+  INVALID_DEVICE      = 3,
+  INVALID_OV_VERSION  = 4,
+  INVALID_FW          = 5,
+  OCM_INIT_FAILED     = 6,
+};
+
 /**
  * NodesChecker base class. All the common functions are declared as virtual functions
  * and are extended in the TF and ONNX classes
@@ -68,13 +78,19 @@ public:
 	 */
 	std::string device_id;
 
-	// ov_version: MVP supports 2021.2
+	/**
+   * ov_version: MVP supports 2021.2
+   */
 	std::string ov_version;
 
-	// Generated internally
+	/**
+   * Generated internally
+   */ 
 	std::set<std::string> supported_ops;
 
-	// set of ops marked unsupported for the graph
+	/**
+   * set of ops marked unsupported for the graph
+   */
 	std::set<std::string> disabled_ops;
 
 };
@@ -87,11 +103,16 @@ public:
  */
 class FrameworkNodesChecker{
 public:
-	/**
+  /**
+   * OCM Status
+   */
+  ocm::OCMStatus ocm_status;
+	
+  /**
 	 * Constructor to initialize the object of the class
 	 * @param fw Framework_Names enum class variable
 	 * @param device_id device on which the user intend to run the graph
-	 * i.e. "CPU", "GPU", "VPU" or "HETERO"  
+	 * i.e. "CPU", "GPU", "MYRIAD" or "HDDL"  
 	 */
 	FrameworkNodesChecker(Framework_Names fw, std::string device_id, std::string ov_version, void* graph);
 
@@ -110,18 +131,25 @@ public:
 	/**
 	 * set disabled ops
 	 * @param disabled_ops Set of disabled ops name 
-	*/
+	 */
 	void SetDisabledOps(const std::set<std::string>); 
 
 private:
-	// Vector to store the supported nodes
+	/**
+   * Vector to store the supported nodes
+   */
 	std::vector<void *> nodes_list;
 
-	// Object of type NodesChecker class
+	/**
+   * Object of type NodesChecker class
+   */
 	std::unique_ptr<NodesChecker> ocmFrameworkObj;
 
-	// Vector to store the unsupported nodes indices
+	/**
+   * Vector to store the unsupported nodes indices
+   */
 	std::vector<unsigned int> unsupported_nodes_idx;
+
 };
 
 } // namespace ocm
