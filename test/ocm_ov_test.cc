@@ -79,14 +79,17 @@ int main(int argc, char** argv)
     std::string device_id = input_device_type;
     std::cout << "OpenVINO version " << ov_version << std::endl;
     FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
-    std::vector<void *> nodes_list = FC.MarkSupportedNodes();
+    if(FC.ocm_status == OCMStatus::SUCCESS){
+      std::vector<void *> nodes_list = FC.MarkSupportedNodes();
+    
+      if(nodes_list.size() == graph.num_op_nodes())
+        std::cout<<"All nodes are supported" << std::endl;
+    }
     // cast back the nodes in the TF format
     //std::cout << "---List of Supported Nodes--- "<<"\n";
     // for (auto node : nodes_list){
     //     //std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
     // }
-    
-    if(nodes_list.size() == graph.num_op_nodes())
-        std::cout<<"All nodes are supported" << std::endl;
+
     return 0;
 }
