@@ -272,6 +272,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     // LRN: If input is of type other then the mentioned types, TF itself throws an error
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
+    type_constraint_map["LeakyRelu"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogSoftmax"]["T"] = [device_id](){ 
@@ -335,6 +336,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(device_id);
     //Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Placeholder"]["dtype"] = { DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
+    type_constraint_map["Prod"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Prod"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["Relu"]["T"] = [device_id](){ 
@@ -358,7 +361,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       }
       return supported_types;
     }();
-    type_constraint_map["Reshape"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Reshape"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_BOOL);
+      }
+      return supported_types;
+    }();
     type_constraint_map["ResizeBilinear"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ResizeNearestNeighbor"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
@@ -389,6 +398,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       }
       return supported_types;
     }();
+    type_constraint_map["Softplus"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SpaceToBatchND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
@@ -444,7 +454,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       return supported_types;
     }(); 
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx(device_id);
-    type_constraint_map["Where"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Where"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="CPU"){
+        supported_types.insert(DT_BOOL);  
+      }
+      return supported_types;
+    }();
     type_constraint_map["Unpack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ZerosLike"]["T"] = SupportedTypes(device_id);
   }
@@ -652,6 +668,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["GreaterEqual"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Identity"] = SimpleConfirmationFunction();
     confirmation_function_map["LRN"] = SimpleConfirmationFunction();
+    confirmation_function_map["LeakyRelu"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
     confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
@@ -709,6 +726,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Pad"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["PadV2"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
+    confirmation_function_map["Prod"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
     confirmation_function_map["RealDiv"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Relu"] = SimpleConfirmationFunction();
@@ -741,6 +759,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       }
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is not completely 
