@@ -989,10 +989,7 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
         break;
       }
     }
-  } else{
-    type_constraints_ok = false;
-  }
-
+  } 
   return type_constraints_ok;
 }
 
