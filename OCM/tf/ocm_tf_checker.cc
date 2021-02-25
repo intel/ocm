@@ -708,6 +708,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["NonMaxSuppressionV2"] = SimpleConfirmationFunction();
+    confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = [device_id](Node* n, bool* result) {
       *result = true;
       // GPU doesn't supports input dimension greater than 5

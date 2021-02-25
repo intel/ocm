@@ -98,6 +98,7 @@ std::set<std::string> composite_ops = {
     "_FusedConv2D",
     "_FusedMatMul",
     "NonMaxSuppressionV2",
+    "NoOp"
 };
 
 //Op supported only on CPU and not supported on VPU
