@@ -84,7 +84,7 @@ std::set<std::string> common_supported_ops = {
     "TopKV2",
     "Transpose",
     "Unpack",
-    //"Where",  // Commented as Not supported in Bridge
+    //"Where",  // Commented as it introduces dynamic shape error
     "ZerosLike" // Unittest
 };
 
@@ -98,6 +98,7 @@ std::set<std::string> composite_ops = {
     "_FusedConv2D",
     "_FusedMatMul",
     "NonMaxSuppressionV2",
+    "NoOp"
 };
 
 //Op supported only on CPU and not supported on VPU
@@ -113,7 +114,7 @@ std::set<std::string> cpu_only_ops = {
     "Neg", // Unittest - cwise_math    
     "Sinh", // Unittest - cwise_math
     "SparseToDense",
-    "Tanh" // Unittest - cwise_math   
+    "Tanh" 
 };
 
 std::set<std::string> gpu_only_ops = {
@@ -125,7 +126,7 @@ std::set<std::string> gpu_only_ops = {
     "Atanh", // Unittest - cwise_math
     "Neg", // Unittest - cwise_math 
     "Sinh", // Unittest - cwise_math       
-    "Tanh" // Unittest - cwise_math
+    "Tanh" 
 };
 
 std::set<std::string> vpu_only_ops = {
@@ -134,19 +135,19 @@ std::set<std::string> vpu_only_ops = {
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_cpu = {
   {"add", {}},    //Ops newly added by OpenVINO in this version 
   {"remove", {}}, //Ops removed by OpenVINO in this version
-  {"update", {"Abs","FloorDiv", "Sign"}}  // Ops for which OCM has enabled support.
+  {"update", {"Abs","FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu"}}  // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_gpu = {
   {"add", {}},    //Ops newly added by OpenVINO in this version 
   {"remove", {}}, //Ops removed by OpenVINO in this version
-  {"update", {}}  // Ops for which OCM has enabled support.
+  {"update", {"Prod", "Softplus", "LeakyRelu"}}  // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_vpu = {
   {"add", {}},    //Ops newly added by OpenVINO in this version 
   {"remove", {}}, //Ops removed by OpenVINO in this version
-  {"update", {"FloorDiv"}}  // Ops for which OCM has enabled support.
+  {"update", {"FloorDiv", "Prod", "Softplus", "LeakyRelu"}}  // Ops for which OCM has enabled support.
 };
 
 } //namespace ocm 
