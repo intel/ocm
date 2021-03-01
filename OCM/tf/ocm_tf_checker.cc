@@ -1,5 +1,6 @@
 #include "ocm_tf_checker.h"
 #include "ocm_tf_ops_list.h"
+#include "ocm_logging.h"
 
 namespace ocm{
 
@@ -525,7 +526,7 @@ static Status ConfirmationOk( tensorflow::Node* node,
 static Status ValidateInputCountMin(const Node* op, tensorflow::int32 count, bool* result) {
   if (op->num_inputs() < count) {
     *result = false;
-    std::cout<<"\""<< op->name()<< "\" requires at least "<<
+    OCM_LOG(0) <<"\""<< op->name()<< "\" requires at least "<<
                                    count<< " input(s), got "<< op->num_inputs()<<
                                    " instead";
   }
@@ -544,7 +545,7 @@ static Status ValidateNodeInputDim(const Node* n, tensorflow::int32 count, bool*
   // check the first dimension
   if(t.dims()>count){
       *result = false;
-      std::cout<<" ERROR : "<< n->name()<< "\" supports max  "<<
+      OCM_LOG(0)<<" ERROR : "<< n->name()<< "\" supports max  "<<
                                 count<< " input dims, got "<< t.dims()<<
                                 " instead" << std::endl;
   }
@@ -657,7 +658,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         for(int i=0; i< values.dims() ;i++) { /// `TensorShape` in `tensor_shape.h`.
           if(values.dim_size(i)==0){ /// Convenience accessor for the tensor shape.
             *result = false;
-            std::cout << " ERROR : " << n->type_string() << " Op has dimension size " << values.dim_size(i) << std::endl;
+            OCM_LOG(0) << " ERROR : " << n->type_string() << " Op has dimension size " << values.dim_size(i) << std::endl;
             return tensorflow::Status::OK();
           }
         }
@@ -785,7 +786,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
           if(*(int_array+i) < 0){
             if(found_neg_val){
               *result = false;
-              std::cout << " ERROR : " << n->type_string() << " Op has multiple negatve value in size_splits." << std::endl;
+              OCM_LOG(0) << " ERROR : " << n->type_string() << " Op has multiple negatve value in size_splits." << std::endl;
               return tensorflow::Status::OK();
             }
             found_neg_val = true;
@@ -838,7 +839,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         for (int i=0; i < values.dims(); i++){
           if(values.dim_size(i) == 0){
             *result = false;
-            std::cout << " ERROR : " << n->type_string() << " Op has empty Stride values." << std::endl;
+            OCM_LOG(0) << " ERROR : " << n->type_string() << " Op has empty Stride values." << std::endl;
             return tensorflow::Status::OK();
           }
         }
@@ -850,7 +851,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
           for(int i=0; i< values.NumElements() ;i++){
             if(*(int_array+i) < 0){
               *result = false;
-              std::cout << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
+              OCM_LOG(0) << " ERROR : " << n->type_string() << " Op has negative Stride value." << std::endl;
               return tensorflow::Status::OK();
             }
           }
@@ -865,11 +866,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "new_axis_mask", &new_axis_mask));
         if (shrink_axis_mask){
           *result = false;
-          std::cout << " ERROR : " << n->type_string() << " shrink_axis_mask is set ." << std::endl;
+          OCM_LOG(0) << " ERROR : " << n->type_string() << " shrink_axis_mask is set ." << std::endl;
         }
         if (new_axis_mask){
           *result = false;
-          std::cout << " ERROR : " << n->type_string() << " new_axis_mask is set ." << std::endl;
+          OCM_LOG(0) << " ERROR : " << n->type_string() << " new_axis_mask is set ." << std::endl;
         }
       }
       return tensorflow::Status::OK();
@@ -904,21 +905,19 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         switch(multiples_type){
           case DataType::DT_INT32: {
             CheckTensorValues<tensorflow::int32>(tensor_values, result);
-            // std::cout<<" Datatype is int32"<<"\n";
             break;
           }
           case DataType::DT_INT64:{
             CheckTensorValues<tensorflow::int64>(tensor_values, result);
-            // std::cout<<" Datatype is int64"<<"\n";
             break;
           }
           default:
-            std::cout<<"Error: "<<n->type_string()<<" Unsupported datatype"<<"\n";
+            OCM_LOG(3)<<"Error: "<<n->type_string()<<" Unsupported datatype"<<"\n";
             break;
         }
 
         if(!(*result)){
-          std::cout << " ERROR : " << n->type_string() << " Op has invalid value of param-multple" << std::endl;
+          OCM_LOG(0) << " ERROR : " << n->type_string() << " Op has invalid value of param-multple" << std::endl;
           return tensorflow::Status::OK();
         }
       }
@@ -963,7 +962,7 @@ static bool IsOpModeSupportedTF(Node* node, std::map<std::string, ConfirmationFu
   ConfirmationOk(node, confirmation_function_map,
                                   confirmation_constraint_ok);
   if (!confirmation_constraint_ok) {
-    std::cout << " ERROR : Node does not meet confirmation constraints: "
+    OCM_LOG(0) << " ERROR : Node does not meet confirmation constraints: "
             << node->type_string() << std::endl;
   }
   return confirmation_constraint_ok;
@@ -984,7 +983,7 @@ static bool IsTypeSupported(tensorflow::Node* node, const TypeConstraintMap& typ
       if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != Status::OK() ||
         std::find(allowed_types.begin(), allowed_types.end(), dt) ==
             allowed_types.end()) {
-        std::cout<<node->type_string()<<" "<<type_attr_name<<": "<<dt<<"\n";
+        OCM_LOG(0)<<node->type_string()<<" "<<type_attr_name<<": "<<dt<<"\n";
         type_constraints_ok = false;
         break;
       }
@@ -1003,11 +1002,6 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node){
         node->type_string() == "Sum"  || node->type_string() == "EuclideanNorm"){
         Tensor t;
         if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
-          std::cout << " Dim is " << t.dims() << " DimSize(0) " << t.dim_size(0) << std::endl;
-          // if(t.dims() == 0){
-          //     is_input_dim_zero &= false;
-          //     return is_input_dim_zero;
-          // }
           // Check dim of any of the input is ZERO.
           for (int index=0; index<t.dims(); index++){
             if (t.dim_size(index)==0){
@@ -1049,8 +1043,7 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
 
   // Get OV supported ops list for TF
   supported_ops = GetTFSupportedOPs(device_id, ov_version);
-  //std::cout <<"TF OPS list generated" <<"\n";
-  
+
   // Get the op type map based in the input device_id
   const TypeConstraintMap& type_constraint_map = GetTypeConstraintMap(device_id, ov_version);
 
@@ -1062,10 +1055,10 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
     for (auto itr : disabled_ops){
       auto supported_ops_itr = supported_ops.find(itr);
       if(supported_ops_itr!=supported_ops.end()){
-        std::cout<<"INFO: Removing "<<itr<<" from the supported ops set \n";
+        OCM_LOG(0)<<"INFO: Removing "<<itr<<" from the supported ops set \n";
         supported_ops.erase(supported_ops_itr);
       } else{
-        std::cout<<"Error: Cannot disable unsupported OP - "<< itr; 
+        OCM_LOG(3)<<"Error: Cannot disable unsupported OP - "<< itr; 
         break;
       }
     }
@@ -1078,28 +1071,28 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
       // CHECK_1: if the op is supported
       is_node_supported &= IsOpSupported(node->type_string());
       if(is_node_supported == false){
-        std::cout << " ERROR : " << node->type_string() << " Op is not supported " << std::endl;
+        OCM_LOG(1) << " ERROR : " << node->type_string() << " Op is not supported " << std::endl;
         break;
       }
 
       // CHECK_2: OP Type and Dimensions Check...
       is_node_supported &= IsTypeSupported(node, type_constraint_map);
       if(is_node_supported == false){
-        std::cout << " ERROR : " << node->type_string() << " Op Type is not supported " << std::endl;
+        OCM_LOG(1) << " ERROR : " << node->type_string() << " Op Type is not supported " << std::endl;
         break;
       }
 
       // CHECK_3: OP mode check based on attributes
       is_node_supported &= IsOpModeSupportedTF(node, confirmation_function_map);
       if(is_node_supported == false){
-        std::cout << " ERROR : " << node->type_string() << " Op Mode is not supported " << std::endl;
+        OCM_LOG(1) << " ERROR : " << node->type_string() << " Op Mode is not supported " << std::endl;
         break;
       }
 
       // Input dimension check
       is_node_supported &= IsOpInputDimZeroTF(node);
       if(is_node_supported == false){
-        std::cout << " ERROR : " << node->type_string() << " Op - Input node Dim is ZERO " << std::endl;
+        OCM_LOG(1) << " ERROR : " << node->type_string() << " Op - Input node Dim is ZERO " << std::endl;
         break;
       }
 
