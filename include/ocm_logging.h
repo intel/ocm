@@ -22,15 +22,19 @@ public:
   static int MinLogLevel(){
     const char* ocm_log_env_var = std::getenv("OCM_LOG_LEVEL");
     if (ocm_log_env_var == nullptr) {
-      return -1;
+      // FATAL logs are always enabled
+      return 3;
     }
     std::stringstream str_level;
-    str_level << ocm_log_env_var;
-
     int int_level;
+    str_level << ocm_log_env_var;
+ 
+    // set to default level FATAL, if incorrect ENV variable is declared
     if (!(str_level >> int_level)){
-      // set to default level INFO, if incoorect ENV variable is declared
-      int_level = 0;
+      int_level = 3;
+    }
+    if (int_level > LoggingLevel::FATAL || int_level < LoggingLevel::INFO ){
+      int_level = 3;
     }
     return int_level;
   }
@@ -53,7 +57,7 @@ private:
 
 } // namespace ocm
 
-#define OCM_LOG_ENABLED(level) (level <= ocm::Logger::MinLogLevel())
+#define OCM_LOG_ENABLED(level) (level >= ocm::Logger::MinLogLevel())
 #define OCM_LOG(level) if (OCM_LOG_ENABLED(level))  ocm::Logger(__FILE__, __LINE__, level)
 
 #endif // _OCM_LOGGING_

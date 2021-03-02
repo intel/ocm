@@ -912,7 +912,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
             break;
           }
           default:
-            OCM_LOG(3)<<"Error: "<<n->type_string()<<" Unsupported datatype"<<"\n";
+            OCM_LOG(2)<<"Error: "<<n->type_string()<<" Unsupported datatype"<<"\n";
             break;
         }
 
@@ -1058,7 +1058,7 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(){
         OCM_LOG(0)<<"INFO: Removing "<<itr<<" from the supported ops set \n";
         supported_ops.erase(supported_ops_itr);
       } else{
-        OCM_LOG(3)<<"Error: Cannot disable unsupported OP - "<< itr; 
+        OCM_LOG(2)<<"Error: Cannot disable unsupported OP - "<< itr; 
         break;
       }
     }
