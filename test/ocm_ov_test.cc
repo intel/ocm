@@ -3,6 +3,8 @@
 #include <set>
 #include <vector>
 #include <memory>
+#include <stdlib.h>
+#include "ocm_logging.h"
 
 #include "ocm_nodes_checker.h"
 
@@ -74,7 +76,12 @@ int main(int argc, char** argv)
         std::cout  << node->type_string()  <<  "type is " << dt << std::endl;
     }
     */
-
+    const char* ocm_log_env_var = std::getenv("OCM_LOG_LEVEL");
+    if (ocm_log_env_var == nullptr) {
+      if (!setenv("OCM_LOG_LEVEL", "0", 0)){
+        std::cout <<"OCM_LOG_LEVEL environment variable is not set properly and will fallback to default level i.e. FATAL"<<std::endl;
+      }
+    }
     Framework_Names fName = Framework_Names::TF;
     std::string device_id = input_device_type;
     std::cout << "OpenVINO version " << ov_version << std::endl;
@@ -83,7 +90,7 @@ int main(int argc, char** argv)
       std::vector<void *> nodes_list = FC.MarkSupportedNodes();
     
       if(nodes_list.size() == graph.num_op_nodes())
-        std::cout<<"All nodes are supported" << std::endl;
+        OCM_LOG(0) <<"All nodes are supported" << std::endl;
     }
     // cast back the nodes in the TF format
     //std::cout << "---List of Supported Nodes--- "<<"\n";
