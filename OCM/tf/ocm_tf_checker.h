@@ -28,7 +28,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id);
  */
 template <typename T>
 static void CheckTensorValues(const Tensor& values, bool* result){
-	#if TF_VERSION < 2
+    #if TF_VERSION < 2
 		const T* array = static_cast<T*>((void*)DMAHelper::base(&values));
     #else
 		const T* array = static_cast<T*>(values.data());
