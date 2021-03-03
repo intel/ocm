@@ -8,6 +8,10 @@
 #include "tensorflow/core/grappler/graph_topology_view.h"
 #include "tensorflow/core/graph/graph_constructor.h"
 
+#if TF_VERSION < 2
+  #include "tensorflow/core/common_runtime/dma_helper.h"
+#endif
+
 using namespace tensorflow;
 namespace ocm{
 
@@ -24,7 +28,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id);
  */
 template <typename T>
 static void CheckTensorValues(const Tensor& values, bool* result){
-	const T* array = static_cast<T*>(values.data());
+	#if TF_VERSION < 2
+		const T* array = static_cast<T*>((void*)DMAHelper::base(&values));
+    #else
+		const T* array = static_cast<T*>(values.data());
+    #endif
 	for (T i=0; i<values.NumElements(); i++){
 		if (T(array[i])<=0){
 			*result = false;

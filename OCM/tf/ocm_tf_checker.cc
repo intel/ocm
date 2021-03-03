@@ -754,7 +754,12 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &values));
 
         //From Bridge translation. Need to check/create a test case for this.
-        auto array = values.data();
+        #if TF_VERSION < 2
+          auto array = (void*)DMAHelper::base(&values);
+        #else
+          auto array = values.data();
+        #endif
+
         int* int_array = static_cast<int*>(array);
         bool found_neg_val = false;
         for(int i=0; i< values.NumElements() ;i++){
@@ -821,7 +826,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
 
         // Check: Negative stride values are not supported
         if (device_id=="MYRIAD" || (device_id=="GPU" && ov_version == "2021.1")){
+        #if TF_VERSION < 2
+          auto array = (void*)DMAHelper::base(&values);
+        #else
           auto array = values.data();
+        #endif
           int* int_array = static_cast<int*>(array);
           for(int i=0; i< values.NumElements() ;i++){
             if(*(int_array+i) < 0){
