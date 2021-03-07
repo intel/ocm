@@ -79,7 +79,7 @@ if [[ -n $DEVICES ]]; then
     IFS=',' read -ra DEVICE_LIST <<< "$DEVICES"
     for i in ${!DEVICE_LIST[@]}; do
         #echo "Loop Count "$i" and value is "${DEVICE_LIST[i]}
-        if [[ ${DEVICE_LIST[i]} == "CPU" || ${DEVICE_LIST[i]} == "GPU" ||  ${DEVICE_LIST[i]} == "MYRIAD"  ]]; then
+        if [[ ${DEVICE_LIST[i]} == "CPU" || ${DEVICE_LIST[i]} == "GPU" ||  ${DEVICE_LIST[i]} == "MYRIAD" || ${DEVICE_LIST[i]} == "HDDL" ]]; then
             echo "Device name "${DEVICE_LIST[i]}
         else
             echo "Device name "${DEVICE_LIST[i]}
