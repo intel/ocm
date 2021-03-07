@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#*******************************************************************************
+#  Copyright (C) 2021 Intel Corporation
+# 
+#  SPDX-License-Identifier: Apache-2.0
+# ******************************************************************************
+
 # Check if Tensorflow source directory is provided as input, otheriwse use default installation path
 if [ -z "$1" ]
   then

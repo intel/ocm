@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
 #include "ocm_tf_checker.h"
 #include "ocm_tf_ops_list.h"
 #include "ocm_logging.h"

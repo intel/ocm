@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#*******************************************************************************
+#  Copyright (C) 2021 Intel Corporation
+# 
+#  SPDX-License-Identifier: Apache-2.0
+# ******************************************************************************
+
 #Download Tensorflow
 TF_SRC_DIR="$(pwd)/setup/tensorflow/"
 if [ -d  ${TF_SRC_DIR} ]

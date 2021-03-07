@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
 #include "ocm_nodes_checker.h"
 #include "tf/ocm_tf_checker.h"
 #include "onnx/ocm_onnx_checker.h"
