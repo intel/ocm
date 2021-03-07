@@ -52,6 +52,8 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       elif(device == "GPU"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
+      elif(device == "HDDL"):
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       else:
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
         #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out ]
