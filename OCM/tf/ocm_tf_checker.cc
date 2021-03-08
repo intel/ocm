@@ -177,8 +177,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 #if ENABLE_DT_HALF      
         supported_types.insert(DT_HALF);
 #endif
-	  }
-      //DT_DOUBLE is supported by HDDL inferencing
+    }
+      //DT_INT64 is supported by HDDL inferencing
       else if (device_id=="HDDL"){
         supported_types.insert(DT_INT64);
       }
@@ -208,8 +208,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD" || device_id=="HDDL"){
-        supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
+        supported_types.erase(DT_INT32);    
       }
       return supported_types;
     }();
@@ -236,7 +235,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       }
       else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32); 
-        supported_types.erase(DT_INT64);   
       }
       else if (device_id=="GPU"){
         supported_types.erase(DT_INT32);
@@ -310,10 +308,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32);
-        supported_types.erase(DT_INT64);
       }
       else if (device_id=="HDDL"){
-          supported_types.erase(DT_INT64);
           supported_types.erase(DT_INT32);
       }
       else if (device_id=="CPU"){
@@ -359,7 +355,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
       }
       return supported_types;
     }();
@@ -370,9 +365,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.insert(DT_HALF);
 #endif
       }
-      else if (device_id=="MYRIAD"){
-        supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
+        supported_types.erase(DT_INT32);
       }
       return supported_types;
     }();
@@ -429,7 +423,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
       }
       return supported_types;
     }(); 
@@ -483,8 +476,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 }
 
 std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_version){
-	
-	std::set<std::string> supported_ops = {};
+  
+  std::set<std::string> supported_ops = {};
   std::map<std::string, std::set<string>>  ov_based_op_list ={};
   if (device_id == "CPU") {
     // For default OpenVINO 2021.1 version
