@@ -1,3 +1,9 @@
+#*******************************************************************************
+#  Copyright (C) 2021 Intel Corporation
+# 
+#  SPDX-License-Identifier: Apache-2.0
+# ******************************************************************************
+
 # For GPU, invalid dimensions
 argmax_op_test_ArgMaxTest_testFloat_testFloat-12
 argmax_op_test_ArgMaxTest_testFloat_testFloat-13

@@ -1,3 +1,9 @@
+#*******************************************************************************
+#  Copyright (C) 2021 Intel Corporation
+# 
+#  SPDX-License-Identifier: Apache-2.0
+# ******************************************************************************
+
 import os
 import pathlib
 import argparse
@@ -51,6 +57,8 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
       if(device == "MYRIAD"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       elif(device == "GPU"):
+        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
+      elif(device == "HDDL"):
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
       else:
         cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]

@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
 #ifndef _OCM_ONNX_OPS_LIST_H_
 #define _OCM_ONNX_OPS_LIST_H_
 

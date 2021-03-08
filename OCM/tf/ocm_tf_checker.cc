@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
 #include "ocm_tf_checker.h"
 #include "ocm_tf_ops_list.h"
 #include "ocm_logging.h"
@@ -46,8 +52,7 @@ const std::set<DataType> SupportedTypes(const std::string device_id="CPU"){
     DT_HALF, 
 #endif
     DT_FLOAT,
-    DT_INT32,
-    DT_INT64,  
+    DT_INT32,  
     DT_UINT8
     };
   
@@ -160,7 +165,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.insert(DT_HALF);
 #endif
       }
-      else if (device_id=="MYRIAD"){
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         // checked using bridge code, it's working 
         supported_types.insert(DT_UINT16);
       }
@@ -172,6 +177,10 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 #if ENABLE_DT_HALF      
         supported_types.insert(DT_HALF);
 #endif
+    }
+      //DT_INT64 is supported by HDDL inferencing
+      else if (device_id=="HDDL"){
+        supported_types.insert(DT_INT64);
       }
       return supported_types;
     }();
@@ -185,7 +194,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
         supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL}; 
       }
-      else if (device_id=="MYRIAD"){
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.insert(DT_INT64);
         // checked using bridge code, it's working 
         supported_types.insert(DT_UINT16);
@@ -198,9 +207,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     }();
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
-        supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
+        supported_types.erase(DT_INT32);    
       }
       return supported_types;
     }();
@@ -225,9 +233,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
           supported_types.erase(DT_FLOAT);
         }
       }
-      else if (device_id=="MYRIAD"){
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32); 
-        supported_types.erase(DT_INT64);   
       }
       else if (device_id=="GPU"){
         supported_types.erase(DT_INT32);
@@ -244,7 +251,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         }
         supported_types.erase(DT_UINT16);
       }
-      else if (device_id=="MYRIAD"){
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);
         supported_types.erase(DT_UINT8);
       }
@@ -301,8 +308,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32);
-        supported_types.erase(DT_INT64);
-      }else if (device_id=="CPU"){
+      }
+      else if (device_id=="HDDL"){
+          supported_types.erase(DT_INT32);
+      }
+      else if (device_id=="CPU"){
         supported_types.erase(DT_INT16);
         supported_types.erase(DT_UINT16);
       }
@@ -343,9 +353,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["Relu"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
       }
       return supported_types;
     }();
@@ -356,9 +365,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.insert(DT_HALF);
 #endif
       }
-      else if (device_id=="MYRIAD"){
-        supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
+        supported_types.erase(DT_INT32);
       }
       return supported_types;
     }();
@@ -413,9 +421,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Tanh"]["T"] = SupportedTypes(device_id); //cwise_math    
     type_constraint_map["Tile"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id=="MYRIAD"){
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);  
-        supported_types.erase(DT_INT64);  
       }
       return supported_types;
     }(); 
@@ -425,7 +432,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.erase(DT_INT32);  
         supported_types.erase(DT_INT64);  
       }
-      else if (device_id=="MYRIAD"){ 
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.erase(DT_INT32);  
       }
       else if (device_id=="GPU"){
@@ -444,7 +451,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         supported_types.insert(DT_HALF);
 #endif
       }
-      else if (device_id=="MYRIAD"){
+      else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types = {DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
       }
       else if (device_id=="GPU"){
@@ -469,8 +476,8 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 }
 
 std::set<std::string> GetTFSupportedOPs(std::string device_id, std::string ov_version){
-	
-	std::set<std::string> supported_ops = {};
+  
+  std::set<std::string> supported_ops = {};
   std::map<std::string, std::set<string>>  ov_based_op_list ={};
   if (device_id == "CPU") {
     // For default OpenVINO 2021.1 version
@@ -599,8 +606,24 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] =  SimpleConfirmationFunction();
-    confirmation_function_map["ArgMin"] =  SimpleConfirmationFunction();
+    confirmation_function_map["ArgMax"] = [device_id](Node* n, bool* result) {
+      *result=true;
+      if(device_id=="HDDL")
+      {  
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      return tensorflow::Status::OK();
+    };
+    confirmation_function_map["ArgMin"] = [device_id](Node* n, bool* result) {
+      *result=true;
+      if(device_id=="HDDL")
+      {  
+        tensorflow::int32 count = 5;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["Asin"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Asinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Atan"] = SimpleConfirmationFunction(); //cwise_math
@@ -683,7 +706,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       *result = true;
       // for VPU num of padding dimension has to be 4, otherwise getting following
       // error with OV, AssertionFailed: layer->pads_begin.size() == 4
-      if (device_id=="MYRIAD"){
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
         Node* tf_pad_paddings_node;
         int input_idx = 1;
           
@@ -743,8 +766,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
     confirmation_function_map["Sinh"] = SimpleConfirmationFunction(); //cwise_math
     confirmation_function_map["Shape"] = [device_id](Node* n, bool* result) {
       *result = true;
-      // Myriad doesn't supports input dimension greater than 5
-      if (device_id=="MYRIAD"){
+      // Myriad and HDDL doesn't supports input dimension greater than 5
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
         tensorflow::int32 count = 5;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
@@ -845,7 +868,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         }
 
         // Check: Negative stride values are not supported
-        if (device_id=="MYRIAD" || (device_id=="GPU" && ov_version == "2021.1")){
+        if (device_id=="MYRIAD" || device_id=="HDDL" || (device_id=="GPU" && ov_version == "2021.1")){
           auto array = values.data();
           int* int_array = static_cast<int*>(array);
           for(int i=0; i< values.NumElements() ;i++){
@@ -858,8 +881,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         }
       }
 
-      // shrink_axis_mask attribute is not supported for MYRIAD
-      if (device_id=="MYRIAD"){
+      // shrink_axis_mask attribute is not supported for MYRIAD and HDDL
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
         int shrink_axis_mask;
         int new_axis_mask;
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "shrink_axis_mask", &shrink_axis_mask));
@@ -889,8 +912,8 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         Tensor tensor_values;
         TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "value", &tensor_values));
 
-        // For Myriad/GPU, the number of dimensions in the values cannot be greater than 8/6
-        if (device_id=="MYRIAD"){
+        // For Myriad/HDDL/GPU, the number of dimensions in the values cannot be greater than 8/6
+        if (device_id=="MYRIAD" || device_id=="HDDL"){
           tensorflow::int32 count = 8;
           TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
@@ -944,6 +967,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       if(device_id=="MYRIAD")
       {
         tensorflow::int32 count = 8;
+        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      }
+      if(device_id=="HDDL")
+      {
+        tensorflow::int32 count = 5;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
       return tensorflow::Status::OK();
