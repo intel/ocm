@@ -308,7 +308,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD"){
         supported_types.erase(DT_INT32);
-        supported_types.erase(DT_INT64);
+      }
+      else if (device_id=="HDDL"){
+          supported_types.erase(DT_INT32);
       }else if (device_id=="CPU"){
         supported_types.erase(DT_INT16);
         supported_types.erase(DT_UINT16);
