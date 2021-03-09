@@ -47,4 +47,7 @@ message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRAR
 
 add_library(ocm SHARED ${SRC})
 
+string(REPLACE "." ";" TF_VERSION_LIST ${TensorFlow_VERSION})
+list(GET TF_VERSION_LIST 0 TF_MAJOR_VERSION)
+add_compile_definitions(TF_VERSION=${TF_MAJOR_VERSION})
 
