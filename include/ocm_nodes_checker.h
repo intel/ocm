@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
 #ifndef _GCM_NODES_CHECKER_
 #define _GCM_NODES_CHECKER_
 

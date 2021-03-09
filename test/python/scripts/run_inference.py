@@ -1,8 +1,15 @@
+#*******************************************************************************
+#  Copyright (C) 2021 Intel Corporation
+# 
+#  SPDX-License-Identifier: Apache-2.0
+# ******************************************************************************
+
 import os
 import pathlib
 import argparse
 import subprocess
 import checkmarx
+import time
 
 def run_inference(benchmark_app_path, path, device, ov_name):
 
@@ -29,6 +36,8 @@ def run_inference(benchmark_app_path, path, device, ov_name):
       if not os.path.exists(infer_log):
         print(cmd)
         result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        if device == "HDDL":
+          time.sleep(10)
         infer_log_file = open(infer_log, "w")
         infer_log_file.write(result.stdout.decode("utf-8"))
         infer_log_file.close()
