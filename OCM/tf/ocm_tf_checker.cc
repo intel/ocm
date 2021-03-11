@@ -894,8 +894,10 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       if (device_id=="MYRIAD" || device_id=="HDDL"){
         int shrink_axis_mask;
         int new_axis_mask;
+        int ellipsis_mask;
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "shrink_axis_mask", &shrink_axis_mask));
         TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "new_axis_mask", &new_axis_mask));
+        TF_RETURN_IF_ERROR(GetNodeAttr(n->attrs(), "ellipsis_mask", &ellipsis_mask));
         if (shrink_axis_mask){
           *result = false;
           OCM_LOG(0) << " ERROR : " << n->type_string() << " shrink_axis_mask is set ." << std::endl;
@@ -903,6 +905,10 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
         if (new_axis_mask){
           *result = false;
           OCM_LOG(0) << " ERROR : " << n->type_string() << " new_axis_mask is set ." << std::endl;
+        }
+        if (ellipsis_mask){
+          *result = false;
+          OCM_LOG(0) << " ERROR : " << n->type_string() << " ellipsis_mask is set ." << std::endl;
         }
       }
       return tensorflow::Status::OK();
