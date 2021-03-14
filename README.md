@@ -1,6 +1,6 @@
 # Operator Capability Manager (OCM)
 
-OCM checks operators support to run a Deep Learning model using OpenVINO on Intel Platflorms (CPU, GPU, MYRIAD and HDDL). 
+OCM checks Op support to run a Deep Learning model using OpenVINO on Intel Platforms (CPU, GPU, MYRIAD and HDDL). 
 Currently it supports only Tensorflow models.
 
 ## Build 
@@ -13,10 +13,10 @@ Requirements:
 - If you already have Tensorflow CC library and Tensorflow Framework library installed then move to step 2 to build OCM
 - Setup bazel, follow the steps mentioned on the following link
     https://www.tensorflow.org/install/source#install_bazel
-- Run the following bash file and it will build Tensorflow CC and Python packages and install python package in a virtual environment
-`build_and_setup_tf.sh ${TF_SRC_DIR}`
-`# if the Tensorflow source code is already cloned at ${TF_SRC_DIR} then it will checkout the required version and will rebuild it`
-`# otherwise it will clone Tensorflow source code at ${TF_SRC_DIR} path and will build it`
+- Run the following bash file and it will build Tensorflow CC and Python packages and install python package in a virtual environment 
+`build_and_setup_tf.sh ${TF_SRC_DIR}` 
+`# if the Tensorflow source code is already cloned at ${TF_SRC_DIR} then it will checkout the required version and will rebuild it` 
+`# otherwise it will clone Tensorflow source code at ${TF_SRC_DIR} path and will build it` 
 `# Note: building tensorflow could take several hours based on system config`
 
 ### Step 2 - To Build OCM 
@@ -32,6 +32,6 @@ Requirements:
 `./ov_ocm ${PATH_TO_TF_FROZEN_PB_FILE} ${DEVICE} {OPENVINO_VERSION}`  
 
 ### Example:
-`./ov_ocm test.pb CPU 2021.2`
+`./ov_ocm test.pb CPU 2021.2` 
 `./ov_ocm test.pb MYRIAD 2021.1`
 
