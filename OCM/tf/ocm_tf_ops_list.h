@@ -153,7 +153,7 @@ const std::map<std::string, std::set<string>> ov_2021_2_op_update_gpu = {
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_vpu = {
   {"add", {}},    //Ops newly added by OpenVINO in this version 
   {"remove", {}}, //Ops removed by OpenVINO in this version
-  {"update", {"FloorDiv", "Prod", "Softplus", "LeakyRelu"}}  // Ops for which OCM has enabled support.
+  {"update", {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh"}}  // Ops for which OCM has enabled support.
 };
 
 } //namespace ocm 

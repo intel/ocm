@@ -418,7 +418,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);  
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);  
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id); //cwise_math    
-    type_constraint_map["Tanh"]["T"] = SupportedTypes(device_id); //cwise_math    
+    type_constraint_map["Tanh"]["T"] = [device_id](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="MYRIAD" || device_id=="HDDL"){
+        supported_types = {DT_FLOAT};  
+      }
+      return supported_types;
+    }();
     type_constraint_map["Tile"]["T"] = [device_id](){ 
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="MYRIAD" || device_id=="HDDL"){
