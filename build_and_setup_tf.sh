@@ -6,31 +6,39 @@
 #  SPDX-License-Identifier: Apache-2.0
 # ******************************************************************************
 
-#Download Tensorflow
-TF_SRC_DIR="$(pwd)/setup/tensorflow/"
-if [ -d  ${TF_SRC_DIR} ]
+# Download Tensorflow
+TF_SRC_DIR=$1
+
+if [ -z ${TF_SRC_DIR} ]
 then
-  echo "Tensorflow repo is already available"
+  echo "--- Tensorflow source directory path is not provided ---"
+  exit
+fi
+
+if [ -d  ${TF_SRC_DIR}/tensorflow ]
+then
+  echo "Tensorflow source code is already available"
+  echo "Checking out the required version"
+  cd ${TF_SRC_DIR}/tensorflow; git checkout v2.2.2; 
 else
-  mkdir setup
-	cd setup
+	cd ${TF_SRC_DIR}
   git clone https://github.com/tensorflow/tensorflow.git
-  cd tensorflow; git checkout r2.2; 
-  cd ../.. # back to base ocm directory
+  echo "Checking out the required version"
+  cd tensorflow; git checkout v2.2.2; 
 fi 
 
-#Create virtual python env
-cd setup
-echo "Creating python virtual env"
-python3 -m venv env
-source env/bin/activate
+# Create virtual python env
+cd ${TF_SRC_DIR}
+echo "Creating python3 virtual env"
+python3 -m venv ocm_venv
+source ocm_venv/bin/activate
 python3 -m pip install --upgrade pip setuptools  
 pip install 'psutil' 'numpy>=1.16.0,<1.19.0' 'six>=1.12.0' 'wheel>=0.26'
 pip install -U wheel
 pip install -U 'keras_preprocessing>=1.1.1,<1.2' --no-deps
 
 # Tensorflow Setup
-cd tensorflow # get into the tensorflow codebase
+cd ${TF_SRC_DIR}/tensorflow # get into the tensorflow codebase
 
 # Configure TF build options
 PYTHON_BASE_DIR=`python -c "import sys; print(sys.prefix)"`
@@ -58,7 +66,10 @@ bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --loca
 bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --local_cpu_resources=8 --local_ram_resources 10240 --jobs=8  //tensorflow:libtensorflow_cc.so
 
 # echo "Installing the built Tensorflow python package"
-pip install /tmp/tensorflow_pkg/tensorflow-2.2.*.whl
+pip3 install --force-install /tmp/tensorflow_pkg/tensorflow-2.2.2*.whl
+
+echo "Copying the tensorflow wheel to ${TF_SRC_DIR}/tensorflow/"
+cp /tmp/tensorflow_pkg/tensorflow-2.2.2*.whl ${TF_SRC_DIR}/tensorflow/
 
 echo "Deactivating the virtual environment"
 deactivate
