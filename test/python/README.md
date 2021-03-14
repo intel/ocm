@@ -1,6 +1,6 @@
 The bash script run_test_setup,
 - Downloads tensorflow repo which has the op unit test sources
-- Downloads ngraph unit test runner & patches this script to dump .pb files (after changing inputs to placeholders)
+- Downloads openvino_tensorflow unit test runner & patches this script to dump .pb files (after changing inputs to placeholders)
 - Creates a virtual python env & installs all dependencies & patches tf test_util.py to disable eager execution
 - Build OpenVINO benchmark which is used for inferencing.
 - To run the setup file, please use the command  
@@ -8,7 +8,7 @@ The bash script run_test_setup,
 
 The bash script run_test
 - Runs OCM, MO and INFER jobs.
-- Runs on different devices "CPU", "GPU", "MYRIAD"
+- Runs on different devices "CPU", "GPU", "MYRIAD" and HDDL
 - Runs unit test runner to dump .pb files inside
 - Runs .pb through OCM
 - Runs .pb files through OpenVINO MO to generate IR files 
@@ -16,7 +16,11 @@ The bash script run_test
 
 Run Tests:
 =========
+ `$./run_tests.sh <OV_PATH> <BUILD_TYPE> <MODE> <TEST_FILE> <DEVICE_TYPE> <MODEL_PATH>`  
+
 OV_PATH is the openvino path and TEST_LIST is the list of unit tests.  
+BUILD_TYPE can be OCM, MO and INFER. One or more supported options can be given in , seperated form e.g. OCM,MO,INFER.  
+MODE can be either UTEST (Unit testing) and MTEST (Model testing).  
 UNIT_TEST_FILE has TF ops unit tests listed out. The tests specified in this file will be executed by the bash script. Required with UTEST mode of run_test.sh  
 MODEL_TEST_FILE has names of models to be tested and relevant parameters e.g. input_shape etc. Required with MTEST mode of run_test.sh.  
 
@@ -42,6 +46,7 @@ To run INFER
 
 Output directories post execution of tests:
   - pbfiles: generated .pb files for the unit tests
+  - pbfiles_mo: generated model optimzer output files.
   - tf_ocm_logs: OCM logs
   - tf_mo_logs: MO execution logs
   - tf_infer_logs: Benchmark App execution logs
