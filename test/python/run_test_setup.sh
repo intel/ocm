@@ -12,7 +12,7 @@ then
   echo "Tensorflow repo is already available"
 else
   git clone https://github.com/tensorflow/tensorflow.git
-  cd tensorflow; git checkout r2.2; 
+  cd tensorflow; git checkout v2.2.2; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
   cd ..
@@ -35,7 +35,7 @@ echo "Installing dependencies in env"
 python3 -m pip install --upgrade pip setuptools  
 pip3 install numpy
 pip3 install six
-pip3 install -U tensorflow==2.2
+pip3 install -U tensorflow==2.2.2
 pip3 install unittest-xml-reporting
 pip3 install xmlrunner
 pip3 install networkx
