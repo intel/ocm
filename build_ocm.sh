@@ -27,9 +27,10 @@ cmake .. -DTF_SRC_DIR=${TF_SRC_DIR}/tensorflow -DFLOAT16_SUPPORT=ON
 # the C library should be present at following path ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.2`
 make
 
-if [ -f  ov_ocm ]
+if [ $? == 0 ]
 then
   echo "--- Build Complete ---"
 else
   echo "--- Build Failed ---"
+  exit 1
 fi
