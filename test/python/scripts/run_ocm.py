@@ -28,11 +28,14 @@ def run_thru_ocm(path, device):
   ov_path = os.environ['INTEL_OPENVINO_DIR']
   ov_ver = os.path.basename(ov_path)
   
-  ov_version = "2021.1"
+  ov_version = None
   if ov_ver == "openvino_2021.1.110":
     ov_version = "2021.1"
   elif ov_ver == "openvino_2021.2.185":
     ov_version = "2021.2"
+  elif ov_ver == "openvino_2021.3.394":
+    ov_version = "2021.3"
+  assert(ov_version is not None, "OV Version is incorrect")
   print (ov_path, ov_ver, ov_version)
   inv_file="invalid_tests_list_%s.txt"%device
   invalid_test=open(inv_file, 'r') 
