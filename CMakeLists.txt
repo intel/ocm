@@ -66,7 +66,7 @@ else()
 endif()
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -D_GLIBCXX_USE_CXX11_ABI=0")
 
 message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
