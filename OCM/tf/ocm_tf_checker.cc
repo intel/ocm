@@ -460,11 +460,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types = {DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
       }
-      else if (device_id=="GPU"){
-        //modified as test cases with bridge were failing, though GPU
-        //supports DT_HALF, so could be a data type issue on the bridge side too
-        supported_types.erase(DT_HALF);
-      }
       return supported_types;
     }(); 
     type_constraint_map["Transpose"]["Tperm"] = SupportedTypesIdx(device_id);

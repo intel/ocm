@@ -351,3 +351,6 @@ topk_op_test_TopKTest_testMediumTopK_testMediumTopK-1
 
 # Bridge doesn't supports Unsorted mode yet
 topk_op_test_TopKTest_testTop3Unsorted_testTop3Unsorted-0
+
+# TF infer fails with "timeout, core dumped" during model loading
+reduction_ops_test_MeanReductionTest_testGradient_testGradient-4

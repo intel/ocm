@@ -1000,7 +1000,8 @@ unstack_op_test_UnstackOpTest_testSimple_testSimple-2
 unstack_op_test_UnstackOpTest_testSimple_testSimple-5
 unstack_op_test_UnstackOpTest_testSimple_testSimple-8
 
-
+# TF infer fails with "timeout, core dumped" during model loading
+reduction_ops_test_MeanReductionTest_testGradient_testGradient-4
 
 
 
