@@ -12,7 +12,12 @@
 #include "tensorflow/core/graph/graph.h"
 #include "tensorflow/core/framework/op.h"
 #include "tensorflow/core/grappler/graph_topology_view.h"
+#include "tensorflow/core/public/version.h"
+#if (TF_MAJOR_VERSION>=2) && (TF_MINOR_VERSION>2)
+#include "tensorflow/core/common_runtime/graph_constructor.h"
+#else
 #include "tensorflow/core/graph/graph_constructor.h"
+#endif
 
 #if TF_VERSION < 2
   #include "tensorflow/core/common_runtime/dma_helper.h"

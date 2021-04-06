@@ -439,3 +439,5 @@ pooling_ops_test_PoolingTest_testAvgPooling_testAvgPooling-8
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-5
 shape_ops_test_TileTest_testIdentityTileAndGrad_testIdentityTileAndGrad-0
 
+# TF infer fails with "timeout, core dumped" during model loading
+reduction_ops_test_MeanReductionTest_testGradient_testGradient-4

@@ -492,3 +492,6 @@ slice_op_test_SliceTest_testSliceMatrixDim0_testSliceMatrixDim0-1
 slice_op_test_SliceTest_testSliceMatrixDim0_testSliceMatrixDim0-2
 slice_op_test_SliceTest_testSliceMatrixDim0_testSliceMatrixDim0-3
 
+# TF infer fails with "timeout, core dumped" during model loading
+reduction_ops_test_MeanReductionTest_testGradient_testGradient-4
+
