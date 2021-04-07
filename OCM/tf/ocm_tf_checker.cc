@@ -157,9 +157,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
           supported_types.insert(DT_DOUBLE);
         }
       }
-      if (device_id=="MYRIAD" && ov_version=="2021.3"){
-        supported_types.insert(DT_DOUBLE);
-      }
+      // Disabling the condition as some test cases started to fail 
+      // with F64 not supported error
+      // if (device_id=="MYRIAD" && ov_version=="2021.3"){
+      //   supported_types.insert(DT_DOUBLE);
+      // }
       return supported_types;
     }();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
@@ -192,11 +194,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     }();
     type_constraint_map["ConcatV2"]["T"] = [device_id, ov_version](){
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if(device_id == "CPU" || device_id == "MYRIAD"){
-        if(ov_version == "2021.3"){
-          supported_types.insert(DT_DOUBLE);
-        }
-      }
       return supported_types;
     }();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);    
@@ -290,7 +287,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(device_id); // formed after TF optimization pass, not in original graph
     type_constraint_map["Gather"]["Tparams"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx(device_id);
-    type_constraint_map["GatherV2"]["Tparams"] = SupportedTypes(device_id);
+    type_constraint_map["GatherV2"]["Tparams"] = [device_id, ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id=="GPU" && ov_version=="2021.3"){
+        supported_types.insert(DT_INT64);
+      }
+      return supported_types;
+    }();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx(device_id);
     type_constraint_map["Greater"]["T"] = SupportedTypes(device_id); //cwise_math    
@@ -348,6 +351,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
           supported_types.insert(DT_INT8);  
         }
       }
+      else if  (device_id=="GPU"){
+        if(ov_version=="2021.3"){
+          supported_types.insert(DT_INT8);  
+        }
+      }
       return supported_types;
     }();
     type_constraint_map["Mean"]["Tidx"] = SupportedTypesIdx(device_id);    
@@ -356,9 +364,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if((device_id=="CPU" || device_id=="MYRIAD") && ov_version=="2021.3"){
         supported_types.insert(DT_DOUBLE);
-      }
-      if (device_id=="GPU" && ov_version=="2021.3"){
-        supported_types.insert(DT_INT8);
       }
       return supported_types;
     }();
@@ -804,11 +809,11 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
           // check the first dimension
           if(ov_version == "2021.1" || ov_version == "2021.2"){
             if(values.dim_size(0) != 4){
-                *result = false;
+              *result = false;
             }
           } else{
-            if(values.dim_size(0) != 3 || values.dim_size(0) != 4){
-                *result = false;
+            if(!(values.dim_size(0) == 3 || values.dim_size(0) == 4)){
+              *result = false;
             }
           }
         }
@@ -1130,8 +1135,10 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node, std::string ov_version){
   for(int input_idx=0; input_idx < num_ips; input_idx++){
     Node* tf_input_node;
     if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
-      if(node->type_string() == "Max" || node->type_string() == "Mean" || 
-        node->type_string() == "Sum"  || node->type_string() == "EuclideanNorm"){
+      if((node->type_string() == "Mean" && (ov_version=="2021.1" || ov_version=="2021.2")) ||
+         node->type_string() == "Max" ||  
+         node->type_string() == "Sum"  || 
+         node->type_string() == "EuclideanNorm"){
         Tensor t;
         if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
           // Check dim of any of the input is ZERO.
