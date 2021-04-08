@@ -63,12 +63,12 @@ argmax_op_test_ArgMaxTest_testInt32_testInt32-8
 argmax_op_test_ArgMaxTest_testInt32_testInt32-9
 
 
-#For GPU, int64 
+# For GPU, int64 
 argmax_op_test_ArgMaxTest_testInt64_testInt64-0
 argmax_op_test_ArgMaxTest_testInt64_testInt64-1
 
 
-#Dimension in node must be a positive number [CHECK]
+# Dimension in node must be a positive number [CHECK]
 array_ops_test_StridedSliceTest_testDegenerateSlices_testDegenerateSlices-0
 array_ops_test_StridedSliceTest_testDegenerateSlices_testDegenerateSlices-1
 array_ops_test_StridedSliceTest_testDegenerateSlices_testDegenerateSlices-2
@@ -96,14 +96,14 @@ array_ops_test_StridedSliceTest_testTensorIndexing_testTensorIndexing-1
 array_ops_test_StridedSliceTest_testTensorIndexing_testTensorIndexing-2
 array_ops_test_StridedSliceTest_testTensorIndexing_testTensorIndexing-3
 
-#Strided slice too many axes for adding
+# Strided slice too many axes for adding
 array_ops_test_StridedSliceTest_testExpand_testExpand-0
 
 
-#Strided slice, Error occured for crop,mistmatching dimensions
+# Strided slice, Error occured for crop,mistmatching dimensions
 array_ops_test_StridedSliceTest_testOptimizedCases_testOptimizedCases-4
 
-#Strided slice Op Type not supported, int64
+# Strided slice Op Type not supported, int64
 array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-13
 array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-14
 array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-15
@@ -116,7 +116,23 @@ array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-21
 array_ops_test_StridedSliceTest_test_basic_slice_test_basic_slice-22
 
 
-#Cast OP
+# Graph optimize to single result node and data to fp16[Invalid]
+cast_op_test_CastOpTest_testInfNan_testInfNan-0
+cast_op_test_CastOpTest_testInfNan_testInfNan-10
+cast_op_test_CastOpTest_testInfNan_testInfNan-11
+cast_op_test_CastOpTest_testInfNan_testInfNan-3
+cast_op_test_CastOpTest_testInfNan_testInfNan-6
+cast_op_test_CastOpTest_testInfNan_testInfNan-9
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-0
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-1
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-2
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-3
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-4
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-5
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-6
+cast_op_test_CastOpTest_testIntToFloatBoundary_testIntToFloatBoundary-7
+
+# Cast OP
 # Float64 at DstT
 cast_op_test_CastOpTest_testBasic_testBasic-0
 cast_op_test_CastOpTest_testBasic_testBasic-11
@@ -300,6 +316,9 @@ conv_ops_test_Conv2DTest_testConv2DKernelSizeMatchesInputSizeDilation_testConv2D
 # Dimension mismatch failed at ngraph
 conv_ops_test_Conv2DTest_testShapeFunctionEdgeCases_testShapeFunctionEdgeCases-7
 
+# BroadcastGradientArgs
+cwise_ops_binary_test_BinaryOpTest_testFloatBasic_testFloatBasic-46
+cwise_ops_binary_test_BinaryOpTest_testFloatBasic_testFloatBasic-50
 
 #float64: Real Dev Op not supported
 ## *_testSqueeze_testSqueeze-* are float types but needs to be enabled by Patching TF.
