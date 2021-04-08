@@ -153,15 +153,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 #ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
 #endif
-        if (ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
-        }
       }
-      // Disabling the condition as some test cases started to fail 
-      // with F64 not supported error
-      // if (device_id=="MYRIAD" && ov_version=="2021.3"){
-      //   supported_types.insert(DT_DOUBLE);
-      // }
       return supported_types;
     }();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
@@ -204,17 +196,11 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
         //supports DT_STRING, so could be a data type issue on the bridge side too
         //supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING}; 
         supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_BOOL}; 
-        if(ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
-        }
       }
       else if (device_id=="MYRIAD" || device_id=="HDDL"){
         supported_types.insert(DT_INT64);
         // checked using bridge code, it's working 
         supported_types.insert(DT_UINT16);
-        if(ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
-        }
       }
       else if (device_id=="GPU"){
         supported_types.insert(DT_INT64);
@@ -322,12 +308,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
 #ifdef ENABLE_DT_HALF    
         supported_types.insert(DT_HALF);
 #endif
-        if(ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
-        }
-      }
-      else if (device_id=="MYRIAD" && ov_version=="2021.3"){
-        supported_types.insert(DT_DOUBLE);
       }
       return supported_types;
     }();
@@ -362,9 +342,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Minimum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["MirrorPad"]["T"] = [device_id,ov_version](){
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if((device_id=="CPU" || device_id=="MYRIAD") && ov_version=="2021.3"){
-        supported_types.insert(DT_DOUBLE);
-      }
       return supported_types;
     }();
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx(device_id);  // For unit tests   
@@ -388,9 +365,6 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       if (device_id=="CPU"){
         supported_types.erase(DT_UINT8); 
       }
-      if((device_id=="CPU" || device_id=="MYRIAD") && ov_version=="2021.3"){
-        supported_types.insert(DT_DOUBLE);
-      }
       return supported_types;
     }();
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(device_id);
@@ -400,18 +374,12 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       supported_types={DT_FLOAT,DT_HALF, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16};
       if(device_id=="CPU"){
         if(ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
           supported_types.insert(DT_INT8);
         }
       }
       else if(device_id=="GPU"){
         if(ov_version=="2021.3"){
           supported_types.insert(DT_INT8);
-        }
-      }
-      else if(device_id=="MYRIAD"){
-        if(ov_version=="2021.3"){
-          supported_types.insert(DT_DOUBLE);
         }
       }
       return supported_types;
