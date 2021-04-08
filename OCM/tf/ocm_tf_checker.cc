@@ -482,6 +482,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Square"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Squeeze"]["T"] = SupportedTypes(device_id);
     type_constraint_map["StridedSlice"]["T"] = SupportedTypes(device_id);
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);  
@@ -920,6 +921,7 @@ const std::map<std::string, ConfirmationFunction>& GetConfirmationMap(std::strin
       }
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["Square"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = [device_id](Node* n, bool* result) {
       std::vector<int32> tf_axis;
       GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);

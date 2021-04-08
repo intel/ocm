@@ -82,6 +82,7 @@ std::set<std::string> common_supported_ops = {
     "SpaceToDepth",
     "Split",
     "SplitV",
+    "Square",
     "Squeeze",
     "StridedSlice",
     "Sub",
