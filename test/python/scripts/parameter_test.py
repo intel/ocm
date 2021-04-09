@@ -9,7 +9,7 @@ import re
 import os
 from termcolor import colored
 
-def checkmarx_validation_Mode(mode):
+def mode_validation(mode):
   regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
   if mode == "":
     print("{0}".format(colored("Mode Is Empty", "red")))
@@ -21,7 +21,7 @@ def checkmarx_validation_Mode(mode):
     print("Mode is ok")
   
 
-def checkmarx_validation_Device(device):
+def device_validation(device):
   regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
   device_list=["CPU","GPU","MYRIAD","HDDL"]
   if(device in device_list ):
@@ -36,13 +36,13 @@ def checkmarx_validation_Device(device):
   else:
     print("{0}".format(colored("Please Choose Device", "red")))
 
-def checkmarx_validation_ModelPath(model_path):
+def modelpath_validation(model_path):
   if not os.path.exists(model_path) and not model_path=="None":
     print("{0}".format(colored("Model Path does not exists or Please give None in model path", "red")))
   else:
     print("Path is ok")
 
-def checkmarx_validation_TestList(test_list):
+def testlist_validation(test_list):
   try:
     file_size = os.path.getsize('test_list.txt')
   except FileNotFoundError:
