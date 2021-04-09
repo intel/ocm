@@ -8,7 +8,7 @@ import os
 import pathlib
 import argparse
 import subprocess
-import checkmarx
+import parameter_test
 import time
 
 def run_inference(benchmark_app_path, path, device, ov_name):
@@ -66,5 +66,5 @@ if __name__ == '__main__':
   args = parser.parse_args()
   home=os.environ['HOME']
   benchmark_app_path=home + "/inference_engine_python_samples_build/intel64/Release"
-  checkmarx.checkmarx_validation_Device(args.device)
+  parameter_test.device_validation(args.device)
   run_inference(benchmark_app_path, args.model_path, args.device, ov_name)
