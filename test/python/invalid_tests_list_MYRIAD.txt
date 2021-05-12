@@ -171,6 +171,10 @@ concat_op_test_ConcatOpTest_testRandom_testRandom-4
 concat_op_test_ConcatOpTest_testRandom_testRandom-6
 concat_op_test_ConcatOpTest_testRandom_testRandom-7
 
+# Graph gets optimized and reduced to single node, so even
+# the input is FP64, IE is able to run it
+concat_op_test_ConcatOpTest_testZeroSize_testZeroSize-18
+concat_op_test_ConcatOpTest_testZeroSize_testZeroSize-9
 
 #SpaceToBatchND OP not supported
 conv_ops_test_Conv2DTest_testConv2D1x2FilterDilation_testConv2D1x2FilterDilation-0
@@ -374,6 +378,15 @@ pad_op_test_PadOpTest_testIntTypes_testIntTypes-33
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-34
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-35
 pad_op_test_PadOpTest_testPaddingsDim_testPaddingsDim-1
+
+# Graph gets optimized and reduced to single node, so even
+# the input is FP64, IE is able to run it
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-54
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-55
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-56
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-57
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-58
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-59
 
 #Complex DTYPE not supported by OCM yet 
 reshape_op_test_ReshapeTest_testComplex128Basic_testComplex128Basic-0

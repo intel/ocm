@@ -172,6 +172,11 @@ cast_op_test_CastOpTest_testRandom_testRandom-108
 concat_op_test_ConcatOpTest_testRandom_testRandom-6
 concat_op_test_ConcatOpTest_testRandom_testRandom-7
 
+# Graph gets optimized and reduced to single node, so even
+# the input is FP64, IE is able to run it
+concat_op_test_ConcatOpTest_testZeroSize_testZeroSize-18
+concat_op_test_ConcatOpTest_testZeroSize_testZeroSize-9
+
 # Edge case, TF itself fails on this case
 conv_ops_test_Conv2DTest_testShapeFunctionEdgeCases_testShapeFunctionEdgeCases-7
 
@@ -327,9 +332,18 @@ pad_op_test_PadOpTest_testComplexTypes_testComplexTypes-21
 pad_op_test_PadOpTest_testComplexTypes_testComplexTypes-22
 pad_op_test_PadOpTest_testComplexTypes_testComplexTypes-23
 
-#Incorrect Padd value causes failure. Need to do investigation.
+#Incorrect Pad value causes failure. Need to do investigation.
 pad_op_test_PadOpTest_testPaddingsMaximum_testPaddingsMaximum-0
 pad_op_test_PadOpTest_testPaddingsMaximum_testPaddingsMaximum-1
+
+# Graph gets optimized and reduced to single node, so even
+# the input is FP64, IE is able to run it
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-54
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-55
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-56
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-57
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-58
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-59
 
 #Segfault in infer. Tempororily putting in invalid. Need to debug with OV team.
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-5
