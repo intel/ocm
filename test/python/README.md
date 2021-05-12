@@ -18,10 +18,11 @@ Run Tests:
 =========
  `$./run_tests.sh <OV_PATH> <BUILD_TYPE> <MODE> <TEST_FILE> <DEVICE_TYPE> <MODEL_PATH>`  
 
-OV_PATH is the openvino path and TEST_LIST is the list of unit tests.  
-BUILD_TYPE can be OCM, MO and INFER. One or more supported options can be given in , seperated form e.g. OCM,MO,INFER.  
+OV_PATH is the openvino path 
+BUILD_TYPE can be OCM, MO and INFER. One or more supported options can be given in seperated form e.g. OCM,MO,INFER.  
 MODE can be either UTEST (Unit testing) and MTEST (Model testing).  
-UNIT_TEST_FILE has TF ops unit tests listed out. The tests specified in this file will be executed by the bash script. Required with UTEST mode of run_test.sh  
+TEST_FILE has TF ops unit tests listed out. The tests specified in this file will be executed by the bash script. Required with UTEST mode of run_test.sh  
+DEVICE_TYPE can be "CPU", "GPU", "MYRIAD" or "HDDL"
 MODEL_TEST_FILE has names of models to be tested and relevant parameters e.g. input_shape etc. Required with MTEST mode of run_test.sh.  
 
 To run OCM   

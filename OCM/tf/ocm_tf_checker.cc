@@ -1102,7 +1102,7 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node, std::string ov_version){
     if(node->input_node(input_idx, &tf_input_node) == Status::OK()){
       if((node->type_string() == "Mean" && (ov_version=="2021.1" || ov_version=="2021.2")) ||
          node->type_string() == "Max" ||  
-         node->type_string() == "Sum"  || 
+         node->type_string() == "Sum" || 
          node->type_string() == "EuclideanNorm"){
         Tensor t;
         if(GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()){
@@ -1118,7 +1118,8 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node, std::string ov_version){
       }
       // ToDo: Added Placeholder for now. Not needed
       if(tf_input_node->type_string() != "Const" && 
-          tf_input_node->type_string() != "ConcatV2"){ 
+          tf_input_node->type_string() != "ConcatV2" &&
+          tf_input_node->type_string() != "Placeholder"){ 
         TensorShape t;
 
         if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
