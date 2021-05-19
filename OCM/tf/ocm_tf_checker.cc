@@ -1118,12 +1118,11 @@ static bool IsOpInputDimZeroTF(tensorflow::Node* node, std::string ov_version){
       }
       // ToDo: Added Placeholder for now. Not needed
       if(tf_input_node->type_string() != "Const" && 
-          tf_input_node->type_string() != "ConcatV2" &&
-          tf_input_node->type_string() != "Placeholder"){ 
+          tf_input_node->type_string() != "ConcatV2"){ 
         TensorShape t;
 
         if(GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()){
-          if(t.dims() == 0){
+          if(t.dims() == 0 && tf_input_node->type_string()!="Placeholder"){
             is_input_dim_zero &= false;
             return is_input_dim_zero;
           }
