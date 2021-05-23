@@ -182,6 +182,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       else if (device_id=="HDDL"){
         supported_types.insert(DT_INT64);
       }
+      else if(device_id=="MYRIAD" && ov_version=="2021.3" ){
+        supported_types.insert(DT_INT64);
+      }
       return supported_types;
     }();
     type_constraint_map["ConcatV2"]["T"] = [device_id, ov_version](){
@@ -278,6 +281,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       if (device_id=="GPU" && ov_version=="2021.3"){
         supported_types.insert(DT_INT64);
       }
+      if (device_id=="MYRIAD" && ov_version=="2021.3"){
+        supported_types.insert(DT_INT64);
+      }
       return supported_types;
     }();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx(device_id);
@@ -342,6 +348,12 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Minimum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["MirrorPad"]["T"] = [device_id,ov_version](){
       std::set<DataType> supported_types = SupportedTypes(device_id);
+      if(device_id=="MYRIAD" && ov_version=="2021.3"){
+          supported_types.erase(DT_INT32);  
+      }
+      if(device_id=="CPU" && ov_version=="2021.3"){
+          supported_types.insert(DT_INT8);  
+      }
       return supported_types;
     }();
     type_constraint_map["MirrorPad"]["Tpaddings"] = SupportedTypesIdx(device_id);  // For unit tests   
@@ -375,6 +387,7 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       if(device_id=="CPU"){
         if(ov_version=="2021.3"){
           supported_types.insert(DT_INT8);
+          supported_types.insert(DT_BOOL);
         }
       }
       else if(device_id=="GPU"){
@@ -450,9 +463,34 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Square"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Square"]["T"] = [device_id,ov_version](){ 
+    std::set<DataType> supported_types = SupportedTypes(device_id);
+    if (device_id=="CPU"){
+      #ifdef ENABLE_DT_HALF    
+        supported_types.insert(DT_HALF);
+      #endif
+    }
+    if (device_id=="MYRIAD" && ov_version=="2021.3"){
+      supported_types.erase(DT_INT32);
+    }
+    return supported_types;
+    }();
+    SupportedTypes(device_id);
     type_constraint_map["Squeeze"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["StridedSlice"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["StridedSlice"]["T"] = [device_id,ov_version](){ 
+    std::set<DataType> supported_types = SupportedTypes(device_id);
+    if (device_id=="MYRIAD" && ov_version=="2021.3"){
+      supported_types.insert(DT_INT8);
+    }
+    if (device_id=="CPU" && ov_version=="2021.3"){
+      supported_types.insert(DT_BOOL);
+      supported_types.insert(DT_INT8);
+    }
+    if (device_id=="GPU" && ov_version=="2021.3"){
+      supported_types.insert(DT_INT64);
+    }
+    return supported_types;
+    }();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);  
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);  
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id); //cwise_math    
@@ -513,7 +551,13 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       }
       return supported_types;
     }();
-    type_constraint_map["Unpack"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Unpack"]["T"] = [device_id,ov_version](){ 
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if(device_id=="GPU" && ov_version=="2021.3"){
+          supported_types.insert(DT_INT64);  
+      }
+      return supported_types;
+    }();
     type_constraint_map["ZerosLike"]["T"] = SupportedTypes(device_id);
   }
   return type_constraint_map;
