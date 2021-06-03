@@ -203,6 +203,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       } else if (device_id=="GPU"){
         supported_types.insert(DT_INT64);
       }   
+      if (device_id=="CPU" && ov_version=="2021.3"){
+        supported_types.insert(DT_INT8);
+      }
       return supported_types;
     }();
     type_constraint_map["Conv2D"]["T"] = [device_id](){ 
@@ -379,6 +382,9 @@ const TypeConstraintMap& GetTypeConstraintMap(std::string device_id, std::string
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id=="CPU"){
         supported_types.erase(DT_UINT8); 
+      }
+      if (device_id=="CPU" && ov_version=="2021.3"){
+        supported_types.insert(DT_INT8);
       }
       return supported_types;
     }();
