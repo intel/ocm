@@ -66,7 +66,7 @@ bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --loca
 bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --local_cpu_resources=8 --local_ram_resources 10240 --jobs=8  //tensorflow:libtensorflow_cc.so
 
 # echo "Installing the built Tensorflow python package"
-pip3 install --force-install /tmp/tensorflow_pkg/tensorflow-2.4.1*.whl
+pip3 install --force-reinstall /tmp/tensorflow_pkg/tensorflow-2.4.1*.whl
 
 echo "Copying the tensorflow wheel to ${TF_SRC_DIR}/tensorflow/"
 cp /tmp/tensorflow_pkg/tensorflow-2.4.1*.whl ${TF_SRC_DIR}/tensorflow/

@@ -46,7 +46,7 @@ ocm_checker(){
 #Run through model optimizer
 model_optimize(){
   rm -rf tf_mo_logs/$DEVICE
-  mo_op_path=("pbfiles_mo/"$ov_name"/"$device)
+  mo_op_path=("pbfiles_mo/"$ov_name"/"$DEVICE)
   rm -rf $mo_op_path
   echo "Generating IR files"
   python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE -d $DEVICE
@@ -57,7 +57,7 @@ model_optimize(){
 #Run inference
 run_infer(){
   rm -rf tf_infer_logs/$DEVICE
-  mo_op_path=("pbfiles_mo/"$ov_name"/"$device)
+  mo_op_path=("pbfiles_mo/"$ov_name"/"$DEVICE)
   echo "Running inference"
   python3 ./scripts/run_inference.py -i $mo_op_path -d $DEVICE
   echo "End Running inference"
