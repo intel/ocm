@@ -1,5 +1,5 @@
 diff --git a/tensorflow/python/kernel_tests/array_ops/gather_op_test.py b/tensorflow/python/kernel_tests/array_ops/gather_op_test.py
-index f0c762e0cba..f0558991ea5 100644
+index f8050b71d24..7ab78490517 100644
 --- a/tensorflow/python/kernel_tests/array_ops/gather_op_test.py
 +++ b/tensorflow/python/kernel_tests/array_ops/gather_op_test.py
 @@ -34,8 +34,8 @@ from tensorflow.python.ops import resource_variable_ops
@@ -49,21 +49,22 @@ index a9c1131acfe..aba6f7ccb0c 100644
          actual_unstack = self.evaluate(array_ops.unstack(a, axis=j))
  
 diff --git a/tensorflow/python/kernel_tests/array_ops_test.py b/tensorflow/python/kernel_tests/array_ops_test.py
-index 4106ea9b166..49fe5e2b557 100644
+index 326385fc7c9..7a32da2be5f 100644
 --- a/tensorflow/python/kernel_tests/array_ops_test.py
 +++ b/tensorflow/python/kernel_tests/array_ops_test.py
-@@ -629,8 +629,7 @@ class StridedSliceChecker(object):
+@@ -649,9 +649,7 @@ class StridedSliceChecker(object):
  
  
  STRIDED_SLICE_TYPES = [
--    dtypes.int32, dtypes.int64, dtypes.int16, dtypes.int8, dtypes.float32,
--    dtypes.float64, dtypes.complex64, dtypes.complex128, dtypes.bool
+-    dtypes.int32, dtypes.int64, dtypes.int16, dtypes.int8, dtypes.uint8,
+-    dtypes.float32, dtypes.float64, dtypes.complex64, dtypes.complex128,
+-    dtypes.bool
 +    dtypes.int32, dtypes.int64, dtypes.float32
  ]
  
  
 diff --git a/tensorflow/python/kernel_tests/shape_ops_test.py b/tensorflow/python/kernel_tests/shape_ops_test.py
-index 5a165c94542..9fa7fb19894 100644
+index c5f6d02da64..49b077f134f 100644
 --- a/tensorflow/python/kernel_tests/shape_ops_test.py
 +++ b/tensorflow/python/kernel_tests/shape_ops_test.py
 @@ -187,25 +187,26 @@ class ShapeOpsTest(test.TestCase):
@@ -118,7 +119,7 @@ index 5a165c94542..9fa7fb19894 100644
      for dtype in [dtypes.int32, dtypes.int64]:
 -      x = np.zeros([2])
 -      np_ans = np.expand_dims(x, axis=0)
--      with self.cached_session(use_gpu=True):
+-      with self.cached_session():
 -        tensor = array_ops.expand_dims(x, constant_op.constant(0, dtype))
 -        tf_ans = self.evaluate(tensor)
 -      self.assertShapeEqual(np_ans, tensor)
@@ -126,7 +127,7 @@ index 5a165c94542..9fa7fb19894 100644
 +      for npdtype in [np.int32, np.int64]:
 +        x = np.zeros([2], dtype=npdtype)
 +        np_ans = np.expand_dims(x, axis=0)
-+        with self.cached_session(use_gpu=True):
++        with self.cached_session():
 +            tensor = array_ops.expand_dims(x, constant_op.constant(0, dtype))
 +            tf_ans = self.evaluate(tensor)
 +        self.assertShapeEqual(np_ans, tensor)
@@ -226,7 +227,7 @@ index 5a165c94542..9fa7fb19894 100644
    @test_util.run_deprecated_v1
    def testSqueezeErrors(self):
 diff --git a/tensorflow/python/kernel_tests/split_op_test.py b/tensorflow/python/kernel_tests/split_op_test.py
-index 16f92dbd875..925add2cab0 100644
+index 58674abd144..1b5f65d3284 100644
 --- a/tensorflow/python/kernel_tests/split_op_test.py
 +++ b/tensorflow/python/kernel_tests/split_op_test.py
 @@ -30,8 +30,7 @@ from tensorflow.python.ops import gradients_impl
