@@ -154,25 +154,19 @@ const std::map<std::string, std::set<string>> ov_2021_3_op_update_vpu = {
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"add", {}},    
     {"remove", {}}, 
-    {"update",
-     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt"}} 
+    {"update", {}} 
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
     {"add", {}},    
     {"remove", {}}, 
-    {"update",
-     {"Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2"}} 
+    {"update", {}} 
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
     {"add", {}},    
     {"remove", {}}, 
-    {"update",
-     {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh", "Neg", "Log",
-      "MaxPoolV2"}} 
+    {"update",{}} 
 };
 
 } // namespace ocm
