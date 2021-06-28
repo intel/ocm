@@ -150,6 +150,31 @@ const std::map<std::string, std::set<string>> ov_2021_3_op_update_vpu = {
       "MaxPoolV2"}} // Ops for which OCM has enabled support.
 };
 
+
+const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
+    {"add", {}},    
+    {"remove", {}}, 
+    {"update",
+     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
+      "MaxPoolV2", "Sqrt"}} 
+};
+
+const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
+    {"add", {}},    
+    {"remove", {}}, 
+    {"update",
+     {"Prod", "Softplus", "LeakyRelu", "Log",
+      "MaxPoolV2"}} 
+};
+
+const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
+    {"add", {}},    
+    {"remove", {}}, 
+    {"update",
+     {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh", "Neg", "Log",
+      "MaxPoolV2"}} 
+};
+
 } // namespace ocm
 
 #endif //_OCM_TF_OPS_LIST_H_

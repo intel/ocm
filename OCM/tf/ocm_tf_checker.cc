@@ -606,7 +606,10 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_cpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_cpu;
+    } else if (ov_version == "2021.4"){
+      ov_based_op_list = ov_2021_4_op_update_cpu;
     }
+
   } else if (device_id == "GPU") {
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
@@ -616,6 +619,8 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_gpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_gpu;
+    } else if (ov_version == "2021.4"){
+      ov_based_op_list = ov_2021_4_op_update_gpu;
     }
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
     supported_ops.insert(common_supported_ops.begin(),
@@ -626,6 +631,8 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_vpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_vpu;
+    } else if (ov_version == "2021.4") {
+      ov_based_op_list = ov_2021_4_op_update_vpu;
     }
   }
   if (!ov_based_op_list.empty()) {
