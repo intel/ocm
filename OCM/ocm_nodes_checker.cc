@@ -49,7 +49,7 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw,
   ocmFrameworkObj->device_id = device_id;
 
   if ((ov_version != "2021.1") && (ov_version != "2021.2") &&
-      (ov_version != "2021.3") && && (ov_version != "2021.2")) {
+      (ov_version != "2021.3") &&  (ov_version != "2021.2")) {
     OCM_LOG(3) << "Invalid OpenVINO version - " << device_id
                << ". Allowed options are 2021.1, 2021.2, 2021.3, 2021.4" << std::endl;
     ocm_status = OCMStatus::INVALID_OV_VERSION;
