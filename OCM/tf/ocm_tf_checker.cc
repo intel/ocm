@@ -257,6 +257,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["FusedBatchNorm"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FusedBatchNormV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["FusedBatchNormV3"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -266,7 +267,10 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["_FusedBatchNormEx"]["T"] = SupportedTypes(device_id);
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["_FusedDepthwiseConv2dNative"]["T"] =
+        SupportedTypes(device_id);
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tparams"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx(device_id);
@@ -799,9 +803,15 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
       *result = !tf_is_training;
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["FusedBatchNormV2"] =
+        confirmation_function_map["FusedBatchNorm"];
     confirmation_function_map["FusedBatchNormV3"] =
         confirmation_function_map["FusedBatchNorm"];
+    confirmation_function_map["_FusedBatchNormEx"] =
+        confirmation_function_map["FusedBatchNorm"];
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["_FusedDepthwiseConv2dNative"] =
+        SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherV2"] = [device_id](Node *n, bool *result) {

@@ -67,9 +67,15 @@ std::set<std::string> common_supported_ops = {
  * available Ngraph OPs
  *  and are not supported by MO route
  */
-std::set<std::string> composite_ops = {
-    "ArgMin",       "FusedBatchNormV3",    "_FusedConv2D",
-    "_FusedMatMul", "NonMaxSuppressionV2", "NoOp"};
+std::set<std::string> composite_ops = {"ArgMin",
+                                       "FusedBatchNormV2",
+                                       "FusedBatchNormV3",
+                                       "_FusedBatchNormEx",
+                                       "_FusedConv2D",
+                                       "_FusedDepthwiseConv2dNative",
+                                       "_FusedMatMul",
+                                       "NonMaxSuppressionV2",
+                                       "NoOp"};
 
 // Op supported only on CPU and not supported on VPU
 std::set<std::string> cpu_only_ops = {
