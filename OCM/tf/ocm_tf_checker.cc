@@ -269,7 +269,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["_FusedBatchNormEx"]["T"] = SupportedTypes(device_id);
     type_constraint_map["_FusedConv2D"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["_FusedDepthwiseConv2dNative"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["_FusedDepthwiseConv2dNative"]["T"] =
+        SupportedTypes(device_id);
     type_constraint_map["_FusedMatMul"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tparams"] = SupportedTypes(device_id);
     type_constraint_map["Gather"]["Tindices"] = SupportedTypesIdx(device_id);
@@ -809,7 +810,8 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["_FusedBatchNormEx"] =
         confirmation_function_map["FusedBatchNorm"];
     confirmation_function_map["_FusedConv2D"] = SimpleConfirmationFunction();
-    confirmation_function_map["_FusedDepthwiseConv2dNative"] = SimpleConfirmationFunction();
+    confirmation_function_map["_FusedDepthwiseConv2dNative"] =
+        SimpleConfirmationFunction();
     confirmation_function_map["_FusedMatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["Gather"] = SimpleConfirmationFunction();
     confirmation_function_map["GatherV2"] = [device_id](Node *n, bool *result) {
