@@ -556,6 +556,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT8);
         }
+        else if (ov_version == "2021.4") {
+          supported_types.insert(DT_BOOL);
+        }
       }
       return supported_types;
     }();
