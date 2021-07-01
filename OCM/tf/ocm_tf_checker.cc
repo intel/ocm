@@ -120,10 +120,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
       if (device_id == "CPU"){
-        if(ov_version == "2021.3"){
-          supported_types.insert(DT_INT32);
-        }
-        else if(ov_version == "2021.4"){
+        if(ov_version == "2021.3" || ov_version == "2021.4"){
           supported_types.insert(DT_INT32);
         }
       }
@@ -139,10 +136,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
       if (device_id == "CPU"){
-        if(ov_version == "2021.3"){
-          supported_types.insert(DT_INT32);
-        }
-        else if(ov_version == "2021.4"){
+        if(ov_version == "2021.3" || ov_version == "2021.4"){
           supported_types.insert(DT_INT32);
         }
       }
@@ -376,10 +370,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["MirrorPad"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version == "2021.3") {
-          supported_types.insert(DT_INT8);
-        }
-        else if (ov_version == "2021.4") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
       } else if (device_id == "MYRIAD") {
@@ -410,10 +401,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT8);
-        if (ov_version == "2021.3") {
-          supported_types.insert(DT_INT8);
-        }
-        else if (ov_version == "2021.4") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
       }
@@ -534,15 +522,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["StridedSlice"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_BOOL);
           supported_types.insert(DT_INT8);
-        }
-        else if (ov_version == "2021.4") {
-          supported_types.insert(DT_INT8);
-          supported_types.insert(DT_BOOL);
-        }
-      } else if (device_id == "GPU") {
+        } 
+      }
+      else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT64);
         }
