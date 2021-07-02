@@ -1,0 +1,64 @@
+ resources:
+  repositories:
+  - repository: ocm
+    type: github
+    endpoint: intel
+    name: intel/ocm
+    
+ pool:
+  name: 'Default'  
+
+ variables:
+    WORK_DIR: $(Pipeline.Workspace)/ocm
+    BUILD_DIR: $(WORK_DIR)/build
+    HOME_DIR: /home/iotgecsp
+   
+    
+ steps:
+
+   - script: |
+      rm -rf $(WORK_DIR) ; mkdir $(WORK_DIR)
+      rm -rf $(BUILD_DIR) ; mkdir $(BUILD_DIR)
+      
+   
+   - checkout: self
+     clean: true
+     lfs: false
+     path: ocm
+      
+   - script: |
+      cd $(WORK_DIR)
+      source $(HOME_DIR)/ocm_tf_setup/env/bin/activate
+      bash build_ocm.sh $(HOME_DIR)/ocm_tf_setup/tensorflow/
+     workingDirectory: $(WORK_DIR)  
+     displayName: "Build"
+             
+   - script: |
+      cd ${WORK_DIR}/test/python
+      echo $OPENVINO_BIN_DIR
+      echo ${BUILD_TYPE}
+      echo ${WORK_DIR}
+      echo ${TESTMODE}
+      echo ${TEST_FILE}
+      echo ${DEVICE}
+      bash run_test_setup.sh ${OPENVINO_BIN_DIR}
+      bash run_test.sh ${OPENVINO_BIN_DIR} ${BUILD_TYPE} ${TESTMODE} ${TEST_FILE} ${DEVICE}
+     workingDirectory: $(WORK_DIR)   
+     displayName: "OCM Tests"  
+     
+   - script: |
+      cd $(WORK_DIR)
+      mkdir -p $WORK_DIR/TESTDIR/
+      mkdir -p $WORK_DIR/LastLog/
+      cd $WORK_DIR/test/python/
+      cp -r tf_ocm_logs/ $WORK_DIR/LastLog
+      cd $WORK_DIR/LastLog/
+      mkdir -p $WORK_DIR/TESTDIR/$DEVICE/${OV_VERSION}/tf_ocm_logs
+      cp -r $WORK_DIR/LastLog/tf_ocm_logs/$DEVICE/* $WORK_DIR/TESTDIR/$DEVICE/${OV_VERSION}/tf_ocm_logs/
+      rm -rf $WORK_DIR/LastLog/ 
+      cd $WORK_DIR/test/python/
+      pip3 install XlsxWriter
+      python3 $(HOME_DIR)/tflow/jenkins_workspace/utilityrobot.py $WORK_DIR/TESTDIR
+      cp ocm_report.xlsx /tmp
+     workingDirectory: $(WORK_DIR)  
+     displayName: "Logging and report"
