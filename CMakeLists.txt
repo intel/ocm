@@ -8,6 +8,7 @@ cmake_minimum_required(VERSION 3.4)
 project (ocm CXX)
 # set directory where the custom finders live
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+add_definitions(-DNOMINMAX)
 # find_package(Threads)
 
 option(FLOAT16_SUPPORT "Enable/Disable float16 support" OFF)
@@ -16,7 +17,7 @@ if(FLOAT16_SUPPORT)
     add_definitions(-DENABLE_DT_HALF)
 endif()
 unset(FLOAT16_SUPPORT CACHE)
-
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 add_subdirectory(OCM)
 
 include(cmake/FindTensorFlow.cmake)
@@ -30,13 +31,15 @@ endif()
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-comment -Wno-sign-compare -Wno-backslash-newline-escape")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-comment -Wno-sign-compare")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-comment -Wno-sign-compare")
 endif()
 
+message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 include_directories(${TF_SRC_DIR})
-include_directories(${TF_SRC_DIR}/bazel-genfiles/external/nsync/public)
+#include_directories(${TF_SRC_DIR}/bazel-bin/external/nsync/public)# couldn't find public
 # Files that are generated during TF build are here
-include_directories(${TF_SRC_DIR}/bazel-genfiles)
+include_directories(${TF_SRC_DIR}/bazel-bin)
+include_directories(${TF_SRC_DIR}/bazel-bin/tensorflow/include)
 include_directories(${TensorFlow_INCLUDE_DIR})
 include_directories(${TensorFlow_INCLUDE_DIR}/external/nsync/public)
 
@@ -47,7 +50,7 @@ include_directories(./include/)
 if ( APPLE )
     set(TF_LIB_NAME libtensorflow_framework.dylib)
 else()
-    set(TF_LIB_NAME libtensorflow_framework.so.1)
+    set(TF_LIB_NAME tensorflow.lib)
 endif()
 
 add_library(tensorflow_cc_lib SHARED IMPORTED)
@@ -55,18 +58,24 @@ if(NOT(TensorFlow_VERSION LESS 2.0))
     set_target_properties(
         tensorflow_cc_lib
         PROPERTIES IMPORTED_LOCATION
-        ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.2
+        ${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.dll
+    )
+	set_target_properties(
+        tensorflow_cc_lib
+        PROPERTIES IMPORTED_IMPLIB ${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.lib
     )
 else()
-    set_target_properties(
+	set_target_properties(
         tensorflow_cc_lib
         PROPERTIES IMPORTED_LOCATION
-        ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.1
+        ${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.dll    )
+    set_target_properties(
+        tensorflow_cc_lib
+        PROPERTIES IMPORTED_IMPLIB ${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.lib
     )
 endif()
 
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
