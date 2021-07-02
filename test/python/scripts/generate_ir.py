@@ -54,20 +54,9 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
     if mode == 'UTEST':
       if test_name in invalid_list:
         continue
-      if(device == "MYRIAD"):
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
-      elif(device == "GPU"):
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
-      elif(device == "HDDL"):
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out, "--data_type", "FP16" ]
-      else:
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
-        #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out ]
-    else:
-      if(device == "MYRIAD" or device == "GPU"):
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out, "--data_type", "FP16" ]
-      else:
-        cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname,"--input_shape", input_shape, "-o",mo_out ]
+      
+      cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
+      #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out, "--data_type", "FP16"]
     mo_log = mo_log_path + "/" + test_name
     #mo_log, ext = os.path.splitext(mo_log)
     mo_log += ".log"

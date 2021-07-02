@@ -119,9 +119,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ArgMax"]["T"] = [device_id, ov_version]() {
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
-      if ((device_id == "GPU") ||
-          (device_id == "CPU" && ov_version == "2021.3")) {
-        supported_types.insert(DT_INT32);
+      if (device_id == "CPU"){
+        if(ov_version == "2021.3" || ov_version == "2021.4"){
+          supported_types.insert(DT_INT32);
+        }
+      }
+      else if(device_id == "GPU"){
+        if(ov_version == "2021.3"){
+          supported_types.insert(DT_INT32);
+        }
       }
       return supported_types;
     }();
@@ -129,9 +135,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ArgMin"]["T"] = [device_id, ov_version]() {
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
-      if ((device_id == "GPU") ||
-          (device_id == "CPU" && ov_version == "2021.3")) {
-        supported_types.insert(DT_INT32);
+      if (device_id == "CPU"){
+        if(ov_version == "2021.3" || ov_version == "2021.4"){
+          supported_types.insert(DT_INT32);
+        }
+      }
+      else if(device_id == "GPU"){
+        if(ov_version == "2021.3"){
+          supported_types.insert(DT_INT32);
+        }
       }
       return supported_types;
     }();
@@ -194,7 +206,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         // DT_UINT16, DT_BOOL, DT_STRING};
         supported_types = {DT_FLOAT, DT_INT16,  DT_INT32, DT_INT64,
                            DT_UINT8, DT_UINT16, DT_BOOL};
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
       } else if (device_id == "MYRIAD" || device_id == "HDDL") {
@@ -358,7 +370,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["MirrorPad"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
       } else if (device_id == "MYRIAD") {
@@ -389,7 +401,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT8);
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
       }
@@ -402,7 +414,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       supported_types = {DT_FLOAT, DT_HALF,  DT_INT16, DT_INT32,
                          DT_INT64, DT_UINT8, DT_UINT16};
       if (device_id == "CPU") {
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
           supported_types.insert(DT_BOOL);
         }
@@ -498,15 +510,24 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     SupportedTypes(device_id);
-    type_constraint_map["Squeeze"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Squeeze"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+        if(ov_version=="2021.4"){
+          supported_types.insert(DT_BOOL);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["StridedSlice"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_BOOL);
           supported_types.insert(DT_INT8);
-        }
-      } else if (device_id == "GPU") {
+        } 
+      }
+      else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT64);
         }
@@ -534,6 +555,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } else if (device_id == "CPU" || device_id == "GPU") {
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT8);
+        }
+        else if (ov_version == "2021.4") {
+          supported_types.insert(DT_BOOL);
         }
       }
       return supported_types;
@@ -579,7 +603,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["Unpack"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id == "GPU") {
+      if (device_id == "CPU") {
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_BOOL);
+        }
+      }
+      else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT64);
         }
@@ -606,7 +635,10 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_cpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_cpu;
+    } else if (ov_version == "2021.4"){
+      ov_based_op_list = ov_2021_4_op_update_cpu;
     }
+
   } else if (device_id == "GPU") {
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
@@ -616,6 +648,8 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_gpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_gpu;
+    } else if (ov_version == "2021.4"){
+      ov_based_op_list = ov_2021_4_op_update_gpu;
     }
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
     supported_ops.insert(common_supported_ops.begin(),
@@ -626,6 +660,8 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       ov_based_op_list = ov_2021_2_op_update_vpu;
     } else if (ov_version == "2021.3") {
       ov_based_op_list = ov_2021_3_op_update_vpu;
+    } else if (ov_version == "2021.4") {
+      ov_based_op_list = ov_2021_4_op_update_vpu;
     }
   }
   if (!ov_based_op_list.empty()) {
