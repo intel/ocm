@@ -259,6 +259,7 @@ def run_test(test_list, xml_report, verbosity=0):
         for test in test_list:
             names = loader.loadTestsFromName(test)
             suite.addTest(names)
+        assert os.path.exists(xml_report), "Could not find the path"
         with open(xml_report, 'wb') as output:
             sys.stdout = open(os.devnull, "w")
             sys.stderr = open(os.devnull, "w")
