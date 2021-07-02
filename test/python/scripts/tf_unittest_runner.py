@@ -231,6 +231,7 @@ def list_tests(module_list, regex_input):
 
 
 def read_tests_from_file(filename):
+    assert os.path.exists(filename),"Couldn't find the path {}".format(filename)
     with open(filename) as list_of_tests:
         return [
             line.split('#')[0].rstrip('\n').strip(' ')
