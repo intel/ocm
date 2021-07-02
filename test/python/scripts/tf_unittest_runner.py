@@ -231,6 +231,7 @@ def list_tests(module_list, regex_input):
 
 
 def read_tests_from_file(filename):
+    assert os.path.exists(filename),"Couldn't find the path {}".format(filename)
     with open(filename) as list_of_tests:
         return [
             line.split('#')[0].rstrip('\n').strip(' ')
@@ -259,6 +260,7 @@ def run_test(test_list, xml_report, verbosity=0):
         for test in test_list:
             names = loader.loadTestsFromName(test)
             suite.addTest(names)
+        assert os.path.exists(xml_report), "Could not find the path"
         with open(xml_report, 'wb') as output:
             sys.stdout = open(os.devnull, "w")
             sys.stderr = open(os.devnull, "w")
