@@ -8,7 +8,7 @@
 #include "ocm_logging.h"
 #include "onnx/ocm_onnx_checker.h"
 #include "tf/ocm_tf_checker.h"
-
+//#define EXPORT __declspec (dllexport)
 namespace ocm {
 
 const char *OCMStatusMsg[] = {"SUCCESS",

@@ -40,6 +40,7 @@ include_directories(${TF_SRC_DIR})
 # Files that are generated during TF build are here
 include_directories(${TF_SRC_DIR}/bazel-bin)
 include_directories(${TF_SRC_DIR}/bazel-bin/tensorflow/include)
+include_directories(${TF_SRC_DIR}/bazel-bin/tensorflow)
 include_directories(${TensorFlow_INCLUDE_DIR})
 include_directories(${TensorFlow_INCLUDE_DIR}/external/nsync/public)
 
@@ -78,7 +79,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
-message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
+message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS} ")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
 set(APP_NAME ov_ocm)
@@ -98,4 +99,5 @@ target_link_libraries(
     ${TensorFlow_FRAMEWORK_LIBRARY}
     # absl_synchronization
     ocm
+	#"C:\\Users\\Intel\\ovtf_workspace\\ocm\\build\\OCM\\Debug\\ocm.dll"
 )

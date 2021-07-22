@@ -38,10 +38,13 @@ message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
-add_library(ocm SHARED ${SRC})
+add_library(ocm STATIC ${SRC})#SHARED 
 
 string(REPLACE "." ";" TF_VERSION_LIST ${TensorFlow_VERSION})
 list(GET TF_VERSION_LIST 0 TF_MAJOR_VERSION)
 add_compile_definitions(TF_VERSION=${TF_MAJOR_VERSION})
 
+target_link_libraries(  ocm
+                        #"C:\\Users\\Intel\\ovtf_workspace\\ocm\\build\\OCM\\Debug\\ocm.dll"
+                         ${TensorFlow_FRAMEWORK_LIBRARY} )
 
