@@ -16,12 +16,13 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-comment -Wno-sign-compare")
 endif()
 
-include_directories(${TF_SRC_DIR}/bazel-bin)
-include_directories(${TF_SRC_DIR})
-include_directories(${TF_SRC_DIR}/bazel-bin/tensorflow/include)
 include_directories(${TensorFlow_INCLUDE_DIR})
 include_directories(${TensorFlow_INCLUDE_DIR}/external/nsync/public)
 include_directories(../include/)
+
+if(WIN32)
+	add_compile_definitions(OCM_COMPILE_LIBRARY=1)
+endif()
 
 # Make sure that the TF library exists
 if ( APPLE )
@@ -39,7 +40,7 @@ message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
 add_library(ocm SHARED ${SRC})
-if ( APPLE )
+if ( APPLE OR WIN32)
     target_link_libraries(
             ocm
             ${TensorFlow_FRAMEWORK_LIBRARY}
@@ -49,5 +50,3 @@ endif()
 string(REPLACE "." ";" TF_VERSION_LIST ${TensorFlow_VERSION})
 list(GET TF_VERSION_LIST 0 TF_MAJOR_VERSION)
 add_compile_definitions(TF_VERSION=${TF_MAJOR_VERSION})
-
-

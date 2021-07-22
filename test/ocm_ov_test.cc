@@ -88,11 +88,13 @@ int main(int argc, char** argv)
     }
     */
     const char* ocm_log_env_var = std::getenv("OCM_LOG_LEVEL");
-    if (ocm_log_env_var == nullptr) {
+#ifndef _WIN32   
+   if (ocm_log_env_var == nullptr) {
       if (!setenv("OCM_LOG_LEVEL", "0", 0)){
         std::cout <<"OCM_LOG_LEVEL environment variable is not set properly and will fallback to level INFO for the test application"<<std::endl;
       }
     }
+#endif
     Framework_Names fName = Framework_Names::TF;
     std::string device_id = input_device_type;
     
