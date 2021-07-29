@@ -205,7 +205,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8,
         // DT_UINT16, DT_BOOL, DT_STRING};
         supported_types = {DT_FLOAT, DT_INT16,  DT_INT32, DT_INT64,
-                           DT_UINT8, DT_UINT16, DT_BOOL};
+                           DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
@@ -391,6 +391,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NonMaxSuppressionV3"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
@@ -933,6 +934,8 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Neg"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["NonMaxSuppressionV2"] =
+        SimpleConfirmationFunction();
+    confirmation_function_map["NonMaxSuppressionV3"] =
         SimpleConfirmationFunction();
     confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = [device_id](Node *n, bool *result) {
