@@ -215,7 +215,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8,
         // DT_UINT16, DT_BOOL, DT_STRING};
         supported_types = {DT_FLOAT, DT_INT16,  DT_INT32, DT_INT64,
-                           DT_UINT8, DT_UINT16, DT_BOOL};
+                           DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
