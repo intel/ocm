@@ -36,6 +36,12 @@ message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
 add_library(ocm SHARED ${SRC})
+if ( APPLE )
+    target_link_libraries(
+            ocm
+            ${TensorFlow_FRAMEWORK_LIBRARY}
+        )
+endif()
 
 string(REPLACE "." ";" TF_VERSION_LIST ${TensorFlow_VERSION})
 list(GET TF_VERSION_LIST 0 TF_MAJOR_VERSION)

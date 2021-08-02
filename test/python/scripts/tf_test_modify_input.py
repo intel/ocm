@@ -163,6 +163,7 @@ if __name__ == '__main__':
                       required=True)
 
   args = parser.parse_args()
+  assert os.path.exists(args.input_dir), "Could not find the path"
   files = os.listdir(args.input_dir)
   
   for file in files:
