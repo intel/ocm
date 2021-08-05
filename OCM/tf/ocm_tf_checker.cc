@@ -301,6 +301,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx(device_id);
+    type_constraint_map["GatherNd"]["Tparams"] = SupportedTypes(device_id);
+    type_constraint_map["GatherNd"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["Greater"]["T"] =
         SupportedTypes(device_id); // cwise_math
     type_constraint_map["GreaterEqual"]["T"] = SupportedTypes(device_id);
@@ -876,6 +878,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
       }
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["GatherNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Greater"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["GreaterEqual"] =
