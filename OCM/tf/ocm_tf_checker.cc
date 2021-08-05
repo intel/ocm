@@ -811,18 +811,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2DBackpropInput"] =
         SimpleConfirmationFunction();
-    confirmation_function_map["CropAndResize"] = [](Node *n, bool *result) {
-      // Currently OpenVINO supports on "bilinear" method for CropAndResize
-      *result = true;
-      std::string resize_method;
-      std::string type_attr_name = "method";
-      if (GetNodeAttr(n->attrs(), type_attr_name, &resize_method) !=
-              Status::OK() ||
-          resize_method != "bilinear") {
-        *result = false;
-      };
-      return tensorflow::Status::OK();
-    };
+    confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
