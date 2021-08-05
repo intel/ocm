@@ -71,7 +71,6 @@ std::set<std::string> composite_ops = {"ArgMin",
                                        "_FusedDepthwiseConv2dNative",
                                        "_FusedMatMul",
                                        "NonMaxSuppressionV2",
-                                       "NonMaxSuppressionV3",
                                        "NoOp"};
 
 // Op supported only on CPU and not supported on VPU
@@ -153,7 +152,8 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
      {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor"}} // Ops for which OCM has enabled support.
+      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor",
+      "Round", "GatherNd"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
