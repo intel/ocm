@@ -5,7 +5,6 @@
 # ******************************************************************************
 
 cmake_minimum_required(VERSION 3.4)
-
 project (ocm CXX)
 find_package(TensorFlow REQUIRED)
 
@@ -38,7 +37,8 @@ message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
-add_library(ocm STATIC ${SRC})#SHARED 
+add_compile_definitions(OCM_COMPILE_LIBRARY=1)
+add_library(ocm SHARED ${SRC})
 
 string(REPLACE "." ";" TF_VERSION_LIST ${TensorFlow_VERSION})
 list(GET TF_VERSION_LIST 0 TF_MAJOR_VERSION)

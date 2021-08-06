@@ -5,6 +5,7 @@
 # ******************************************************************************
 
 cmake_minimum_required(VERSION 3.4)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 project (ocm CXX)
 # set directory where the custom finders live
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
@@ -99,5 +100,4 @@ target_link_libraries(
     ${TensorFlow_FRAMEWORK_LIBRARY}
     # absl_synchronization
     ocm
-	#"C:\\Users\\Intel\\ovtf_workspace\\ocm\\build\\OCM\\Debug\\ocm.dll"
 )

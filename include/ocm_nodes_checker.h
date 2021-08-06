@@ -13,6 +13,16 @@
 #include <vector>
 #include <memory>
 
+// Control visibility
+#if defined(_WIN32)
+#ifdef OCM_COMPILE_LIBRARY
+#define OCM_EXPORT __declspec(dllexport)
+#else
+#define OCM_EXPORT __declspec(dllimport)
+#endif  // TF_COMPILE_LIBRARY
+#else
+#define OCM_EXPORT __attribute__((visibility("default")))
+#endif  // _WIN32
 
 namespace ocm{
 
@@ -107,7 +117,7 @@ public:
  * which are ideally should be used by user to check which nodes of the graph can
  * run on OpenVINO backends
  */
-class FrameworkNodesChecker{
+OCM_EXPORT class FrameworkNodesChecker{
 public:
   /**
    * OCM Status
@@ -120,25 +130,25 @@ public:
    * @param device_id device on which the user intend to run the graph
    * i.e. "CPU", "GPU", "MYRIAD" or "HDDL"  
    */
-  FrameworkNodesChecker(Framework_Names fw, std::string device_id, std::string ov_version, void* graph);
+  OCM_EXPORT FrameworkNodesChecker(Framework_Names fw, std::string device_id, std::string ov_version, void* graph);
 
   /**
    * To be used with Tensorflow graph
    * @return the list of supported nodes
    */
-  std::vector<void *> MarkSupportedNodes();
+  OCM_EXPORT std::vector<void *> MarkSupportedNodes();
 
   /**
    * To be used with OnnxRT
    * @return the list of unsupported nodes indices  
    */
-  std::vector<unsigned int> GetUnSupportedNodesIndices();
+  OCM_EXPORT std::vector<unsigned int> GetUnSupportedNodesIndices();
 
   /**
    * set disabled ops
    * @param disabled_ops Set of disabled ops name 
    */
-  void SetDisabledOps(const std::set<std::string>); 
+  OCM_EXPORT void SetDisabledOps(const std::set<std::string>);
 
 private:
   /**
