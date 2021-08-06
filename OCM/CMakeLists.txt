@@ -5,7 +5,6 @@
 # ******************************************************************************
 
 cmake_minimum_required(VERSION 3.4)
-
 project (ocm CXX)
 find_package(TensorFlow REQUIRED)
 

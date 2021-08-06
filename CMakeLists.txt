@@ -5,6 +5,7 @@
 # ******************************************************************************
 
 cmake_minimum_required(VERSION 3.4)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 project (ocm CXX)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 # set directory where the custom finders live
