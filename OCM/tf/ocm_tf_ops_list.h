@@ -43,9 +43,6 @@ std::set<std::string> common_supported_ops = {
     "OneHot", // Unittest
     "Pack", "Pad", "PadV2", "Placeholder", "Range", "RealDiv", "Relu", "Relu6",
     "Reshape",
-    //"ResizeBilinear", //Sprint-3 ...Commented as Not supported in OVTF
-    //"ResizeNearestNeighbor", // New models...Commented as Not supported in
-    // OVTF
     "Rsqrt", // Unittest
     "Shape",
     //"Sign", // Unittest - cwise_math // Not supported by OV
@@ -149,14 +146,14 @@ const std::map<std::string, std::set<string>> ov_2021_3_op_update_vpu = {
       "MaxPoolV2"}} // Ops for which OCM has enabled support.
 };
 
-
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
      {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor",
-      "Round", "GatherNd", "CropAndResize"}} // Ops for which OCM has enabled support.
+      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+      "GatherNd", "CropAndResize", "Reverse",
+      "Reciprocal"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
