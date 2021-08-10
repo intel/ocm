@@ -152,8 +152,9 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
      {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor",
-      "Round", "GatherNd", "CropAndResize"}} // Ops for which OCM has enabled support.
+      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+      "GatherNd", "CropAndResize", "Reverse",
+      "Reciprocal"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {

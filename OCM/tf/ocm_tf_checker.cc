@@ -139,6 +139,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
       if (device_id == "CPU") {
+<<<<<<< HEAD
         if (ov_version == "2021.3" ) {
           supported_types.insert(DT_INT32);
         }
@@ -146,6 +147,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           supported_types.insert(DT_INT32);
           supported_types.insert(DT_INT64);
         }
+=======
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
+          supported_types.insert(DT_INT32);
+        }
+>>>>>>> Reciprocal, Reverse ops added
       } else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
           supported_types.insert(DT_INT32);
@@ -215,7 +221,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8,
         // DT_UINT16, DT_BOOL, DT_STRING};
         supported_types = {DT_FLOAT, DT_INT16,  DT_INT32, DT_INT64,
-                           DT_UINT8, DT_UINT16, DT_BOOL, DT_STRING};
+                           DT_UINT8, DT_UINT16, DT_BOOL,  DT_STRING};
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
@@ -510,7 +516,10 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ResizeNearestNeighbor"]["T"] =
         SupportedTypes(device_id);
     type_constraint_map["Reverse"]["T"] = SupportedTypes(device_id);
+<<<<<<< HEAD
     type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
+=======
+>>>>>>> Reciprocal, Reverse ops added
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
@@ -1012,7 +1021,10 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["ResizeNearestNeighbor"] =
         SimpleConfirmationFunction();
     confirmation_function_map["Reverse"] = SimpleConfirmationFunction();
+<<<<<<< HEAD
     confirmation_function_map["ReverseV2"] = SimpleConfirmationFunction();
+=======
+>>>>>>> Reciprocal, Reverse ops added
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
