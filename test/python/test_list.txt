@@ -4,5 +4,4 @@
 #  SPDX-License-Identifier: Apache-2.0
 # ******************************************************************************
 
-image_ops_test.DecodeImageTest.testImageCropAndResize
 gather_nd_op_test.*
