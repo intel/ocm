@@ -781,6 +781,24 @@ static Status ValidateNodeInputDim(const Node *n, tensorflow::int32 count,
   return tensorflow::Status::OK();
 }
 
+// Validate the dimension of the input tensor of the node
+static Status ValidateNodeInputDimMin(const Node *n, tensorflow::int32 count,
+                                   bool *result) {
+  Node *tf_input_node;
+  int input_idx = 0;
+  TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
+  // get input shape
+  TensorShape t;
+  TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "shape", &t));
+  // check the first dimension
+  if (t.dims() < count) {
+    *result = false;
+    OCM_LOG(0) << " ERROR : " << n->name() << "\" supports max  " << count
+               << " input dims, got " << t.dims() << " instead" << std::endl;
+  }
+  return tensorflow::Status::OK();
+}
+
 // Generates a "simple" confirmation function which always returns true,
 static ConfirmationFunction SimpleConfirmationFunction() {
   auto cf = [](tensorflow::Node *, bool *result) {
@@ -857,7 +875,12 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Atanh"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
-    confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
+    confirmation_function_map["BatchToSpaceND"] = [device_id](Node *n, bool *result) {
+      *result = true;
+      tensorflow::int32 count = 2;
+      TF_RETURN_IF_ERROR(ValidateNodeInputDimMin(n, count, result));
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
@@ -1056,7 +1079,12 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
       return tensorflow::Status::OK();
     };
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
-    confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
+    confirmation_function_map["SpaceToBatchND"] = [device_id](Node *n, bool *result) {
+      *result = true;
+      tensorflow::int32 count = 2;
+      TF_RETURN_IF_ERROR(ValidateNodeInputDimMin(n, count, result));
+      return tensorflow::Status::OK();
+    };
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is
     // not completely

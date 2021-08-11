@@ -154,7 +154,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
      {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
       "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
       "GatherNd", "CropAndResize", "Reverse",
-      "Reciprocal"}} // Ops for which OCM has enabled support.
+      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
