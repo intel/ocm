@@ -5,3 +5,7 @@
 # ******************************************************************************
 
 gather_nd_op_test.*
+image_ops_test.ResizeImage*
+math_ops_test.RoundTest.*
+image_ops_test.DecodeImageTest.testImageCropAndResize.*
+image_grad_test_base.CropAndResizeOpTestBase*
