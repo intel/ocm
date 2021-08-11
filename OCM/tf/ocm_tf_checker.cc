@@ -199,11 +199,10 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
         // modified as test cases with OVTF were failing, though CPU
         // supports DT_STRING, so could be a data type issue on the OVTF side
-        // too
         // supported_types={DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8,
         // DT_UINT16, DT_BOOL, DT_STRING};
         supported_types = {DT_FLOAT, DT_INT16,  DT_INT32, DT_INT64,
-                           DT_UINT8, DT_UINT16, DT_BOOL,  DT_STRING};
+                           DT_UINT8, DT_UINT16, DT_BOOL};
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
@@ -465,6 +464,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ResizeNearestNeighbor"]["T"] =
         SupportedTypes(device_id);
     type_constraint_map["Reverse"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
@@ -724,24 +724,6 @@ static Status ValidateNodeInputDim(const Node *n, tensorflow::int32 count,
   return tensorflow::Status::OK();
 }
 
-// Validate the dimension of the input tensor of the node
-static Status ValidateNodeInputDimMin(const Node *n, tensorflow::int32 count,
-                                   bool *result) {
-  Node *tf_input_node;
-  int input_idx = 0;
-  TF_RETURN_IF_ERROR(n->input_node(input_idx, &tf_input_node));
-  // get input shape
-  TensorShape t;
-  TF_RETURN_IF_ERROR(GetNodeAttr(tf_input_node->attrs(), "shape", &t));
-  // check the first dimension
-  if (t.dims() < count) {
-    *result = false;
-    OCM_LOG(0) << " ERROR : " << n->name() << "\" supports max  " << count
-               << " input dims, got " << t.dims() << " instead" << std::endl;
-  }
-  return tensorflow::Status::OK();
-}
-
 // Generates a "simple" confirmation function which always returns true,
 static ConfirmationFunction SimpleConfirmationFunction() {
   auto cf = [](tensorflow::Node *, bool *result) {
@@ -818,12 +800,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Atanh"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
-    confirmation_function_map["BatchToSpaceND"] = [device_id](Node *n, bool *result) {
-      *result = true;
-      tensorflow::int32 count = 2;
-      TF_RETURN_IF_ERROR(ValidateNodeInputDimMin(n, count, result));
-      return tensorflow::Status::OK();
-    };
+    confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
@@ -982,6 +959,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["ResizeNearestNeighbor"] =
         SimpleConfirmationFunction();
     confirmation_function_map["Reverse"] = SimpleConfirmationFunction();
+    confirmation_function_map["ReverseV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
@@ -1011,12 +989,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
       return tensorflow::Status::OK();
     };
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
-    confirmation_function_map["SpaceToBatchND"] = [device_id](Node *n, bool *result) {
-      *result = true;
-      tensorflow::int32 count = 2;
-      TF_RETURN_IF_ERROR(ValidateNodeInputDimMin(n, count, result));
-      return tensorflow::Status::OK();
-    };
+    confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is
     // not completely
