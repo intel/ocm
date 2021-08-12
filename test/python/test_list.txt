@@ -5,7 +5,28 @@
 # ******************************************************************************
 
 gather_nd_op_test.*
-image_ops_test.ResizeImage*
-math_ops_test.RoundTest.*
-image_ops_test.DecodeImageTest.testImageCropAndResize.*
-image_grad_test_base.CropAndResizeOpTestBase*
+
+## Resize Bilinear ops 
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioLarger
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioMultipleImages
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioNoOp
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioSameRatio
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioSmaller
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioSmallerMultipleImages
+image_ops_test.ResizeImagesV2Test.testPreserveAspectRatioSquare
+image_ops_test.ResizeImagesV2Test.testBfloat16MultipleOps
+image_ops_test.ResizeImagesV2Test.testLegacyBicubicMethodsMatchNewMethods
+image_ops_test.ResizeImagesTest.testTensorArguments
+
+# Resizenearestneighbor ops
+image_ops_test.ResizeImagesTest.testResizeUpAlignCornersFalse
+image_ops_test.ResizeImagesTest.testResizeUpAlignCornersTrue
+image_ops_test.ResizeImagesV2Test.testNoOp
+
+image_ops_test.ResizeImagesV2Test.testNoOp  only two passes
+image_ops_test.ResizeImagesV2Test.testResizeUp
+# Round ops
+math_ops_test.RoundTest.testRounding
+
+# CropAndResize ops
+image_ops_test.DecodeImageTest.testImageCropAndResize
