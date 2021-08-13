@@ -161,7 +161,9 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
     {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
      {"Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2"}} // Ops for which OCM has enabled support.
+      "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+      "GatherNd", "CropAndResize", "Reverse",
+      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
@@ -169,7 +171,9 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
     {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
      {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh", "Neg", "Log",
-      "MaxPoolV2"}} // Ops for which OCM has enabled support.
+      "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+      "GatherNd", "CropAndResize", "Reverse",
+      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu"}} // Ops for which OCM has enabled support.
 };
 
 } // namespace ocm
