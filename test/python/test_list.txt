@@ -30,3 +30,13 @@ math_ops_test.RoundTest.testRounding
 
 # CropAndResize ops
 image_ops_test.DecodeImageTest.testImageCropAndResize
+
+reduction_ops_test.AllReductionTest.*
+depthwise_conv_op_test.*
+depthtospace_op_test.*
+check_ops_test.AssertGreaterTest.*
+check_ops_test.AssertGreaterEqualTest.*
+check_ops_test.AssertLessTest.*
+Couldn't find
+one_hot_op_test.*
+spacetobatch_op_test.SpaceToBatchSpaceToDepth.*
