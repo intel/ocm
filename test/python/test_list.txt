@@ -50,5 +50,5 @@
 
 # New ops
 batchtospace_op_test.BatchToSpaceND*
-spacetobatch_op_test.SpaceToBatchNDTest
+spacetobatch_op_test.SpaceToBatchNDTest*
 relu_op_test.EluTest.*
