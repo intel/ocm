@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 3.4)
 project (ocm CXX)
 find_package(TensorFlow REQUIRED)
 
-
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-comment -Wno-sign-compare -Wno-backslash-newline-escape")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -17,6 +16,7 @@ endif()
 
 include_directories(${TensorFlow_INCLUDE_DIR})
 include_directories(${TensorFlow_INCLUDE_DIR}/external/nsync/public)
+
 include_directories(../include/)
 
 if(WIN32)

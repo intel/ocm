@@ -10,7 +10,11 @@ project (ocm CXX)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 # set directory where the custom finders live
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-add_definitions(-DNOMINMAX)
+
+if(WIN32)
+	add_definitions(-DNOMINMAX)
+endif()
+
 # find_package(Threads)
 
 option(FLOAT16_SUPPORT "Enable/Disable float16 support" OFF)
@@ -33,10 +37,9 @@ endif()
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-comment -Wno-sign-compare -Wno-backslash-newline-escape")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wno-comment -Wno-sign-compare")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-comment -Wno-sign-compare")
 endif()
 
-message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 include_directories(${TF_SRC_DIR})
 # Files that are generated during TF build are here
 include_directories(${TF_SRC_DIR}/bazel-genfiles)
@@ -52,7 +55,7 @@ if ( APPLE )
 elseif ( WIN32 )
     set(TF_LIB_NAME _pywrap_tensorflow_internal.lib)    
 else()
-    set(TF_LIB_NAME tensorflow.lib)
+    set(TF_LIB_NAME libtensorflow_framework.so.1)
 endif()
 
 add_library(tensorflow_cc_lib SHARED IMPORTED)
@@ -86,7 +89,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
-message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS} ")
+message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
 set(APP_NAME ov_ocm)

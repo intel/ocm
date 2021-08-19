@@ -94,11 +94,13 @@ message(STATUS "TensorFlow_VERSION: " ${TensorFlow_VERSION})
 # Make sure that the TF library exists
 if ( APPLE )
     set(TF_LIB_NAME libtensorflow_framework.dylib)
+elseif ( WIN32 )
+    set(TF_LIB_NAME tensorflow.lib)
 else()
     if(NOT(TensorFlow_VERSION LESS 2.0))
-        set(TF_LIB_NAME tensorflow.lib)
+        set(TF_LIB_NAME libtensorflow_framework.so.2)
     else()
-        set(TF_LIB_NAME tensorflow.lib)
+        set(TF_LIB_NAME libtensorflow_framework.so.1)
     endif()
 endif()
 
@@ -107,10 +109,9 @@ find_library(
   TensorFlow_FRAMEWORK_LIBRARY
   NAME ${TF_LIB_NAME}
   PATHS ${TensorFlow_DIR}
-#  PATHS ${TF_SRC_DIR}/bazel-bin/tensorflow/
   NO_DEFAULT_PATH
 )
-message("TensorFlow_FRAMEWORK_LIBRARY: ${TensorFlow_FRAMEWORK_LIBRARY}")
+
 find_package_handle_standard_args(
   TensorFlow
   FOUND_VAR TensorFlow_FOUND
