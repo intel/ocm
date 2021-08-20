@@ -24,7 +24,7 @@ except:
     os.system('pip install unittest-xml-reporting')
     import xmlrunner
 
-os.environ['NGRAPH_TF_DISABLE_DEASSIGN_CLUSTERS'] = '1'
+os.environ['OPENVINO_TF_DISABLE_DEASSIGN_CLUSTERS'] = '1'
 
 """
 tf_unittest_runner is primarily used to run tensorflow python 
