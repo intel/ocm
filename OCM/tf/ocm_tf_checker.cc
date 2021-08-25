@@ -349,7 +349,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["MaxPoolV2"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MaxPoolV2"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Max"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Maximum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mean"]["T"] = [device_id, ov_version]() {
@@ -378,6 +386,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["MirrorPad"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
         }
@@ -404,11 +415,23 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Pad"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Pad"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Pad"]["Tpaddings"] = SupportedTypesIdx(device_id);
     type_constraint_map["PadV2"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+
         supported_types.erase(DT_UINT8);
         if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT8);
