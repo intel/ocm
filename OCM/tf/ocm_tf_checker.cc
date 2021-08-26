@@ -234,6 +234,14 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Equal"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["FakeQuantWithMinMaxVars"]["narrow_range"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = {DT_BOOL};
+      return supported_types;
+    }();
+    type_constraint_map["FakeQuantWithMinMaxVars"]["num_bits"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = {DT_INT64};
+      return supported_types;
+    }();    
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["FloorMod"]["T"] = [device_id, ov_version]() {
@@ -817,6 +825,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
+    confirmation_function_map["FakeQuantWithMinMaxVars"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
