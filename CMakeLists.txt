@@ -13,7 +13,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 option(FLOAT16_SUPPORT "Enable/Disable float16 support" OFF)
 if(FLOAT16_SUPPORT)
     message("DT_HALF datatype support for all the devices will be enabled")
-    add_definitions(-DENABLE_DT_HALF)
+    add_definitions(-DENABLE_DT_HALF=1)
 endif()
 unset(FLOAT16_SUPPORT CACHE)
 
