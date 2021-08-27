@@ -120,8 +120,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
       if (device_id == "CPU") {
-        if (ov_version == "2021.3" || ov_version == "2021.4") {
+        if (ov_version == "2021.3" ) {
           supported_types.insert(DT_INT32);
+        }
+        else if (ov_version == "2021.4" ) {
+          supported_types.insert(DT_INT32);
+          supported_types.insert(DT_INT64);
         }
       } else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
@@ -135,8 +139,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       // only Float32 input type is supported
       std::set<DataType> supported_types = {DT_FLOAT};
       if (device_id == "CPU") {
-        if (ov_version == "2021.3" || ov_version == "2021.4") {
+        if (ov_version == "2021.3" ) {
           supported_types.insert(DT_INT32);
+        }
+        else if (ov_version == "2021.4" ) {
+          supported_types.insert(DT_INT32);
+          supported_types.insert(DT_INT64);
         }
       } else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
