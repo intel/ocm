@@ -1046,17 +1046,13 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
 #endif
 
         int *int_array = static_cast<int *>(array);
-        bool found_neg_val = false;
         for (int i = 0; i < values.NumElements(); i++) {
           if (*(int_array + i) < 0) {
-            if (found_neg_val) {
               *result = false;
               OCM_LOG(0) << " ERROR : " << n->type_string()
                          << " Op has multiple negatve value in size_splits."
                          << std::endl;
               return tensorflow::Status::OK();
-            }
-            found_neg_val = true;
           }
         }
       }
