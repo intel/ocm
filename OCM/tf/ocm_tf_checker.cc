@@ -231,6 +231,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
+    type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
     type_constraint_map["DepthwiseConv2dNative"]["T"] =
         SupportedTypes(device_id);
@@ -512,6 +514,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["Sin"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["Sinh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["Size"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Size"]["out_type"] = SupportedTypesIdx(device_id);
@@ -575,6 +578,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
     type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "MYRIAD" || device_id == "HDDL") {
@@ -840,6 +844,10 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2DBackpropInput"] =
         SimpleConfirmationFunction();
+    confirmation_function_map["Cos"] =
+        SimpleConfirmationFunction(); // cwise_math
+    confirmation_function_map["Cosh"] =
+        SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
@@ -996,6 +1004,8 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sign"] =
+        SimpleConfirmationFunction(); // cwise_math
+    confirmation_function_map["Sin"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sinh"] =
         SimpleConfirmationFunction(); // cwise_math
@@ -1166,6 +1176,8 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
         };
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] =
+        SimpleConfirmationFunction(); // cwise_math
+    confirmation_function_map["Tan"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Tanh"] =
         SimpleConfirmationFunction(); // cwise_math

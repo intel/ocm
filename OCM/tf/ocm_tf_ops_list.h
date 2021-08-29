@@ -82,9 +82,14 @@ std::set<std::string> cpu_only_ops = {
     "Atan",  // Unittest - cwise_math
     "Atanh", // Unittest - cwise_math
     "Bucketize",     "ExperimentalSparseWeightedSum",
+    "Cos",  // Unittest - cwise_math
+    "Cosh", // Unittest - cwise_math
     "Neg",  // Unittest - cwise_math
+    "Sin", // Unittest - cwise_math
     "Sinh", // Unittest - cwise_math
-    "SparseToDense", "Tanh"};
+    "SparseToDense", 
+    "Tan",
+    "Tanh"};
 
 std::set<std::string> gpu_only_ops = {"Acos",  // Unittest - cwise_math
                                       "Acosh", // Unittest - cwise_math
