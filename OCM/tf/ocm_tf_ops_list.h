@@ -84,7 +84,8 @@ std::set<std::string> cpu_only_ops = {
     "Bucketize",     "ExperimentalSparseWeightedSum",
     "Neg",  // Unittest - cwise_math
     "Sinh", // Unittest - cwise_math
-    "SparseToDense", "Tanh"};
+    "SparseToDense", 
+    "Tanh"};
 
 std::set<std::string> gpu_only_ops = {"Acos",  // Unittest - cwise_math
                                       "Acosh", // Unittest - cwise_math
@@ -152,8 +153,9 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"update",
      {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
       "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
-      "GatherNd", "CropAndResize", "Reverse",
-      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
+      "GatherNd", "CropAndResize", "Reverse", "Reciprocal", "BatchToSpaceND", 
+      "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
+      "Cos", "Cosh", "Sin", "Tan"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
