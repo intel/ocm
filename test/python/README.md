@@ -1,3 +1,5 @@
+<p>English | <a href="https://github.com/intel/ocm/blob/master/test/python/README_cn.md">简体中文</a></p>
+
 The bash script run_test_setup,
 - Downloads tensorflow repo which has the op unit test sources
 - Downloads openvino_tensorflow unit test runner & patches this script to dump .pb files (after changing inputs to placeholders)

@@ -1,3 +1,6 @@
+<p>English | <a href="https://github.com/intel/ocm/blob/master/README_cn.md">简体中文</a></p>
+
+
 # Operator Capability Manager (OCM)
 
 OCM checks Op support to run a Deep Learning model using OpenVINO on Intel Platforms (CPU, GPU, MYRIAD and HDDL). 
