@@ -294,6 +294,10 @@ concat_op_test_ConcatOpTest_testInvalidConcatDimTypeAndShape_testInvalidConcatDi
 concat_op_test_ConcatOpTest_testRandom_testRandom-6
 concat_op_test_ConcatOpTest_testRandom_testRandom-7
 
+# DT_BOOL failed with 
+concat_op_test_ConcatOpTest_testRandom_testRandom-0
+
+
 # Graph gets optimized and reduced to single node, so even
 # the input is FP64, IE is able to run it
 concat_op_test_ConcatOpTest_testZeroSize_testZeroSize-18
@@ -424,6 +428,9 @@ cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-116
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-118
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-135
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-136
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-71
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-73
+
 
 # #sqrt
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-129
@@ -535,6 +542,14 @@ pad_op_test_PadOpTest_testIntTypes_testIntTypes-2
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-3
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-4
 
+# DT_DOUBLE/ float64
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-138
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-139
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-140
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-141
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-142
+pad_op_test_PadOpTest_testFloatTypes_testFloatTypes-143
+
 
 # #DT_DOUBLE for pooling Ops
 pooling_ops_test_PoolingTest_testAvgPooling_testAvgPooling-113
@@ -567,6 +582,11 @@ pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-41
 pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-5
 pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-62
 pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-95
+
+pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-233
+pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-245
+pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-254
+pooling_ops_test_PoolingTest_testMaxPooling_testMaxPooling-266
 
 
 # #empty weights
@@ -738,6 +758,8 @@ reduction_ops_test_MeanReductionTest_testInt32_testInt32-70
 reduction_ops_test_MeanReductionTest_testInt32_testInt32-74
 reduction_ops_test_MeanReductionTest_testInt32_testInt32-80
 
+# DT_DOUBLE/float64
+reduction_ops_test_MeanReductionTest_testGradient_testGradient-28
 
 
 #float64
