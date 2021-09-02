@@ -15,6 +15,8 @@ argmax_op_test.ArgMaxTest.testOutputEmpty
 
 array_ops_test.StridedSliceTest.*
 
+batchtospace_op_test.BatchToSpaceND*
+
 # It did not capture any test 
 bias_op_test.BiasAddTest*
 
@@ -122,6 +124,8 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
+gather_nd_op_test.*
+
 gather_op_test.GatherTest.testBadAxis
 gather_op_test.GatherTest.testBadIndicesCPU
 gather_op_test.GatherTest.testEmptySlices
@@ -140,6 +144,20 @@ identity_op_py_test.IdentityOpTest.testInt32_2_3
 identity_op_py_test.IdentityOpTest.testInt32_6
 identity_op_py_test.IdentityOpTest.testString
 
+# # CropAndResize ops
+image_ops_test.DecodeImageTest.testImageCropAndResize
+
+## Resize Bilinear ops 
+image_ops_test.ResizeImagesV2Test.testBfloat16MultipleOps
+image_ops_test.ResizeImagesV2Test.testLegacyBicubicMethodsMatchNewMethods
+image_ops_test.ResizeImagesTest.testTensorArguments
+
+# Resizenearestneighbor ops
+image_ops_test.ResizeImagesTest.testResizeUpAlignCornersFalse
+image_ops_test.ResizeImagesTest.testResizeUpAlignCornersTrue
+image_ops_test.ResizeImagesV2Test.testNoOp
+image_ops_test.ResizeImagesV2Test.testResizeUp   
+
 # Delta ops in Sprint 2 
 lrn_op_test.LRNOpTest.testCompute  
 
@@ -147,6 +165,9 @@ lrn_op_test.LRNOpTest.testCompute
 #math_ops_test.EqualityTest.*
 math_ops_test.AddNTest.*
 matmul_op_test.MatMulTest.*
+
+# # Round ops
+math_ops_test.RoundTest.testRounding
 
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape1
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
@@ -176,6 +197,9 @@ reduction_ops_test.MeanReductionTest.testUint8
 relu_op_test.Relu6Test.*
 relu_op_test.ReluTest.testNumbersCPU
 relu_op_test.ReluTest.testNoElement
+
+# Elu op test
+relu_op_test.EluTest.*
 
 reshape_op_test.ReshapeTest.*
 
@@ -209,6 +233,8 @@ slice_op_test.SliceTest.testSlicingInt64Tensor
 slice_op_test.SliceTest.testSlicingWithInt64Index
 
 softmax_op_test.*
+
+spacetobatch_op_test.SpaceToBatchNDTest*
 
 split_op_test.SplitOpTest.testShapeInference
 split_op_test.SplitOpTest.testFailWithoutExplicitNum
