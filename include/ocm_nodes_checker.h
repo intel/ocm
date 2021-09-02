@@ -117,7 +117,7 @@ public:
  * which are ideally should be used by user to check which nodes of the graph can
  * run on OpenVINO backends
  */
-OCM_EXPORT class FrameworkNodesChecker{
+class FrameworkNodesChecker{
 public:
   /**
    * OCM Status
