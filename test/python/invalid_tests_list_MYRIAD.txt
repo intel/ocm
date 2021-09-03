@@ -1055,6 +1055,9 @@ unstack_op_test_UnstackOpTest_testSimple_testSimple-2
 unstack_op_test_UnstackOpTest_testSimple_testSimple-5
 unstack_op_test_UnstackOpTest_testSimple_testSimple-8
 
+# int32
+unstack_op_test_UnstackOpTest_testAgainstNumpy_testAgainstNumpy-8
+
 #Miscellaneous: Myriad Device Error
 gather_op_test_GatherTest_testHigherRank_testHigherRank-100
 gather_op_test_GatherTest_testHigherRank_testHigherRank-101
