@@ -680,8 +680,14 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version == "2021.4") {
           supported_types.insert(DT_BOOL);
         }
-      } else if (device_id == "GPU") {
+      }
+       else if (device_id == "GPU") {
         if (ov_version == "2021.3") {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      else if (device_id == "MYRIAD") {
+        if (ov_version == "2021.4" ) {
           supported_types.insert(DT_INT64);
         }
       }
