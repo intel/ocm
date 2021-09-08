@@ -12,11 +12,18 @@ then
   echo "Tensorflow repo is already available"
 else
   git clone https://github.com/tensorflow/tensorflow.git
-  cd tensorflow; git checkout v2.5.0; 
+fi
+
+cd tensorflow
+branchname=$(git describe --contains HEAD)
+if [[ $branchname  == "v2.5.0" ]]; then
+  echo "Tensorflow repo is already checked out to $branchname"
+else
+  git pull; git checkout v2.5.0; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
-  cd ..
-fi 
+fi
+cd ..
 
 #Download Unit test runner script
 if [ -f "./scripts/tf_unittest_runner.py" ]; then
