@@ -54,7 +54,6 @@ def run_thru_ocm(path, device):
       print("File log {} exists?: {}".format(ocm_log_path,os.path.exists(ocm_log_path)))
 
       if not os.path.exists(ocm_log_path):
-        print(cmd)
         result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
         mc_log_file = open(ocm_log_path, "w")
