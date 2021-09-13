@@ -34,7 +34,6 @@ def run_inference(benchmark_app_path, path, device, ov_name):
       print("File log {} exists?: {}".format(infer_log,os.path.exists(infer_log)))
 
       if not os.path.exists(infer_log):
-        print(cmd)
         result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         if device == "HDDL":
           time.sleep(10)

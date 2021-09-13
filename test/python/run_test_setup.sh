@@ -12,11 +12,17 @@ then
   echo "Tensorflow repo is already available"
 else
   git clone https://github.com/tensorflow/tensorflow.git
-  cd tensorflow; git checkout v2.5.0; 
+fi
+
+cd tensorflow
+if [[ $(git describe --contains HEAD)  == "v2.5.1" ]]; then
+  echo "Tensorflow repo is already checked out to required tf version"
+else
+  git pull; git checkout v2.5.1; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
-  cd ..
-fi 
+fi
+cd ..
 
 #Download Unit test runner script
 if [ -f "./scripts/tf_unittest_runner.py" ]; then
@@ -35,7 +41,7 @@ echo "Installing dependencies in env"
 python3 -m pip install --upgrade pip setuptools  
 pip3 install numpy
 pip3 install six
-pip3 install -U tensorflow==2.5.0
+pip3 install -U tensorflow==2.5.1
 pip3 install unittest-xml-reporting
 pip3 install xmlrunner
 pip3 install networkx

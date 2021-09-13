@@ -318,7 +318,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["GatherV2"]["Tparams"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "GPU") {
-        if (ov_version == "2021.3") {
+        if (ov_version == "2021.3" || ov_version == "2021.4") {
           supported_types.insert(DT_INT64);
         }
       } else if (device_id == "MYRIAD") {
