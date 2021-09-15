@@ -609,6 +609,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           supported_types.insert(DT_INT8);
         }
       }
+      else if (device_id == "HDDL") {
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_INT64);
+        }
+      }
       return supported_types;
     }();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
@@ -852,19 +857,31 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] = [device_id](Node *n, bool *result) {
+    confirmation_function_map["ArgMax"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
-      if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      if ( device_id == "HDDL") {
+          if(ov_version=="2021.4"){
+              tensorflow::int32 count = 7;
+              TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+          }
+          else{
+              tensorflow::int32 count = 5;
+              TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+          }
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["ArgMin"] = [device_id](Node *n, bool *result) {
+    confirmation_function_map["ArgMin"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
-      if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      if ( device_id == "HDDL") {
+        if(ov_version=="2021.4"){
+            tensorflow::int32 count = 7;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+        else{
+            tensorflow::int32 count = 5;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
       }
       return tensorflow::Status::OK();
     };
@@ -1299,8 +1316,14 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
       if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        if(ov_version=="2021.4"){
+            tensorflow::int32 count = 8;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+        else{
+            tensorflow::int32 count = 5;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
       }
       return tensorflow::Status::OK();
     };
