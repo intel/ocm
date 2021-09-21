@@ -1319,7 +1319,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["Transpose"] = [device_id](Node *n,
+    confirmation_function_map["Transpose"] = [device_id,ov_version](Node *n,
                                                          bool *result) {
       *result = true;
       if (device_id == "GPU") {
