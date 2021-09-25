@@ -421,6 +421,8 @@ pad_op_test_PadOpTest_testIntTypes_testIntTypes-26
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-27
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-28
 pad_op_test_PadOpTest_testIntTypes_testIntTypes-29
+pad_op_test_PadOpTest_testCollapseAdjacentNonPaddedDimensions_testCollapseAdjacentNonPaddedDimensions-9
+
 
 
 #MO optimizes the graph with only Pad op
