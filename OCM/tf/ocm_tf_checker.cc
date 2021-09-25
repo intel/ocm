@@ -381,7 +381,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] == 2021 && (ov_version[1]==1 || ov_version[1] == 2)) {
           supported_types.erase(DT_INT32);
         }
-      } else if (device_id == "CPU") {
+      } 
+      else if (device_id == "HDDL") {
+        supported_types.erase(DT_INT32);
+      }
+      else if (device_id == "CPU") {
         supported_types.erase(DT_INT16);
         supported_types.erase(DT_UINT16);
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
