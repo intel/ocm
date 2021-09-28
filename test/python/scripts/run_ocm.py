@@ -38,7 +38,9 @@ def run_thru_ocm(path, device):
     ov_version = "2021.3"
   elif "openvino_2021.4" in ov_ver:
     ov_version = "2021.4"
-  assert(ov_version is not None, "OV Version is incorrect")
+    
+  if ov_version is None:
+    raise AssertionError("OV Version is incorrect")
   print (ov_path, ov_ver, ov_version)
   inv_file="invalid_tests_list_%s.txt"%device
   invalid_test=open(inv_file, 'r') 
