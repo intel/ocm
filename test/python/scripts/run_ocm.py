@@ -21,8 +21,8 @@ def run_thru_ocm(path, device):
         files.append(os.path.join(r,file))
   
   ocm_log_path = "tf_ocm_logs/"+device
-  cmd = ["mkdir", "-p", ocm_log_path]
-  subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  if not os.path.isdir(ocm_log_path):
+    os.mkdir(ocm_log_path)
 
   os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 

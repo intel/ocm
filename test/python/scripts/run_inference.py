@@ -21,8 +21,8 @@ def run_inference(benchmark_app_path, path, device, ov_name):
         files.append(os.path.join(r,file))
   
   infer_log_path = "tf_infer_logs/"+device
-  cmd = ["mkdir", "-p", infer_log_path]
-  subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  if not os.path.isdir(infer_log_path):
+    os.mkdir(infer_log_path)
 
   for f in files:
       # timeout of 60 seconds 
