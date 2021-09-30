@@ -21,7 +21,11 @@ import tf_test_modify_input as modify
 try:
     import xmlrunner
 except:
-    os.system('pip install unittest-xml-reporting')
+    try:
+        from pip import main as pipmain
+    except:
+        from pip._internal.main import main as pipmain
+    pipmain(['install', "unittest-xml-reporting"])
     import xmlrunner
 
 os.environ['OPENVINO_TF_DISABLE_DEASSIGN_CLUSTERS'] = '1'
