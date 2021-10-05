@@ -4,7 +4,7 @@
 #  SPDX-License-Identifier: Apache-2.0
 # ******************************************************************************
 reduction_ops_test.AllReductionTest.*
-depthwise_conv_op_test.*
+depthwise_conv_op_test.DepthwiseConv2DTest.testConv2D2x2Filter
 depthtospace_op_test.*
 math_ops_test.DivAndModTest.testConsistent
 math_ops_test.ModTest.testFixed
