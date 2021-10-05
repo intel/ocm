@@ -25,4 +25,4 @@ sparse_to_dense_op_py_test.SparseToDenseTest.*
 np_array_ops_test.ArrayMethodsTest.testProd
 softplus_op_test.SoftplusTest.*
 relu_op_test.LeakyReluTest.*
-np_math_ops_test.MathTest.testLog
+
