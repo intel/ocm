@@ -1067,6 +1067,9 @@ shape_ops_test_ShapeOpsTest_testSqueezeSpecificDimensionBool_testSqueezeSpecific
 relu_op_test_Relu6Test_testNumbersCPU_testNumbersCPU-1
 relu_op_test_ReluTest_testNumbersCPU_testNumbersCPU-1
 
+# Wrong Test
+relu_op_test_LeakyReluTest_testNumbersCPU_testNumbersCPU-1
+
 #Reshape
 #Placeholder complex128 not supported
 reshape_op_test_ReshapeTest_testComplex128Basic_testComplex128Basic-0

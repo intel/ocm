@@ -827,7 +827,8 @@ reduction_ops_test_MeanReductionTest_testGradient_testGradient-21
 reduction_ops_test_MeanReductionTest_testUint8_testUint8-162
 reduction_ops_test_MeanReductionTest_testUint8_testUint8-86
 
-
+# Wrong Test
+relu_op_test_LeakyReluTest_testNumbersCPU_testNumbersCPU-1
 
 #Complex DTYPE not supported by OCM yet 
 reshape_op_test_ReshapeTest_testComplex128Basic_testComplex128Basic-0

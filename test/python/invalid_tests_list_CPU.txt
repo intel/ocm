@@ -794,6 +794,9 @@ reduction_ops_test_MeanReductionTest_testGradient_testGradient-28
 #float64
 relu_op_test_ReluTest_testNumbersCPU_testNumbersCPU-2
 
+# Wrong Test
+relu_op_test_LeakyReluTest_testNumbersCPU_testNumbersCPU-1
+
 #reshape_Op_Test Complex128 not supported 
 reshape_op_test_ReshapeTest_testComplex128Basic_testComplex128Basic-0
 reshape_op_test_ReshapeTest_testComplex128Basic_testComplex128Basic-1
