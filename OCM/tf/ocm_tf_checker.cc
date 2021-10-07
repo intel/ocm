@@ -449,7 +449,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         supported_types.insert(DT_HALF);
 #endif
       }
-      else if (device_id == "GPU"){
+      else if (device_id == "GPU" ||  device_id == "MYRIAD"){
         if (ov_version == "2021.4") {
           supported_types.insert(DT_INT64);
         }
@@ -458,7 +458,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["OneHot"]["TI"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id == "GPU"){
+      if (device_id == "GPU" ||  device_id == "MYRIAD" ){
          if (ov_version == "2021.4") {
             supported_types.insert(DT_INT64);
         }
