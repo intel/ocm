@@ -695,18 +695,25 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
 
   std::set<std::string> supported_ops = {};
   std::map<std::string, std::set<string>> ov_based_op_list = {};
+  float ver = std::stof(ov_version);
   if (device_id == "CPU") {
     // For default OpenVINO 2021.1 version
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
     supported_ops.insert(cpu_only_ops.begin(), cpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
-    if (ov_version == "2021.2") {
-      ov_based_op_list = ov_2021_2_op_update_cpu;
-    } else if (ov_version == "2021.3") {
-      ov_based_op_list = ov_2021_3_op_update_cpu;
-    } else if (ov_version == "2021.4") {
-      ov_based_op_list = ov_2021_4_op_update_cpu;
+    if (ver >= 2021.2) {
+      for(const auto & e : ov_2021_2_op_update_cpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.3) {
+      for(const auto & e : ov_2021_3_op_update_cpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.4) {
+      for(const auto & e : ov_2021_4_op_update_cpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
     }
 
   } else if (device_id == "GPU") {
@@ -714,24 +721,36 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
                          common_supported_ops.end());
     supported_ops.insert(gpu_only_ops.begin(), gpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
-    if (ov_version == "2021.2") {
-      ov_based_op_list = ov_2021_2_op_update_gpu;
-    } else if (ov_version == "2021.3") {
-      ov_based_op_list = ov_2021_3_op_update_gpu;
-    } else if (ov_version == "2021.4") {
-      ov_based_op_list = ov_2021_4_op_update_gpu;
+    if (ver >= 2021.2) {
+      for(const auto & e : ov_2021_2_op_update_gpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.3) {
+      for(const auto & e : ov_2021_3_op_update_gpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.4) {
+      for(const auto & e : ov_2021_4_op_update_gpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
     }
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
     supported_ops.insert(vpu_only_ops.begin(), vpu_only_ops.end());
     supported_ops.insert(composite_ops.begin(), composite_ops.end());
-    if (ov_version == "2021.2") {
-      ov_based_op_list = ov_2021_2_op_update_vpu;
-    } else if (ov_version == "2021.3") {
-      ov_based_op_list = ov_2021_3_op_update_vpu;
-    } else if (ov_version == "2021.4") {
-      ov_based_op_list = ov_2021_4_op_update_vpu;
+    if (ver >= 2021.2) {
+      for(const auto & e : ov_2021_2_op_update_vpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.3) {
+      for(const auto & e : ov_2021_3_op_update_vpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    } if (ver >= 2021.4) {
+      for(const auto & e : ov_2021_4_op_update_vpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
     }
   }
   if (!ov_based_op_list.empty()) {

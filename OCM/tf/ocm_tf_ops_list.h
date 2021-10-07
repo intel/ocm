@@ -102,80 +102,67 @@ std::set<std::string> vpu_only_ops = {};
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_cpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus",
-      "LeakyRelu"}} // Ops for which OCM has enabled support.
+    {"update", {"Abs", "FloorDiv", "Sign", "Prod", "Softplus",
+                "LeakyRelu"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_gpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Prod", "Softplus",
-      "LeakyRelu"}} // Ops for which OCM has enabled support.
+    {"update", {"Prod", "Softplus","LeakyRelu"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_2_op_update_vpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"FloorDiv", "Prod", "Softplus", "LeakyRelu",
-      "Tanh"}} // Ops for which OCM has enabled support.
+    {"update", {"FloorDiv", "Prod", "Softplus", "LeakyRelu",
+                "Tanh"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_3_op_update_cpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt"}} // Ops for which OCM has enabled support.
+    {"update", {"Log", "MaxPoolV2", "Sqrt"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_3_op_update_gpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2"}} // Ops for which OCM has enabled support.
+    {"update", {"Log","MaxPoolV2"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_3_op_update_vpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh", "Neg", "Log",
-      "MaxPoolV2"}} // Ops for which OCM has enabled support.
+    {"update", {"Neg", "Log", "MaxPoolV2"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
-      "GatherNd", "CropAndResize", "Reverse", "Reciprocal", "BatchToSpaceND", 
-      "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
-      "Cos", "Cosh", "Sin", "Tan"}} // Ops for which OCM has enabled support.
+    {"update", {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
+                "GatherNd", "CropAndResize", "Reverse", "Reciprocal", 
+                "BatchToSpaceND", "SpaceToBatchND", "Elu", 
+                "FakeQuantWithMinMaxVars", "Cos", "Cosh", "Sin", 
+                "Tan"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
-      "GatherNd", "CropAndResize", "Reverse",
-      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
+    {"update", {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
+                "GatherNd", "CropAndResize", "Reverse",
+                "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", 
+                "Elu", "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
     {"add", {}},    // Ops newly added by OpenVINO in this version
     {"remove", {}}, // Ops removed by OpenVINO in this version
-    {"update",
-     {"FloorDiv", "Prod", "Softplus", "LeakyRelu", "Tanh", "Neg", "Log",
-      "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
-      "GatherNd", "CropAndResize", "Reverse",
-      "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
+    {"update", {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
+                "GatherNd", "CropAndResize", "Reverse",
+                "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", 
+                "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
 };
 
 } // namespace ocm
