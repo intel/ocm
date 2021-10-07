@@ -449,9 +449,22 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         supported_types.insert(DT_HALF);
 #endif
       }
+      else if (device_id == "GPU"){
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_INT64);
+        }
+      }
       return supported_types;
     }();
-    type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
+    type_constraint_map["OneHot"]["TI"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU"){
+         if (ov_version == "2021.4") {
+            supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -491,6 +504,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } else if (device_id == "GPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
+        }
+        else if (ov_version == "2021.4") {
+          supported_types.insert(DT_BOOL);
         }
       } else if (device_id == "MYRIAD") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
