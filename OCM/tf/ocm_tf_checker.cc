@@ -165,8 +165,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Bucketize"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -243,6 +244,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         SupportedTypes(device_id);
     type_constraint_map["DepthToSpace"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
       return supported_types;
     }();
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
@@ -341,7 +347,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     // an error
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
-    type_constraint_map["LeakyRelu"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LeakyRelu"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Log"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
@@ -428,8 +442,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV3"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
-    type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["OneHot"]["T"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["T"] = [device_id, ov_version]() {
@@ -558,9 +579,18 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["Softplus"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Softplus"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["SpaceToBatchND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SparseToDense"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sqrt"]["T"] = SupportedTypes(device_id);
@@ -914,6 +944,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
+    confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
@@ -1109,6 +1140,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
+    confirmation_function_map["SparseToDense"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is
     // not completely
     // divisible by "num_split" value
