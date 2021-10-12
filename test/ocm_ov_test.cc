@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     std::string graph_file_name = argv[1];
     std::string input_device_type = argv[2];
     std::string ov_version = argv[3];
-
+ 
     tensorflow::SessionOptions options;
     std::unique_ptr<tensorflow::Session> session(NewSession(options));
     
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     }
     Framework_Names fName = Framework_Names::TF;
     std::string device_id = input_device_type;
-    std::cout << "OpenVINO version " << ov_version << std::endl;
+    
     FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
     if(FC.ocm_status == OCMStatus::SUCCESS){
       std::vector<void *> nodes_list = FC.MarkSupportedNodes();
@@ -104,9 +104,9 @@ int main(int argc, char** argv)
         OCM_LOG(0) <<"All nodes are supported" << std::endl;
     }
     // cast back the nodes in the TF format
-    //std::cout << "---List of Supported Nodes--- "<<"\n";
+    // std::cout << "---List of Supported Nodes--- "<<"\n";
     // for (auto node : nodes_list){
-    //     //std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
+    //     std::cout << ((tensorflow::Node *)node)->type_string() <<  "    " ;
     // }
 
     return 0;

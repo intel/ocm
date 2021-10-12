@@ -85,7 +85,7 @@ public:
   std::string device_id;
 
   /**
-   * ov_version: MVP supports 2021.2
+   * ov_version: MVP supports 2021.4
    */
   std::string ov_version;
 
