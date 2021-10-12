@@ -440,7 +440,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["MirrorPad"]["Tpaddings"] =
         SupportedTypesIdx(device_id);
-    type_constraint_map["Mul"]["T"] = [device_id]() {
+    type_constraint_map["Mul"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT16);
