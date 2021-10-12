@@ -328,7 +328,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx(device_id);
-    type_constraint_map["GatherNd"]["Tparams"] = SupportedTypes(device_id);
+    type_constraint_map["GatherNd"]["Tparams"]  =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU" || device_id == "MYRIAD") {
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["GatherNd"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["Greater"]["T"] =
         SupportedTypes(device_id); // cwise_math
@@ -436,6 +444,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT16);
+      }
+      else if (device_id == "GPU") {
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_INT64);
+        }
       }
       return supported_types;
     }();
@@ -657,7 +670,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
-    type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Sub"]["T"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version == "2021.4") {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
