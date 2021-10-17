@@ -257,14 +257,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Equal"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["FakeQuantWithMinMaxVars"]["narrow_range"] = [device_id, ov_version]() {
-      std::set<DataType> supported_types = {DT_BOOL};
-      return supported_types;
-    }();
-    type_constraint_map["FakeQuantWithMinMaxVars"]["num_bits"] = [device_id, ov_version]() {
-      std::set<DataType> supported_types = {DT_INT64};
-      return supported_types;
-    }();    
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["FloorMod"]["T"] = [device_id, ov_version]() {
