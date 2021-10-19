@@ -94,14 +94,21 @@ int main(int argc, char** argv)
       }
     }
     Framework_Names fName = Framework_Names::TF;
-    std::string device_id = input_device_type;
     std::cout << "OpenVINO version " << ov_version << std::endl;
-    FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
-    if(FC.ocm_status == OCMStatus::SUCCESS){
-      std::vector<void *> nodes_list = FC.MarkSupportedNodes();
-    
-      if(nodes_list.size() == graph.num_op_nodes())
-        OCM_LOG(0) <<"All nodes are supported" << std::endl;
+    int plugin_pos = input_device_type.find(":");
+    if (plugin_pos!=std::string::npos)
+        input_device_type = input_device_type.substr(plugin_pos+1);
+
+    std::stringstream iss(input_device_type);
+    std::string device_id;
+    while (std::getline(iss, device_id, ',')) {
+        FrameworkNodesChecker FC(fName, device_id, ov_version, &graph);
+        if(FC.ocm_status == OCMStatus::SUCCESS){
+        std::vector<void *> nodes_list = FC.MarkSupportedNodes();
+
+        if(nodes_list.size() == graph.num_op_nodes())
+            OCM_LOG(0) <<"All nodes are supported" << std::endl;
+        }
     }
     // cast back the nodes in the TF format
     //std::cout << "---List of Supported Nodes--- "<<"\n";
