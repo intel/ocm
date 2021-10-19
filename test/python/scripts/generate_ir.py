@@ -15,8 +15,8 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
   ov_name=os.path.basename(ov_path)
   files=[]
   mo_log_path = "tf_mo_logs/"+device
-  cmd = ["mkdir", "-p", mo_log_path]
-  subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+  if not os.path.isdir(mo_log_path):
+    os.mkdir(mo_log_path)
   for r,d,f in os.walk(path):
     for file in f:
       if '.pb' in file:
@@ -46,8 +46,8 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
     mo_op_path = "pbfiles_mo/"+ov_name+"/"+device
 
     if not os.path.exists(mo_op_path):
-      cmd =["mkdir", "-p", mo_op_path]
-      subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+      if not os.path.isdir(mo_op_path):
+        os.mkdir(mo_op_path)
 
     mo_out = str(pathlib.Path(fname).parent.absolute())
     mo_out = mo_out.replace("pbfiles", mo_op_path)
