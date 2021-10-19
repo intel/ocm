@@ -87,9 +87,9 @@ int main(int argc, char** argv)
         std::cout  << node->type_string()  <<  "type is " << dt << std::endl;
     }
     */
-    const char* ocm_log_env_var = std::getenv("OCM_LOG_LEVEL");
 #ifndef _WIN32   
-   if (ocm_log_env_var == nullptr) {
+    const char* ocm_log_env_var = std::getenv("OCM_LOG_LEVEL");
+    if (ocm_log_env_var == nullptr) {
       if (!setenv("OCM_LOG_LEVEL", "0", 0)){
         std::cout <<"OCM_LOG_LEVEL environment variable is not set properly and will fallback to level INFO for the test application"<<std::endl;
       }
