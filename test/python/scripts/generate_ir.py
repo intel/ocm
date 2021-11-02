@@ -16,7 +16,7 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
   files=[]
   mo_log_path = "tf_mo_logs/"+device
   if not os.path.isdir(mo_log_path):
-    os.mkdir(mo_log_path)
+    os.makedirs(mo_log_path, exist_ok=True)
   for r,d,f in os.walk(path):
     for file in f:
       if '.pb' in file:

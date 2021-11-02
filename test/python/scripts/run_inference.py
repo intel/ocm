@@ -22,7 +22,7 @@ def run_inference(benchmark_app_path, path, device, ov_name):
   
   infer_log_path = "tf_infer_logs/"+device
   if not os.path.isdir(infer_log_path):
-    os.mkdir(infer_log_path)
+    os.makedirs(infer_log_path, exist_ok=True)
 
   for f in files:
       # timeout of 60 seconds 
