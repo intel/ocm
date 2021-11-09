@@ -47,7 +47,7 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
 
     if not os.path.exists(mo_op_path):
       if not os.path.isdir(mo_op_path):
-        os.mkdir(mo_op_path)
+        os.makedirs(mo_op_path)
 
     mo_out = str(pathlib.Path(fname).parent.absolute())
     mo_out = mo_out.replace("pbfiles", mo_op_path)
