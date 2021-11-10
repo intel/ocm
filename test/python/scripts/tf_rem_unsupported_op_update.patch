@@ -1,5 +1,5 @@
 diff --git a/tensorflow/python/kernel_tests/cwise_ops_binary_test.py b/tensorflow/python/kernel_tests/cwise_ops_binary_test.py
-index 17f381ed9ff..5347ba60508 100644
+index bd40b9c8ae7..5e68dd4eda5 100644
 --- a/tensorflow/python/kernel_tests/cwise_ops_binary_test.py
 +++ b/tensorflow/python/kernel_tests/cwise_ops_binary_test.py
 @@ -211,12 +211,13 @@ class BinaryOpTest(test.TestCase):
@@ -51,7 +51,7 @@ index 17f381ed9ff..5347ba60508 100644
      x = np.arange(1, 13, 2).reshape(1, 3, 2).astype(np.uint8)
      y = np.arange(1, 7, 1).reshape(1, 3, 2).astype(np.uint8)
 diff --git a/tensorflow/python/kernel_tests/cwise_ops_unary_test.py b/tensorflow/python/kernel_tests/cwise_ops_unary_test.py
-index 258c218435b..5b721d2f385 100644
+index 83dfa2ef2d4..6503b4db044 100644
 --- a/tensorflow/python/kernel_tests/cwise_ops_unary_test.py
 +++ b/tensorflow/python/kernel_tests/cwise_ops_unary_test.py
 @@ -202,7 +202,7 @@ class UnaryOpTest(test.TestCase):
@@ -186,7 +186,7 @@ index 258c218435b..5b721d2f385 100644
      self._compareCpu(z, compute_f32(np.log), math_ops.log)
      self._compareCpu(z, compute_f32(np.log1p), math_ops.log1p)
      self._compareCpu(y, np.sign, math_ops.sign)
-@@ -502,7 +509,7 @@ class UnaryOpTest(test.TestCase):
+@@ -505,7 +512,7 @@ class UnaryOpTest(test.TestCase):
      self._compareCpu(y, np.sqrt, math_ops.sqrt)
      self._compareCpu(y, self._rsqrt, math_ops.rsqrt)
      self._compareBoth(x, np.exp, math_ops.exp)
@@ -195,7 +195,7 @@ index 258c218435b..5b721d2f385 100644
      self._compareCpu(y, np.log, math_ops.log)
      self._compareCpu(y, np.log1p, math_ops.log1p)
      self._compareCpu(x, np.sinh, math_ops.sinh)
-@@ -547,7 +554,7 @@ class UnaryOpTest(test.TestCase):
+@@ -549,7 +556,7 @@ class UnaryOpTest(test.TestCase):
      self._compareCpu(y, np.sqrt, math_ops.sqrt)
      self._compareCpu(y, self._rsqrt, math_ops.rsqrt)
      self._compareBoth(x, np.exp, math_ops.exp)
