@@ -331,7 +331,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["GatherNd"]["Tparams"]  =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "GPU" || device_id == "MYRIAD") {
-        if (ov_version == "2021.4") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_INT64);
         }
       }
@@ -446,7 +446,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         supported_types.erase(DT_UINT16);
       }
       else if (device_id == "GPU") {
-        if (ov_version == "2021.4") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_INT64);
         }
       }
@@ -463,7 +463,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
 #endif
       }
       else if (device_id == "GPU" ||  device_id == "MYRIAD"){
-        if (ov_version == "2021.4") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_INT64);
         }
       }
@@ -472,7 +472,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["OneHot"]["TI"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "GPU" ||  device_id == "MYRIAD" ){
-         if (ov_version == "2021.4") {
+         if (ov_version[0] > 2021 || ov_version[1] >= 4) {
             supported_types.insert(DT_INT64);
         }
       }
@@ -518,7 +518,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
         }
-        else if (ov_version == "2021.4") {
+        else if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_BOOL);
         }
       } else if (device_id == "MYRIAD") {
@@ -663,7 +663,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           }
       }
       else if (device_id == "HDDL") {
-        if (ov_version == "2021.4") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_INT64);
         }
       }
@@ -673,7 +673,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Sub"]["T"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "GPU") {
-        if (ov_version == "2021.4") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_INT64);
         }
       }
@@ -945,7 +945,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["ArgMax"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
       if ( device_id == "HDDL") {
-          if(ov_version=="2021.4"){
+          if (ov_version[0] > 2021 || ov_version[1] >= 4) {
               tensorflow::int32 count = 7;
               TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
           }
@@ -959,7 +959,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["ArgMin"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
       if ( device_id == "HDDL") {
-        if(ov_version=="2021.4"){
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
             tensorflow::int32 count = 7;
             TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
@@ -1402,7 +1402,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
       if (device_id == "HDDL") {
-        if(ov_version=="2021.4"){
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
             tensorflow::int32 count = 8;
             TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
