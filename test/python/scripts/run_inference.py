@@ -26,7 +26,10 @@ def run_inference(benchmark_app_path, path, device, ov_name):
 
   for f in files:
       # timeout of 60 seconds 
-      cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
+      if device == "HDDL":
+        cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
+      else:
+        cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1", "-nstreams", "1"]
 
       start=13+len(device)+len(ov_name)
       infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")

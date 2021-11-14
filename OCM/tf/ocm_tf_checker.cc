@@ -165,8 +165,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Bucketize"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -243,6 +244,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         SupportedTypes(device_id);
     type_constraint_map["DepthToSpace"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
       return supported_types;
     }();
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
@@ -322,7 +328,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["GatherV2"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["GatherV2"]["Taxis"] = SupportedTypesIdx(device_id);
-    type_constraint_map["GatherNd"]["Tparams"] = SupportedTypes(device_id);
+    type_constraint_map["GatherNd"]["Tparams"]  =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU" || device_id == "MYRIAD") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["GatherNd"]["Tindices"] = SupportedTypesIdx(device_id);
     type_constraint_map["Greater"]["T"] =
         SupportedTypes(device_id); // cwise_math
@@ -341,7 +355,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     // an error
     // For other attributes TF automatically typecasts them to required types
     type_constraint_map["LRN"]["T"] = {DT_BFLOAT16, DT_HALF, DT_FLOAT};
-    type_constraint_map["LeakyRelu"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LeakyRelu"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Log"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
@@ -381,9 +403,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] == 2021 && (ov_version[1]==1 || ov_version[1] == 2)) {
           supported_types.erase(DT_INT32);
         }
-      } else if (device_id == "HDDL") {
+      } 
+      else if (device_id == "HDDL") {
         supported_types.erase(DT_INT32);
-      } else if (device_id == "CPU") {
+      }
+      else if (device_id == "CPU") {
         supported_types.erase(DT_INT16);
         supported_types.erase(DT_UINT16);
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
@@ -416,19 +440,44 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["MirrorPad"]["Tpaddings"] =
         SupportedTypesIdx(device_id);
-    type_constraint_map["Mul"]["T"] = [device_id]() {
+    type_constraint_map["Mul"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT16);
+      }
+      else if (device_id == "GPU") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_INT64);
+        }
       }
       return supported_types;
     }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV3"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["OneHot"]["axis"] = SupportedTypesIdx(device_id);
-    type_constraint_map["OneHot"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["OneHot"]["TI"] = SupportedTypes(device_id);
+    type_constraint_map["OneHot"]["T"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      else if (device_id == "GPU" ||  device_id == "MYRIAD"){
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
+    type_constraint_map["OneHot"]["TI"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU" ||  device_id == "MYRIAD" ){
+         if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+            supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Pack"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Pad"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -468,6 +517,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } else if (device_id == "GPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
+        }
+        else if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_BOOL);
         }
       } else if (device_id == "MYRIAD") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
@@ -556,9 +608,18 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["Softplus"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Softplus"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["SpaceToBatchND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SpaceToDepth"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SparseToDense"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Split"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SplitV"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Sqrt"]["T"] = SupportedTypes(device_id);
@@ -601,10 +662,23 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
             supported_types.insert(DT_INT8);
           }
       }
+      else if (device_id == "HDDL") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_INT64);
+        }
+      }
       return supported_types;
     }();
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
-    type_constraint_map["Sub"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Sub"]["T"] =  [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+          supported_types.insert(DT_INT64);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
@@ -868,19 +942,31 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["AddN"] = SimpleConfirmationFunction();
     confirmation_function_map["AddV2"] = SimpleConfirmationFunction();
     confirmation_function_map["All"] = SimpleConfirmationFunction();
-    confirmation_function_map["ArgMax"] = [device_id](Node *n, bool *result) {
+    confirmation_function_map["ArgMax"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
-      if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      if ( device_id == "HDDL") {
+          if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+              tensorflow::int32 count = 7;
+              TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+          }
+          else{
+              tensorflow::int32 count = 5;
+              TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+          }
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["ArgMin"] = [device_id](Node *n, bool *result) {
+    confirmation_function_map["ArgMin"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
-      if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+      if ( device_id == "HDDL") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+            tensorflow::int32 count = 7;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+        else{
+            tensorflow::int32 count = 5;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
       }
       return tensorflow::Status::OK();
     };
@@ -895,6 +981,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
+    confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
@@ -1090,6 +1177,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToDepth"] = SimpleConfirmationFunction();
+    confirmation_function_map["SparseToDense"] = SimpleConfirmationFunction();
     // TF itself throws an error if the num of dimensions at "split_dim" axis is
     // not completely
     // divisible by "num_split" value
@@ -1302,7 +1390,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
       }
       return tensorflow::Status::OK();
     };
-    confirmation_function_map["Transpose"] = [device_id](Node *n,
+    confirmation_function_map["Transpose"] = [device_id,ov_version](Node *n,
                                                          bool *result) {
       *result = true;
       if (device_id == "GPU") {
@@ -1314,8 +1402,14 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
       if (device_id == "HDDL") {
-        tensorflow::int32 count = 5;
-        TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
+            tensorflow::int32 count = 8;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
+        else{
+            tensorflow::int32 count = 5;
+            TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
+        }
       }
       return tensorflow::Status::OK();
     };

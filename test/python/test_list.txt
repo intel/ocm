@@ -20,12 +20,18 @@ batchtospace_op_test.BatchToSpaceND*
 # It did not capture any test 
 bias_op_test.BiasAddTest*
 
+bucketize_op_test.BucketizationOpTest.*
+
 cast_op_test.CastOpTest.testBasic
 cast_op_test.CastOpTest.testBfloat16
 cast_op_test.CastOpTest.testRandom
 cast_op_test.CastOpTest.testIntToFloatBoundary
 cast_op_test.CastOpTest.testInfNan
 cast_op_test.CastOpTest.testCastToTypeOfVariable
+
+check_ops_test.AssertGreaterTest.*
+check_ops_test.AssertGreaterEqualTest.*
+check_ops_test.AssertLessTest.*
 
 # Didn't find any tests for Conv2DBackpropInput yet
 
@@ -124,6 +130,9 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
+depthwise_conv_op_test.DepthwiseConv2DTest.testConv2D2x2Filter
+depthtospace_op_test.*
+
 gather_nd_op_test.*
 
 gather_op_test.GatherTest.testBadAxis
@@ -164,6 +173,11 @@ lrn_op_test.LRNOpTest.testCompute
 #No valid tests in these
 #math_ops_test.EqualityTest.*
 math_ops_test.AddNTest.*
+
+math_ops_test.DivAndModTest.testConsistent
+math_ops_test.ModTest.testFixed
+math_ops_test.DivAndModTest.testFloorModInt
+
 matmul_op_test.MatMulTest.*
 
 # # Round ops
@@ -174,6 +188,8 @@ nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape3
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape4
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape5
+
+one_hot_op_test.*
 
 pad_op_test.PadOpTest.*
 
@@ -194,12 +210,18 @@ reduction_ops_test.MeanReductionTest.testSizeOverflowInt16
 reduction_ops_test.MeanReductionTest.testSizeOverflowUint16
 reduction_ops_test.MeanReductionTest.testUint8
 
+# All op
+reduction_ops_test.AllReductionTest.*
+
 relu_op_test.Relu6Test.*
 relu_op_test.ReluTest.testNumbersCPU
 relu_op_test.ReluTest.testNoElement
 
 # Elu op test
 relu_op_test.EluTest.*
+
+# LeakyRelu op
+relu_op_test.LeakyReluTest.*
 
 reshape_op_test.ReshapeTest.*
 
@@ -234,7 +256,11 @@ slice_op_test.SliceTest.testSlicingWithInt64Index
 
 softmax_op_test.*
 
+# Softplus op
+softplus_op_test.SoftplusTest.*
+
 spacetobatch_op_test.SpaceToBatchNDTest*
+spacetobatch_op_test.SpaceToBatchSpaceToDepth.*
 
 split_op_test.SplitOpTest.testShapeInference
 split_op_test.SplitOpTest.testFailWithoutExplicitNum
