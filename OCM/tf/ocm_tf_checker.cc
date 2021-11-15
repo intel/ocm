@@ -235,6 +235,13 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["Conv3D"]["T"] = [device_id]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "MYRIAD" || device_id == "HDDL") {
+        supported_types.erase(DT_INT32);
+      }
+      return supported_types;
+    }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
     type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
@@ -245,6 +252,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = SupportedTypes(device_id);
       return supported_types;
     }();
+    type_constraint_map["Einsum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -876,6 +884,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["Conv3D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2DBackpropInput"] =
         SimpleConfirmationFunction();
     confirmation_function_map["Cos"] =
@@ -886,6 +895,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
+    confirmation_function_map["Einsum"] = SimpleConfirmationFunction();
     confirmation_function_map["Elu"] = SimpleConfirmationFunction();
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
