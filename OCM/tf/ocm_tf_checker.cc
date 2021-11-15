@@ -167,6 +167,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["AvgPool3D"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
@@ -551,6 +560,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ScatterNd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ScatterNd"]["Tindices"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Sigmoid"]["T"] =
@@ -906,6 +917,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Atanh"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["AvgPool3D"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
@@ -1076,6 +1088,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["ReverseV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
+    confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sign"] =
