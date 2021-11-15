@@ -22,7 +22,7 @@ def run_thru_ocm(path, device):
   
   ocm_log_path = "tf_ocm_logs/"+device
   if not os.path.isdir(ocm_log_path):
-    os.makedirs(ocm_log_path)
+    os.makedirs(ocm_log_path, exist_ok=True)
 
   os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 

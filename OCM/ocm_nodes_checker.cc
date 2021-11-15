@@ -26,7 +26,6 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw,
 
   switch (fw) {
   case Framework_Names::TF:
-    // std::cout << "Inside FrameworkNodesChecker::TF" << std::endl;
     ocmFrameworkObj = std::unique_ptr<TFNodesChecker>(new TFNodesChecker);
     break;
   case Framework_Names::ONNX:
@@ -47,8 +46,7 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw,
     return;
   }
   ocmFrameworkObj->device_id = device_id;
-
-  if ((ov_version != "2021.1") && (ov_version != "2021.2") &&
+   if ((ov_version != "2021.1") && (ov_version != "2021.2") &&
       (ov_version != "2021.3") &&  (ov_version != "2021.4")) {
     OCM_LOG(3) << "Invalid OpenVINO version - " << device_id
                << ". Allowed options are 2021.1, 2021.2, 2021.3, 2021.4" << std::endl;
@@ -56,6 +54,7 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw,
     return;
   }
   ocmFrameworkObj->ov_version = ov_version;
+
 
   if (graph == NULL) {
     ocm_status = OCMStatus::INVALID_GRAPH;

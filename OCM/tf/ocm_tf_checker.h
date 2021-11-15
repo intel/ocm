@@ -29,11 +29,12 @@ namespace ocm {
 using ConfirmationFunction =
     std::function<tensorflow::Status(tensorflow::Node *, bool *)>;
 const std::map<std::string, ConfirmationFunction> &
-GetConfirmationMap(std::string device_id);
+GetConfirmationMap(std::string device_id, int *ov_ver_macro_micro_patch);
 
 using TypeConstraintMap =
     std::map<std::string, std::map<std::string, std::set<DataType>>>;
-const TypeConstraintMap &GetTypeConstraintMap(std::string device_id);
+const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
+                                              int *ov_ver_macro_micro_patch);
 
 /**
  * Check if the value of a constant tensor is zero or negative
@@ -58,11 +59,11 @@ static void CheckTensorValues(const Tensor &values, bool *result) {
 /**
  * Generates the set of the Ops supported for tensorflow
  * @param device_id string with device info for e.g. "CPU", "GPU" etc
- * @param ov_version string with ov version info for e.g. "2021.1"
+ * @param ov_ver_macro_micro_patch int list with ov version - macro, micro, patch info for e.g. 2021,4,1"
  * @return Set of tensorflow ops based on the above input info
  */
 std::set<std::string> GetTFSupportedOPs(std::string device_id,
-                                        std::string ov_version);
+                                        int *ov_ver_macro_micro_patch);
 
 /**
  * Extends the NodesChecker class for tensorflow framework
@@ -77,6 +78,8 @@ public:
     // graphDef = static_cast<tensorflow::GraphDef*> (tf_graph);
     graph = static_cast<tensorflow::Graph *>(tf_graph);
   }
+
+  int ov_ver_macro_micro_patch[3] = {0, 0, 0};
 
   /**
    * Implements all the required checks on each node of the graph
