@@ -381,6 +381,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["MaxPool3D"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Max"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Maximum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mean"]["T"] = [device_id, ov_version]() {
@@ -583,7 +592,21 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    SupportedTypes(device_id);
+    type_constraint_map["SquaredDifference"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      } else if (device_id == "GPU") {
+          supported_types.erase(DT_BFLOAT16);
+      } else if (device_id == "MYRIAD") {
+        if (ov_version == "2021.3") {
+          supported_types.erase(DT_INT32);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Squeeze"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -964,6 +987,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["MaxPool3D"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPoolV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Max"] = SimpleConfirmationFunction();
     confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
@@ -1119,6 +1143,7 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     };
     confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Square"] = SimpleConfirmationFunction();
+    confirmation_function_map["SquaredDifference"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = [device_id](Node *n, bool *result) {
       std::vector<int32> tf_axis;
       GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
