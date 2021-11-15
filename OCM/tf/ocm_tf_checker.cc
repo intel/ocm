@@ -252,6 +252,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Conv3DBackpropInputV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
     type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
@@ -927,6 +928,8 @@ GetConfirmationMap(std::string device_id, std::string ov_version) {
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv3D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2DBackpropInput"] =
+        SimpleConfirmationFunction();
+    confirmation_function_map["Conv3DBackpropInputV2"] =
         SimpleConfirmationFunction();
     confirmation_function_map["Cos"] =
         SimpleConfirmationFunction(); // cwise_math

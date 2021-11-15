@@ -156,7 +156,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
       "GatherNd", "CropAndResize", "Reverse", "Reciprocal", "BatchToSpaceND", 
       "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
       "Cos", "Cosh", "Sin", "Tan", "Conv3D", "MaxPool3D", "Floor", "ScatterNd",
-      "AvgPool3D"}} // Ops for which OCM has enabled support.
+      "AvgPool3D", "Conv3DBackpropInputV2"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
