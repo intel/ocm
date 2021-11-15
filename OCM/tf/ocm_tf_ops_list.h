@@ -155,7 +155,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
       "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
       "GatherNd", "CropAndResize", "Reverse", "Reciprocal", "BatchToSpaceND", 
       "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
-      "Cos", "Cosh", "Sin", "Tan", "EinSum", "Conv3D", "MaxPool3D"}} // Ops for which OCM has enabled support.
+      "Cos", "Cosh", "Sin", "Tan", "Conv3D", "MaxPool3D", "Floor"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
@@ -166,7 +166,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
       "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
       "GatherNd", "CropAndResize", "Reverse",
       "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
-      "Conv3D", "MaxPool3D"}} // Ops for which OCM has enabled support.
+      "Conv3D", "MaxPool3D", "Floor"}} // Ops for which OCM has enabled support.
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
