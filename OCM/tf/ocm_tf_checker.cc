@@ -722,11 +722,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
     type_constraint_map["Sub"]["T"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id == "GPU") {
-        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
-          supported_types.insert(DT_INT64);
-        }
-      }
       return supported_types;
     }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
