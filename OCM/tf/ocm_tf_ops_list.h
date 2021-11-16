@@ -132,11 +132,8 @@ const std::map<std::string, std::set<string>> ov_2021_3_op_update_vpu = {
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
-    {"add", {}},    // Ops newly added by OpenVINO in this version
-    {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
-     {"Abs", "FloorDiv", "Sign", "Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "Sqrt", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+     {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
       "GatherNd", "CropAndResize", "Reverse", "Reciprocal", "BatchToSpaceND", 
       "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
       "Cos", "Cosh", "Sin", "Tan", "Conv3D", "MaxPool3D", "Floor", "ScatterNd",
@@ -144,11 +141,8 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_cpu = {
 };
 
 const std::map<std::string, std::set<string>> ov_2021_4_op_update_gpu = {
-    {"add", {}},    // Ops newly added by OpenVINO in this version
-    {"remove", {}}, // Ops removed by OpenVINO in this version
     {"update",
-     {"Prod", "Softplus", "LeakyRelu", "Log",
-      "MaxPoolV2", "ResizeBilinear", "ResizeNearestNeighbor", "Round",
+     {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
       "GatherNd", "CropAndResize", "Reverse",
       "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", "FakeQuantWithMinMaxVars",
       "Conv3D", "MaxPool3D", "Floor", "ScatterNd", "AvgPool3D"}} // Ops for which OCM has enabled support.
@@ -158,7 +152,8 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
     {"update", {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
                 "GatherNd", "CropAndResize", "Reverse",
                 "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", 
-                "FakeQuantWithMinMaxVars"}} // Ops for which OCM has enabled support.
+                "FakeQuantWithMinMaxVars", "Conv3D", "MaxPool3D", "Floor", "ScatterNd",
+                "AvgPool3D", "Conv3DBackpropInputV2"}} // Ops for which OCM has enabled support.
 };
 
 } // namespace ocm
