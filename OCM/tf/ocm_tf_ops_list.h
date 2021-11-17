@@ -152,7 +152,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
     {"update", {"ResizeBilinear", "ResizeNearestNeighbor", "Round",
                 "GatherNd", "CropAndResize", "Reverse",
                 "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", 
-                "FakeQuantWithMinMaxVars", "Conv3D", "MaxPool3D", "Floor", "ScatterNd",
+                "FakeQuantWithMinMaxVars", "MaxPool3D", "Floor", "ScatterNd",
                 "AvgPool3D", "Conv3DBackpropInputV2"}} // Ops for which OCM has enabled support.
 };
 
