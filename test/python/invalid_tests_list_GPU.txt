@@ -508,6 +508,7 @@ cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-123
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-124
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-77
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-78
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-76
 
 
 #sqrt
@@ -519,6 +520,7 @@ cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-121
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-122
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-137
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-138
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-62
 
 #sign
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-141
@@ -566,6 +568,7 @@ cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-128
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-143
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-144
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-118
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-72
 
 #Log1p
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-41
@@ -614,6 +617,7 @@ cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-7
 cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-8
 
 # Tan
+cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-67
 cwise_ops_unary_test_UnaryOpTest_testFloatBasic_testFloatBasic-68
 
 #---------------------------------------------------------------------
