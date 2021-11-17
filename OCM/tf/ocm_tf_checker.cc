@@ -479,11 +479,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT16);
       }
-      else if (device_id == "GPU") {
-        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
-          supported_types.insert(DT_INT64);
-        }
-      }
       return supported_types;
     }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
