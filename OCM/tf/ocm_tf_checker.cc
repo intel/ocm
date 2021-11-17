@@ -165,6 +165,16 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["AvgPool3D"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
+    type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Bucketize"]["T"] = SupportedTypes(device_id);
@@ -236,7 +246,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["Conv3D"]["T"] = [device_id]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "MYRIAD" || device_id == "HDDL") {
+        supported_types.erase(DT_INT32);
+      }
+      return supported_types;
+    }();
     type_constraint_map["Conv2DBackpropInput"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Conv3DBackpropInputV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
     type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
@@ -265,6 +283,13 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
+    type_constraint_map["Floor"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        supported_types.erase(DT_BFLOAT16);
+      }
+      return supported_types;
+    }();
     type_constraint_map["FloorMod"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -395,6 +420,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["MaxPool3D"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+    }();
     type_constraint_map["Max"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Maximum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mean"]["T"] = [device_id, ov_version]() {
@@ -444,11 +478,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.erase(DT_UINT16);
-      }
-      else if (device_id == "GPU") {
-        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
-          supported_types.insert(DT_INT64);
-        }
       }
       return supported_types;
     }();
@@ -580,6 +609,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ScatterNd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ScatterNd"]["Tindices"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["out_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Sigmoid"]["T"] =
@@ -636,7 +667,21 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    SupportedTypes(device_id);
+    type_constraint_map["SquaredDifference"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      } else if (device_id == "GPU") {
+          supported_types.erase(DT_BFLOAT16);
+      } else if (device_id == "MYRIAD") {
+        if (ov_version[0] > 2021 || ov_version[1] >= 3) {
+          supported_types.erase(DT_INT32);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Squeeze"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -672,11 +717,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["StridedSlice"]["Index"] = SupportedTypesIdx(device_id);
     type_constraint_map["Sub"]["T"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
-      if (device_id == "GPU") {
-        if (ov_version[0] > 2021 || ov_version[1] >= 4) {
-          supported_types.insert(DT_INT64);
-        }
-      }
       return supported_types;
     }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
@@ -979,6 +1019,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Atanh"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["AvgPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["AvgPool3D"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
@@ -987,7 +1028,10 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
+    confirmation_function_map["Conv3D"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2DBackpropInput"] =
+        SimpleConfirmationFunction();
+    confirmation_function_map["Conv3DBackpropInputV2"] =
         SimpleConfirmationFunction();
     confirmation_function_map["Cos"] =
         SimpleConfirmationFunction(); // cwise_math
@@ -1003,6 +1047,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
     confirmation_function_map["FakeQuantWithMinMaxVars"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
+    confirmation_function_map["Floor"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorMod"] = SimpleConfirmationFunction();
     confirmation_function_map["FloorDiv"] = SimpleConfirmationFunction();
     confirmation_function_map["FusedBatchNorm"] = [device_id](Node *n,
@@ -1064,6 +1109,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
+    confirmation_function_map["MaxPool3D"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPoolV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Max"] = SimpleConfirmationFunction();
     confirmation_function_map["Maximum"] = SimpleConfirmationFunction();
@@ -1146,6 +1192,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["ReverseV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
+    confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sign"] =
@@ -1220,6 +1267,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     };
     confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Square"] = SimpleConfirmationFunction();
+    confirmation_function_map["SquaredDifference"] = SimpleConfirmationFunction();
     confirmation_function_map["Squeeze"] = [device_id](Node *n, bool *result) {
       std::vector<int32> tf_axis;
       GetNodeAttr(n->attrs(), "squeeze_dims", &tf_axis);
