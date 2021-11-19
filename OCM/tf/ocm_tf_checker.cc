@@ -546,8 +546,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } else if (device_id == "GPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
-        }
-        else if (ov_version[0] > 2021 || ov_version[1] >= 4) {
           supported_types.insert(DT_BOOL);
         }
       } else if (device_id == "MYRIAD") {
