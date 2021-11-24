@@ -6,8 +6,14 @@
 
 cmake_minimum_required(VERSION 3.4)
 project (ocm CXX)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 # set directory where the custom finders live
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+if(WIN32)
+	add_definitions(-DNOMINMAX)
+endif()
+
 # find_package(Threads)
 
 option(FLOAT16_SUPPORT "Enable/Disable float16 support" OFF)
@@ -34,7 +40,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 include_directories(${TF_SRC_DIR})
-include_directories(${TF_SRC_DIR}/bazel-genfiles/external/nsync/public)
 # Files that are generated during TF build are here
 include_directories(${TF_SRC_DIR}/bazel-genfiles)
 include_directories(${TensorFlow_INCLUDE_DIR})
@@ -46,27 +51,41 @@ include_directories(./include/)
 # Make sure that the TF library exists
 if ( APPLE )
     set(TF_LIB_NAME libtensorflow_framework.dylib)
+elseif ( WIN32 )
+    set(TF_LIB_NAME _pywrap_tensorflow_internal.lib)    
 else()
     set(TF_LIB_NAME libtensorflow_framework.so.1)
 endif()
 
 add_library(tensorflow_cc_lib SHARED IMPORTED)
-if(NOT(TensorFlow_VERSION LESS 2.0))
-    set_target_properties(
-        tensorflow_cc_lib
-        PROPERTIES IMPORTED_LOCATION
-        ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.2
-    )
+if(WIN32)
+	set_target_properties(
+		tensorflow_cc_lib
+		PROPERTIES IMPORTED_LOCATION
+		${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.dll
+	)
+	set_target_properties(
+		tensorflow_cc_lib
+		PROPERTIES IMPORTED_IMPLIB ${TF_SRC_DIR}/bazel-bin/tensorflow/tensorflow_cc.lib
+	)
 else()
-    set_target_properties(
-        tensorflow_cc_lib
-        PROPERTIES IMPORTED_LOCATION
-        ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.1
-    )
+  if(NOT(TensorFlow_VERSION LESS 2.0))
+      set_target_properties(
+          tensorflow_cc_lib
+          PROPERTIES IMPORTED_LOCATION
+          ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.2
+      )
+  else()
+      set_target_properties(
+          tensorflow_cc_lib
+          PROPERTIES IMPORTED_LOCATION
+          ${TF_SRC_DIR}/bazel-bin/tensorflow/libtensorflow_cc.so.1
+      )
+  endif()
 endif()
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 message(STATUS "Compile Flags: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
@@ -76,11 +95,6 @@ set(APP_NAME ov_ocm)
 add_executable(
     ${APP_NAME} test/ocm_ov_test.cc
 )
-
-# if (APPLE)
-#     set(OV_TF_CXX11_ABI 0)
-#     add_definitions(-DTEST_SINGLE_INSTANCE)
-# endif()
 
 target_link_libraries(
     ${APP_NAME}

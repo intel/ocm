@@ -14,6 +14,7 @@
 #  TensorFlow_DIR
 
 include(FindPackageHandleStandardArgs)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll" ".so")
 message(STATUS "Looking for TensorFlow installation")
 
 execute_process(
@@ -92,7 +93,13 @@ message(STATUS "TensorFlow_VERSION: " ${TensorFlow_VERSION})
 
 # Make sure that the TF library exists
 if ( APPLE )
-    set(TF_LIB_NAME libtensorflow_framework.dylib)
+    if(NOT(TensorFlow_VERSION LESS 2.0))
+        set(TF_LIB_NAME libtensorflow_framework.2.dylib)
+    else()
+        set(TF_LIB_NAME libtensorflow_framework.dylib)
+    endif()
+elseif ( WIN32 )
+    set(TF_LIB_NAME _pywrap_tensorflow_internal.lib)
 else()
     if(NOT(TensorFlow_VERSION LESS 2.0))
         set(TF_LIB_NAME libtensorflow_framework.so.2)
@@ -102,7 +109,6 @@ else()
 endif()
 
 message(STATUS "TF_LIB: " ${TF_LIB_NAME})
-
 find_library(
   TensorFlow_FRAMEWORK_LIBRARY
   NAME ${TF_LIB_NAME}
