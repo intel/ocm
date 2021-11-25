@@ -6,6 +6,7 @@
 
 #ifndef _OCM_TF_CHECKER_
 #define _OCM_TF_CHECKER_
+#define OV_VER_SIZE 10
 
 #include "ocm_nodes_checker.h"
 
