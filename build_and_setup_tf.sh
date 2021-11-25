@@ -30,7 +30,7 @@ fi
 # Create virtual python env
 cd ${TF_SRC_DIR}
 echo "Creating python3 virtual env"
-python3 -m venv ocm_venv
+python3.8 -m venv ocm_venv
 source ocm_venv/bin/activate
 python3 -m pip install --upgrade pip setuptools  
 pip install 'psutil' 'numpy>=1.16.0,<1.19.0' 'six>=1.12.0' 'wheel>=0.26'

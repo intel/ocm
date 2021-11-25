@@ -1557,8 +1557,18 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
 
   std::vector<void *> node_list;
   
-  sscanf(ov_version.c_str(), "%d.%d.%d", &ov_ver_macro_micro_patch[0],
-         &ov_ver_macro_micro_patch[1], &ov_ver_macro_micro_patch[2]);
+  // Get the Major, Minor and Patch from OpenVino Version
+  char ov_ver[10];
+  strcpy(ov_ver, ov_version.c_str());
+
+  char *token = strtok(ov_ver, ".");
+  int count = 0;
+  while (token != NULL && count<3)
+  {
+      ov_ver_macro_micro_patch[count]=atoi(token); 
+      token = strtok(NULL, ".");
+      count++;
+  }
   
   // Get OV supported ops list for TF
   supported_ops = GetTFSupportedOPs(device_id, ov_ver_macro_micro_patch);
