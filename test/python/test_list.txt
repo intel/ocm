@@ -1,14 +1,14 @@
 conv_ops_3d_test.Conv3DTest.*
 
-# pooling_ops_3d_test.PoolingTest.testMaxPool3dValidPadding
-# pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePaddingDifferentStrides
-# pooling_ops_3d_test.PoolingTest.testMaxPool3DEmptyTensorOutputShape
-# pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePadding
-# pooling_ops_3d_test.PoolingTest. testKernelSmallerThanStride
-
-pooling_ops_3d_test.PoolingTest.*
+pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePaddingDifferentStrides
+pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePadding
+pooling_ops_3d_test.PoolingTest.testMaxPool3dValidPadding
+pooling_ops_3d_test.PoolingTest. testKernelSmallerThanStride
+pooling_ops_3d_test.PoolingTest. testAvgPool3dSamePaddingDifferentStrides
+pooling_ops_3d_test.PoolingTest. testAvgPool3dSamePadding
+pooling_ops_3d_test.PoolingTest. testAvgPool3dValidPadding
 
 # floor 
 cwise_ops_test.RoundingTest.testTypes
 
-conv3d_backprop_filter_v2_grad_test.Conv3DBackpropFilterV2GradTest.*
+array_ops.scatter_nd_ops_test.*
