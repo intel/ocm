@@ -18,6 +18,9 @@ import parameter_test
 import tensorflow as tf
 import tf_test_modify_input as modify
 
+from importlib.machinery import SourceFileLoader
+
+
 try:
     import xmlrunner
 except:
@@ -179,7 +182,7 @@ def regex_walk(dirname, regex_input):
             if fnmatch(name, test):
                 sys.path.append(path)
                 name = os.path.splitext(name)[0]
-                module_list.append(name)
+                module_list.append([name,path+"/"+test])
     if not module_list:
         print("Test name does not exist")
         sys.exit(1)
@@ -212,7 +215,7 @@ def list_tests(module_list, regex_input):
     listtests = []
     invalidtests = []
     for test_module in module_list:
-        module = __import__(test_module)
+        module = SourceFileLoader(test_module[0],test_module[1]).load_module()
         if (module is None):
             print("Enter a valid test name to run")
         test_modules = loader.loadTestsFromModule(module)
