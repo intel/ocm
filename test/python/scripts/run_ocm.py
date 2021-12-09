@@ -68,7 +68,7 @@ def run_thru_ocm(path, device):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',
-                      '--model_path'
+                      '--model_path',
                       help='enter input model(.pb) path',
                       required=True)
   parser.add_argument('-d',
