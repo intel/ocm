@@ -272,9 +272,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-#ifdef ENABLE_DT_HALF
+ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
-#endif
+endif
       }
       return supported_types;
     }();
