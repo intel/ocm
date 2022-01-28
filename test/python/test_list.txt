@@ -309,3 +309,10 @@ cwise_ops_test.RoundingTest.testTypes
 scatter_nd_ops_test.*
 
 conv_ops_3d_test.Conv3DTest.*
+
+ops_test.IndexedSlicesTest.testEagerCopy
+math_test.LinalgTest.test_einsum
+special_math_ops_test.EinsumGradTest.*
+special_math_ops_test.EinsumTest.*
+einsum_op_test.EinsumGradTest.*
+einsum_op_test.EinsumOpTest.*
