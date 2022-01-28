@@ -285,6 +285,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Floor"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
       if (device_id == "GPU") {
         supported_types.erase(DT_BFLOAT16);
       }
