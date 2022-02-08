@@ -293,3 +293,19 @@ unstack_op_test.UnstackOpTest.testInferNum
 unstack_op_test.UnstackOpTest.testSimple
 unstack_op_test.UnstackOpTest.testUnknownShapeOkWithNum
 unstack_op_test.UnstackOpTest.testZeroLengthDim
+
+
+pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePaddingDifferentStrides
+pooling_ops_3d_test.PoolingTest.testMaxPool3dSamePadding
+pooling_ops_3d_test.PoolingTest.testMaxPool3dValidPadding
+pooling_ops_3d_test.PoolingTest.testKernelSmallerThanStride
+pooling_ops_3d_test.PoolingTest.testAvgPool3dSamePaddingDifferentStrides
+pooling_ops_3d_test.PoolingTest.testAvgPool3dSamePadding
+pooling_ops_3d_test.PoolingTest.testAvgPool3dValidPadding
+
+# floor 
+cwise_ops_test.RoundingTest.testTypes
+
+#scatter_nd_ops_test.*
+
+conv_ops_3d_test.Conv3DTest.*
