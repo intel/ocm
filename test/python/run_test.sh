@@ -4,23 +4,12 @@
 #  SPDX-License-Identifier: Apache-2.0
 # ******************************************************************************
 
-OV_PATH=$1
+OV_NAME=$1
 BUILD_TYPE=$2
 MODE=$3
 TEST_LIST=$4
 DEVICES=$5
 MODEL_PATH=$6
-
-source $OV_PATH/bin/setupvars.sh
-ov_name=$(basename $OV_PATH)
-
-#Clean up
-echo "Activating python virtual env"
-source env/bin/activate
-
-#Build benchmark app
-echo "Building benchmark app"
-$OV_PATH/deployment_tools/inference_engine/samples/cpp/build_samples.sh benchmark_app
 
 #Applying TF patch 
 echo "Applying TF Unit test update patch"
@@ -39,27 +28,26 @@ generate_unittest_pbfiles(){
 ocm_checker(){
   rm -rf tf_ocm_logs/$DEVICE
   echo "Running through OCM"
-  python3 ./scripts/run_ocm.py -i $MODEL_PATH -d $DEVICE
+  python3 ./scripts/run_ocm.py -i $MODEL_PATH -d $DEVICE -v $OV_NAME
   echo "Finished running through OCM"
 }
 
 #Run through model optimizer
 model_optimize(){
   rm -rf tf_mo_logs/$DEVICE
-  mo_op_path=("pbfiles_mo/"$ov_name"/"$DEVICE)
+  mo_op_path=("pbfiles_mo/"$OV_NAME"/"$DEVICE)
   rm -rf $mo_op_path
   echo "Generating IR files"
-  python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE -d $DEVICE
+  python3 ./scripts/generate_ir.py -i $MODEL_PATH -t $TEST_LIST -m $MODE -d $DEVICE -v $OV_NAME
   echo "End Generating IR files"
 }
-
 
 #Run inference
 run_infer(){
   rm -rf tf_infer_logs/$DEVICE
-  mo_op_path=("pbfiles_mo/"$ov_name"/"$DEVICE)
+  mo_op_path=("pbfiles_mo/"$OV_NAME"/"$DEVICE)
   echo "Running inference"
-  python3 ./scripts/run_inference.py -i $mo_op_path -d $DEVICE
+  python3 ./scripts/run_inference.py -i $mo_op_path -v $OV_NAME -d $DEVICE
   echo "End Running inference"
 }
 

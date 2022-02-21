@@ -9,10 +9,9 @@ import pathlib
 import argparse
 import subprocess
 import parameter_test
+import importlib
 
-def run_thru_mo(ov_path, path, test_list,mode, device):
-
-  ov_name=os.path.basename(ov_path)
+def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
   files=[]
   mo_log_path = "tf_mo_logs/"+device
   if not os.path.isdir(mo_log_path):
@@ -57,8 +56,7 @@ def run_thru_mo(ov_path, path, test_list,mode, device):
       if test_name in invalid_list:
         continue
       
-      cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py", "--input_model", fname, "-o",mo_out ]
-      #cmd = [ov_path + "/deployment_tools/model_optimizer/mo_tf.py",  "--log_level", "DEBUG","--input_model", fname, "-o",mo_out, "--data_type", "FP16"]
+      cmd = [ov_path + '/tools/mo/mo_tf.py', '--input_model', fname, '-o',mo_out]
     mo_log = mo_log_path + "/" + test_name
     #mo_log, ext = os.path.splitext(mo_log)
     mo_log += ".log"
@@ -92,10 +90,14 @@ if __name__ == '__main__':
                     '--device',
                     help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
+  parser.add_argument('-v',
+                      '--ov_version',
+                      help='Specify OV version to infer',
+                      required=True)
   args = parser.parse_args()
   parameter_test.mode_validation(args.mode)
   parameter_test.device_validation(args.device)
   parameter_test.modelpath_validation(args.model_path)
   parameter_test.testlist_validation(args.test_list)
-  ov_path = os.environ['INTEL_OPENVINO_DIR']
-  run_thru_mo(ov_path, args.model_path, args.test_list, args.mode, args.device)
+  ov_path = os.path.dirname(importlib.util.find_spec("openvino").origin)
+  run_thru_mo(ov_path, args.ov_version, args.model_path, args.test_list, args.mode, args.device)

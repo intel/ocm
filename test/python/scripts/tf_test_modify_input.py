@@ -8,7 +8,7 @@ import tensorflow as tf
 import argparse
 import os
 import sys
-from mo.utils.summarize_graph import summarize_graph
+from openvino.tools.mo.utils.summarize_graph import summarize_graph
 #import sys
 #sys.path.append('../')
 #import model_checker as mc
