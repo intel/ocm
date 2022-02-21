@@ -10,11 +10,8 @@ import argparse
 import subprocess
 import parameter_test
 
-def run_thru_ocm(path, device):
-
-
+def run_thru_ocm(path, ov_ver, device):
   files=[]
-  
   for r,d,f in os.walk(path):
     for file in f:
       if '.pb' in file:
@@ -25,9 +22,6 @@ def run_thru_ocm(path, device):
     os.makedirs(ocm_log_path, exist_ok=True)
 
   os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
-
-  ov_path = os.environ['INTEL_OPENVINO_DIR']
-  ov_ver = os.path.basename(ov_path)
   
   ov_version = None
   if ov_ver == "openvino_2021.1.110":
@@ -38,10 +32,12 @@ def run_thru_ocm(path, device):
     ov_version = "2021.3"
   elif "openvino_2021.4" in ov_ver:
     ov_version = "2021.4"
-    
+  elif "openvino_2022.1" in ov_ver :
+    ov_version = "2022.1"
+
   if ov_version is None:
     raise AssertionError("OV Version is incorrect")
-  print (ov_path, ov_ver, ov_version)
+  print (ov_ver, ov_version)
   inv_file="invalid_tests_list_%s.txt"%device
   invalid_test=open(inv_file, 'r') 
   invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
@@ -75,10 +71,15 @@ if __name__ == '__main__':
                     '--device',
                     help='Device CPU, GPU, MYRIAD or HDDL',
                     required=True)
+  parser.add_argument('-v',
+                      '--ov_version',
+                      help='Specify OV version to infer',
+                      required=True)
 
   args = parser.parse_args()
   parameter_test.device_validation(args.device)
   parameter_test.modelpath_validation(args.model_path)
   in_path = args.model_path
-  run_thru_ocm(in_path, args.device)
+  ov_ver = args.ov_version
+  run_thru_ocm(in_path, ov_ver, args.device)
 
