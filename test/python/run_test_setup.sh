@@ -51,9 +51,9 @@ pip3 install defusedxml
 patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
 
 #OpenVINO set up
-source $OV_PATH/bin/setupvars.sh
+source $OV_PATH/setupvars.sh
 pip3 install -r $OV_PATH/deployment_tools/model_optimizer/requirements_tf2.txt
 
 #Build benchmark app
 echo "Building benchmark app"
-$OV_PATH/deployment_tools/inference_engine/samples/cpp/build_samples.sh benchmark_app
+$OV_PATH/samples/cpp/build_samples.sh benchmark_app
