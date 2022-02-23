@@ -15,10 +15,10 @@ else
 fi
 
 cd tensorflow
-if [[ $(git describe --contains HEAD)  == "v2.7.0" ]]; then
+if [[ $(git describe --contains HEAD)  == "v2.8.0" ]]; then
   echo "Tensorflow repo is already checked out to required tf version"
 else
-  git pull; git checkout v2.7.0; 
+  git pull; git checkout v2.8.0; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
 fi
@@ -41,14 +41,14 @@ echo "Installing dependencies in env"
 python3 -m pip install --upgrade pip setuptools  
 pip3 install numpy
 pip3 install six
-pip3 install -U tensorflow==2.7.0
+pip3 install -U tensorflow==2.8.0
 pip3 install unittest-xml-reporting
 pip3 install xmlrunner
 pip3 install networkx
 pip3 install defusedxml
 
 #Disable eager execution
-patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
+patch ./env/lib/python3.8/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
 
 #OpenVINO set up
 source $OV_PATH/bin/setupvars.sh

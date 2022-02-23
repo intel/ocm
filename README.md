@@ -8,7 +8,7 @@ Currently it supports only Tensorflow models.
 
 ## Build 
 Requirements:
-- Tensorflow Version: 2.7.0
+- Tensorflow Version: 2.8.0
 - Tensorflow CC library
 - Tensorflow for python 
 
