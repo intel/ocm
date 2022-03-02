@@ -48,7 +48,7 @@ pip3 install networkx
 pip3 install defusedxml
 
 #Disable eager execution
-patch ./env/lib/python3.8/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
+patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
 
 #OpenVINO set up
 source $OV_PATH/bin/setupvars.sh
