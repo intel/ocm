@@ -41,7 +41,7 @@ echo "Installing dependencies in env"
 python3 -m pip install --upgrade pip setuptools  
 pip3 install numpy
 pip3 install six
-pip3 install -U tensorflow==2.8.0
+# pip3 install -U tensorflow==2.8.0
 pip3 install unittest-xml-reporting
 pip3 install xmlrunner
 pip3 install networkx
@@ -53,7 +53,7 @@ patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py
 #OpenVINO set up
 source $OV_PATH/bin/setupvars.sh
 pip3 install -r $OV_PATH/deployment_tools/model_optimizer/requirements_tf2.txt
-
+pip3 install -U tensorflow==2.8.0
 #Build benchmark app
 echo "Building benchmark app"
 $OV_PATH/deployment_tools/inference_engine/samples/cpp/build_samples.sh benchmark_app
