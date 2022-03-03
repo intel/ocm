@@ -790,6 +790,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2021 || ov_version[1] >= 4 ) {
           supported_types.insert(DT_BOOL);
         }
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
       }
        else if (device_id == "GPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
