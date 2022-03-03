@@ -518,6 +518,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
+        supported_types.insert(DT_INT8);
 #endif
       }
       return supported_types;
