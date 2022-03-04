@@ -49,3 +49,4 @@ pip3 install defusedxml
 
 #Disable eager execution
 patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
+
