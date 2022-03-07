@@ -518,8 +518,10 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
-        supported_types.insert(DT_INT8);
 #endif
+        // Adding support for pad op dt_int8
+        supported_types.insert(DT_INT8);
+        
       }
       return supported_types;
     }();
