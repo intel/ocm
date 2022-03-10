@@ -39,8 +39,8 @@ def run_thru_ocm(path, ov_ver, device):
     raise AssertionError("OV Version is incorrect")
   print (ov_ver, ov_version)
   inv_file="invalid_tests_list_%s.txt"%device
-  invalid_test=open(inv_file, 'r') 
-  invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
+  with open(inv_file, 'r') as  invalid_test:
+      invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
   for f in files:
       cmd = ["../../build/ov_ocm", f, device, ov_version]
       test_name,ext=os.path.splitext(f[10:].replace("/","_"))
@@ -60,7 +60,7 @@ def run_thru_ocm(path, ov_ver, device):
         mc_log_file.close()
 
         print("Log file written to " + ocm_log_path)
-  inv_file.close()
+
   
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
