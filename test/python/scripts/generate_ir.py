@@ -22,14 +22,14 @@ def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
         files.append(os.path.join(r,file))
   
   inv_file="invalid_tests_list_%s.txt"%device
-  invalid_test=open(inv_file, 'r') 
-  invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
+  with open(inv_file, 'r') as invalid_test:
+      invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
   for fname in files:
     if mode == 'UTEST':
       mo_args = " --input_model " + fname
     else:
-      test_info=open(test_list, 'r') 
-      all_models=test_info.readlines() 
+      with open(test_list, 'r') as test_info:
+        all_models=test_info.readlines() 
       match = 0
       for model in all_models:
         #print("Model file is " + model)
@@ -66,12 +66,13 @@ def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
     if not os.path.exists(mo_log):
       result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
-      mo_log_file = open(mo_log, "w")
-      mo_log_file.write(result.stdout.decode("utf-8"))
-      mo_log_file.close()
+      with open(mo_log, "w") as mo_log_file:
+          mo_log_file.write(result.stdout.decode("utf-8"))
+          
 
       print("Log file written to " + mo_log)
-    
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',
