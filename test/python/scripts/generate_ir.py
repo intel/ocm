@@ -71,7 +71,9 @@ def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
       mo_log_file.close()
 
       print("Log file written to " + mo_log)
-    
+  inv_file.close()
+  test_list.close()
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',

@@ -60,7 +60,8 @@ def run_thru_ocm(path, ov_ver, device):
         mc_log_file.close()
 
         print("Log file written to " + ocm_log_path)
-
+  inv_file.close()
+  
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',
