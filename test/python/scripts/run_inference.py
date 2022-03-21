@@ -24,7 +24,8 @@ def run_inference(path, device, ov_version):
 
   for f in files:
       # timeout of 60 seconds 
-      cmd = ["timeout","60", "benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
+      # cmd = ["timeout","60", "benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
+      cmd = ["timeout","60", benchmark_app_path + "/benchmark_app", "-m", f,"-d", device,"-load_config","config.json", "-niter", "1"]
       start=13+len(device)+len(ov_version)
       infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")
       infer_log, ext = os.path.splitext(infer_log)
@@ -63,4 +64,6 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
   parameter_test.device_validation(args.device)
+  home=os.environ['HOME']
+  benchmark_app_path=home + "/benchmark_build/intel64/Release"
   run_inference(args.model_path, args.device, args.ov_version)
