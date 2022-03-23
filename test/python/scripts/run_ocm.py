@@ -34,7 +34,7 @@ def run_thru_ocm(path, ov_ver, device):
     ov_version = "2021.4"
   elif "openvino_2022.1" in ov_ver :
     ov_version = "2022.1"
-
+    
   if ov_version is None:
     raise AssertionError("OV Version is incorrect")
   print (ov_ver, ov_version)
