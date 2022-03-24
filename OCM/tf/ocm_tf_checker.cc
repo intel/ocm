@@ -880,6 +880,11 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
         ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
       }
     }
+    if (ov_version[0] > 2022 || ov_version[1] >= 1) {
+      for(const auto & e : ov_2022_1_0_op_update_vpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    }
   }
   if (!ov_based_op_list.empty()) {
     for (auto it = ov_based_op_list.begin(); it != ov_based_op_list.end();

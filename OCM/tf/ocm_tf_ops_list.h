@@ -156,6 +156,12 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
                 "AvgPool3D", "Conv3DBackpropInputV2"}} // Ops for which OCM has enabled support.
 };
 
+const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
+    // Disabling "Range" op as OV is throwing Dynamic to Staitc error for it
+    // Even in the case when all the inputs to it are constant
+    {"remove", {"Range"}} // Ops removed by OpenVINO in this version
+};
+
 } // namespace ocm
 
 #endif //_OCM_TF_OPS_LIST_H_
