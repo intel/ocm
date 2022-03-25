@@ -895,7 +895,10 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
         }
       } else if (it->first == "remove") {
         if (!it->second.empty()) {
-          supported_ops.erase(it->second.begin(), it->second.end());
+          for (auto op_name : it->second){
+            OCM_LOG(0)<< op_name <<" OP has been removed from supported list";
+            supported_ops.erase(op_name);
+          }
         }
       }
     }
