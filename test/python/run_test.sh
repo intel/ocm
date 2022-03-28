@@ -11,6 +11,11 @@ TEST_LIST=$4
 DEVICES=$5
 MODEL_PATH=$6
 
+OV_PATH=/opt/intel/$OV_NAME
+
+echo "Building benchmark app"
+$OV_PATH/samples/cpp/build_samples.sh -b /$HOME/benchmark_build
+
 #Applying TF patch 
 echo "Applying TF Unit test update patch"
 cd tensorflow

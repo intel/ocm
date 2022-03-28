@@ -32,36 +32,39 @@ def run_thru_ocm(path, ov_ver, device):
     ov_version = "2021.3"
   elif "openvino_2021.4" in ov_ver:
     ov_version = "2021.4"
-  elif "openvino_2022.1" in ov_ver :
-    ov_version = "2022.1"
-
+  elif "openvino_2022.1.0" in ov_ver :
+    ov_version = "2022.1.0"
+    
   if ov_version is None:
     raise AssertionError("OV Version is incorrect")
   print (ov_ver, ov_version)
   inv_file="invalid_tests_list_%s.txt"%device
   with open(inv_file, 'r') as  invalid_test:
-      invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
-  for f in files:
-      cmd = ["../../build/ov_ocm", f, device, ov_version]
-      test_name,ext=os.path.splitext(f[10:].replace("/","_"))
-      if test_name in invalid_list:
-        continue
-      ocm_log_path = "./tf_ocm_logs/" + device + "/" + test_name
-      #ocm_log_path, ext = os.path.splitext(ocm_log_path)
-      ocm_log_path += ".log"
-
-      print("File log {} exists?: {}".format(ocm_log_path,os.path.exists(ocm_log_path)))
-
-      if not os.path.exists(ocm_log_path):
-        result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-
-        mc_log_file = open(ocm_log_path, "w")
-        mc_log_file.write(result.stdout.decode("utf-8"))
-        mc_log_file.close()
-
-        print("Log file written to " + ocm_log_path)
-
+    invalid_list = [line.partition('#')[0].rstrip() for line in invalid_test if not line.startswith('#')]
+  ov_ocm_path = "../../build/ov_ocm"
+  if not os.path.exists(ov_ocm_path):
+    raise AssertionError("ov_ocm executable Path does not exists")
   
+  for f in files:
+    cmd = [ov_ocm_path, f, device, ov_version]
+    test_name,ext=os.path.splitext(f[10:].replace("/","_"))
+    if test_name in invalid_list:
+      continue
+    ocm_log_path = "./tf_ocm_logs/" + device + "/" + test_name
+    #ocm_log_path, ext = os.path.splitext(ocm_log_path)
+    ocm_log_path += ".log"
+
+    print("File log {} exists?: {}".format(ocm_log_path,os.path.exists(ocm_log_path)))
+
+    if not os.path.exists(ocm_log_path):
+      result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+
+      mc_log_file = open(ocm_log_path, "w")
+      mc_log_file.write(result.stdout.decode("utf-8"))
+      mc_log_file.close()
+
+      print("Log file written to " + ocm_log_path)
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-i',
