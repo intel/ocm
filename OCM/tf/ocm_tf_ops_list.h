@@ -17,45 +17,39 @@ namespace ocm {
  *  https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_prepare_model_Supported_Frameworks_Layers.html
  */
 std::set<std::string> common_supported_ops = {
-    // "Abs", // Unittest - cwise_math  // Not supported by OV
     "Add", "AddN",
     "AddV2", // implemented using ngraph ADD
     "All",   // the TF api for this is tf.math.reduce_all
     "ArgMax", "AvgPool",
-    //"BatchToSpaceND", // New models...Commented as Not supported in OVTF
     "BiasAdd",
-    "Cast", // Unittest
+    "Cast", 
     "ConcatV2", "Const", "Conv2D", "Conv2DBackpropInput",
-    //"CropAndResize", // Commented as Not supported in OVTF
     "DepthwiseConv2dNative",
-    "DepthToSpace", // Unittest
+    "DepthToSpace", 
     "Equal", "Exp", "ExpandDims",
-    "Fill", // Unittest
+    "Fill", 
     "FloorMod",
-    // "FloorDiv", //Unit test - cwise_math
     "FusedBatchNorm", "Gather", "GatherV2",
-    "Greater", // Unittest - cwise_math
+    "Greater", 
     "GreaterEqual", "Identity", "LRN",
-    "Less",       // Unit test - Softmax
-    "LogSoftmax", // Unit test - Softmax
+    "Less",       
+    "LogSoftmax", 
     "LogicalAnd", "MatMul", "Max", "Maximum", "MaxPool", "Mean", "Minimum",
     "MirrorPad", "Mul",
-    "OneHot", // Unittest
+    "OneHot", 
     "Pack", "Pad", "PadV2", "Placeholder", "Range", "RealDiv", "Relu", "Relu6",
     "Reshape",
-    "Rsqrt", // Unittest
+    "Rsqrt", 
     "Shape",
-    //"Sign", // Unittest - cwise_math // Not supported by OV
-    "Size",    // Unittest
-    "Sigmoid", // Unittest
+    "Size",    
+    "Sigmoid", 
     "Slice", "Softmax",
-    //"SpaceToBatchND", // New models...Commented as Not supported in OVTF
     "SpaceToDepth", "Split", "SplitV", "Square", "Squeeze", "StridedSlice",
     "Sub",
-    "Sum", // Unittest - cwise_math
+    "Sum", 
     "Tile", "TopKV2", "Transpose", "Unpack",
     //"Where",  // Commented as it introduces dynamic shape error
-    "ZerosLike" // Unittest
+    "ZerosLike" 
 };
 
 /**
@@ -154,6 +148,12 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
                 "Reciprocal", "BatchToSpaceND", "SpaceToBatchND", "Elu", 
                 "FakeQuantWithMinMaxVars", "MaxPool3D", "Floor", "ScatterNd",
                 "AvgPool3D", "Conv3DBackpropInputV2"}} // Ops for which OCM has enabled support.
+};
+
+const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_cpu = {
+    {"update", {"SquaredDifference", "LessEqual", "NotEqual", "Cumsum", "NonMaxSuppression", "NonMaxSuppressionV2", "NonMaxSuppressionV3", 
+    "NonMaxSuppressionV4", "NonMaxSuppressionV5"
+    }}
 };
 
 const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {

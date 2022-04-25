@@ -258,6 +258,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
     type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cumsum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cumsum"]["Tidx"] = [](){
+      std::set<DataType> supported_types = {DT_INT32};
+      return supported_types;
+    }();
     type_constraint_map["DepthwiseConv2dNative"]["T"] =
         SupportedTypes(device_id);
     type_constraint_map["DepthToSpace"]["T"] = [device_id]() {
@@ -395,6 +400,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Less"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LessEqual"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Log"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogSoftmax"]["T"] = [device_id]() {
@@ -487,8 +493,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NonMaxSuppression"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV3"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NonMaxSuppressionV4"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NonMaxSuppressionV5"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NotEqual"]["T"] = SupportedTypes(device_id);
     type_constraint_map["OneHot"]["T"] =  [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -840,6 +850,11 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
         ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
       }
     }
+    if (ov_version[0] > 2022 || ov_version[1] >= 1) {
+      for(const auto & e : ov_2022_1_0_op_update_cpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    }        
   } else if (device_id == "GPU") {
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
@@ -1055,6 +1070,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Cosh"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
+    confirmation_function_map["Cumsum"] = SimpleConfirmationFunction();
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
@@ -1121,6 +1137,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["LRN"] = SimpleConfirmationFunction();
     confirmation_function_map["LeakyRelu"] = SimpleConfirmationFunction();
     confirmation_function_map["Less"] = SimpleConfirmationFunction();
+    confirmation_function_map["LessEqual"] = SimpleConfirmationFunction();
     confirmation_function_map["Log"] = SimpleConfirmationFunction();
     confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
@@ -1171,11 +1188,18 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] =
         SimpleConfirmationFunction(); // cwise_math
+    confirmation_function_map["NonMaxSuppression"] =
+        SimpleConfirmationFunction();
     confirmation_function_map["NonMaxSuppressionV2"] =
         SimpleConfirmationFunction();
     confirmation_function_map["NonMaxSuppressionV3"] =
         SimpleConfirmationFunction();
+    confirmation_function_map["NonMaxSuppressionV4"] =
+        SimpleConfirmationFunction();
+    confirmation_function_map["NonMaxSuppressionV5"] =
+        SimpleConfirmationFunction();                
     confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
+    confirmation_function_map["NotEqual"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = [device_id](Node *n, bool *result) {
       *result = true;
       // GPU doesn't supports input dimension greater than 5
