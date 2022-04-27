@@ -878,6 +878,11 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
         ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
       }
     }
+    if (ov_version[0] > 2022 || ov_version[1] >= 1) {
+      for(const auto & e : ov_2022_1_0_op_update_gpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
+    }                
   } else if (device_id == "MYRIAD" || device_id == "HDDL") {
     supported_ops.insert(common_supported_ops.begin(),
                          common_supported_ops.end());
@@ -1198,9 +1203,20 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["NonMaxSuppressionV3"] =
         SimpleConfirmationFunction();
     confirmation_function_map["NonMaxSuppressionV4"] =
-        SimpleConfirmationFunction();
+        [](Node *n, bool *result){
+          *result = true;
+          bool pad_to_max_output_size;
+          auto status = GetNodeAttr(n->attrs(), "pad_to_max_output_size", &pad_to_max_output_size);
+          if (status==tensorflow::Status::OK()){
+            // pad_to_max_output_size is not supported in openvino-tensorflow yet
+            if(pad_to_max_output_size){
+              *result = false;
+            }
+          }
+          return tensorflow::Status::OK();
+        };
     confirmation_function_map["NonMaxSuppressionV5"] =
-        SimpleConfirmationFunction();                
+        confirmation_function_map["NonMaxSuppressionV4"];
     confirmation_function_map["NoOp"] = SimpleConfirmationFunction();
     confirmation_function_map["NotEqual"] = SimpleConfirmationFunction();
     confirmation_function_map["OneHot"] = [device_id](Node *n, bool *result) {

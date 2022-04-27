@@ -156,7 +156,16 @@ const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_cpu = {
     }}
 };
 
+const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_gpu = {
+    {"update", {"SquaredDifference", "LessEqual", "NotEqual", "Cumsum", "NonMaxSuppression", "NonMaxSuppressionV2", "NonMaxSuppressionV3", 
+    "NonMaxSuppressionV4", "NonMaxSuppressionV5"
+    }}
+};
+
 const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
+    {"update", {"SquaredDifference", "LessEqual", "NotEqual", "Cumsum", "NonMaxSuppression", "NonMaxSuppressionV2", "NonMaxSuppressionV3", 
+    "NonMaxSuppressionV4", "NonMaxSuppressionV5"
+    }},    
     // Disabling "Range" op as OV is throwing Dynamic to Staitc error for it
     // Even in the case when all the inputs to it are constant
     {"remove", {"Range"}} // Ops removed by OpenVINO in this version
