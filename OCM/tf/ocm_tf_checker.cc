@@ -261,7 +261,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Cos"]["T"] = SupportedTypes(device_id);  // cwise_math
     type_constraint_map["Cosh"]["T"] = SupportedTypes(device_id); // cwise_math
     type_constraint_map["CropAndResize"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Cumsum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Cumsum"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.insert(DT_INT64);
+        }
+      } 
+      return supported_types;
+    }();
     type_constraint_map["Cumsum"]["Tidx"] = [](){
       std::set<DataType> supported_types = {DT_INT32,DT_INT64};
       return supported_types;
