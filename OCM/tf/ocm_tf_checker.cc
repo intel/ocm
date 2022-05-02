@@ -178,6 +178,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Bucketize"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["BatchMatMulV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -274,6 +275,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       std::set<DataType> supported_types = {DT_INT32,DT_INT64};
       return supported_types;
     }();
+    type_constraint_map["CTCGreedyDecoder"]["T"] = SupportedTypes(device_id);
     type_constraint_map["DepthwiseConv2dNative"]["T"] =
         SupportedTypes(device_id);
     type_constraint_map["DepthToSpace"]["T"] = [device_id]() {
@@ -1087,6 +1089,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["BatchToSpaceND"] = SimpleConfirmationFunction();
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
+    confirmation_function_map["BatchMatMulV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
@@ -1103,6 +1106,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["CropAndResize"] = SimpleConfirmationFunction();
     confirmation_function_map["Cumsum"] = SimpleConfirmationFunction();
+    confirmation_function_map["CTCGreedyDecoder"] = SimpleConfirmationFunction();
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
