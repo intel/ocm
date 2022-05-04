@@ -231,9 +231,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           if (ov_version[0] > 2021 || ov_version[1] >= 3 ) { 
             supported_types.insert(DT_INT8);
           }
-          if (ov_version[0] > 2022 || ov_version[1] >= 1 ) { 
-            supported_types.insert(DT_STRING);
-          }
       } else if (device_id == "MYRIAD" || device_id == "HDDL") {
         supported_types.insert(DT_INT64);
         // checked using OVTF code, it's working
