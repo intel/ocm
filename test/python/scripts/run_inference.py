@@ -36,10 +36,9 @@ def run_inference(path, device, ov_version):
         result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         if device == "HDDL":
           time.sleep(10)
-        infer_log_file = open(infer_log, "w")
-        infer_log_file.write(result.stdout.decode("utf-8"))
-        infer_log_file.close()
 
+        with open(infer_log, "w") as infer_log_file:
+            infer_log_file.write(result.stdout.decode("utf-8"))
         print("Log file written to " + infer_log)
 
 if __name__ == '__main__':
