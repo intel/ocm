@@ -164,7 +164,7 @@ const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_gpu = {
 
 const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
     {"update", {"SquaredDifference", "NonMaxSuppression", "NonMaxSuppressionV2", "NonMaxSuppressionV3", 
-    "NonMaxSuppressionV4", "NonMaxSuppressionV5", "CTCGreedyDecoder", "BatchMatMulV2"
+    "NonMaxSuppressionV4", "NonMaxSuppressionV5", "BatchMatMulV2"
     }},    
     // Disabling "Range" op as OV is throwing Dynamic to Staitc error for it
     // Even in the case when all the inputs to it are constant

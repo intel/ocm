@@ -178,7 +178,20 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["BatchToSpaceND"]["T"] = SupportedTypes(device_id);
     type_constraint_map["BiasAdd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Bucketize"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["BatchMatMulV2"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["BatchMatMulV2"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      } 
+      return supported_types;
+    }();
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -430,7 +443,20 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["MatMul"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["MatMul"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      } 
+      return supported_types;
+    }();
     type_constraint_map["MaxPool"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
