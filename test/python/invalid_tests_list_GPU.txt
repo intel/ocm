@@ -562,6 +562,10 @@ conv_ops_3d_test_Conv3DTest_testFilterGradientValidPaddingStrideThree_testFilter
 conv_ops_3d_test_Conv3DTest_testInputGradientValidPaddingStrideOneFastPath_testInputGradientValidPaddingStrideOneFastPath-15
 conv_ops_3d_test_Conv3DTest_testInputGradientValidPaddingStrideOneFastPath_testInputGradientValidPaddingStrideOneFastPath-6
 
+# CTCGreedyDecoder op support is removed
+ctc_decoder_ops_test_CTCGreedyDecoderTest_testCTCGreedyDecoder_testCTCGreedyDecoder-0
+ctc_decoder_ops_test_CTCGreedyDecoderTest_testCTCGreedyDecoder_testCTCGreedyDecoder-1
+ctc_decoder_ops_test_CTCGreedyDecoderTest_testCTCGreedyDecoder_testCTCGreedyDecoder-2
 
 # #requested activation is not supported for integer type
 # # In Discussion with OV team
@@ -735,6 +739,9 @@ cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-14
 cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-27
 cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-28
 cwise_ops_binary_test_BinaryOpTest_testInt64Basic_testInt64Basic-29
+
+#LessEqual op failed with shared USM buffer issue
+check_ops_test_AssertLessEqualTest_test_raises_when_greater_test_raises_when_greater-0
 
 #---------------------------------------------------------------------
 #Complex64
@@ -1376,6 +1383,18 @@ reshape_op_test_ReshapeTest_testBoolBasic_testBoolBasic-0
 reshape_op_test_ReshapeTest_testBoolBasic_testBoolBasic-1
 reshape_op_test_ReshapeTest_testBoolBasic_testBoolBasic-2
 reshape_op_test_ReshapeTest_testBoolBasic_testBoolBasic-3
+
+#Cumsum op failed at Inference
+scan_ops_test_CumsumTest_testInvalidAxis_testInvalidAxis-0
+scan_ops_test_CumsumTest_testInvalidAxis_testInvalidAxis-1
+scan_ops_test_CumsumTest_testLarge_testLarge-10
+scan_ops_test_CumsumTest_testLarge_testLarge-11
+scan_ops_test_CumsumTest_testLarge_testLarge-12
+scan_ops_test_CumsumTest_testLarge_testLarge-13
+scan_ops_test_CumsumTest_testLarge_testLarge-14
+scan_ops_test_CumsumTest_testLarge_testLarge-15
+scan_ops_test_CumsumTest_testLarge_testLarge-8
+scan_ops_test_CumsumTest_testLarge_testLarge-9
 
 #Shape Op
 #int64 expand dims not supported

@@ -22,6 +22,9 @@ bias_op_test.BiasAddTest*
 
 bucketize_op_test.BucketizationOpTest.*
 
+batch_matmul_test.BatchMatMulWeightBroadcastTest.*
+batch_matmul_test.BatchMatMulWeightBroadcastDims2Test.*
+
 cast_op_test.CastOpTest.testBasic
 cast_op_test.CastOpTest.testBfloat16
 cast_op_test.CastOpTest.testRandom
@@ -32,6 +35,9 @@ cast_op_test.CastOpTest.testCastToTypeOfVariable
 check_ops_test.AssertGreaterTest.*
 check_ops_test.AssertGreaterEqualTest.*
 check_ops_test.AssertLessTest.*
+check_ops_test.AssertLessEqualTest.*
+
+ctc_decoder_ops_test.CTCGreedyDecoderTest.testCTCGreedyDecoder
 
 # Didn't find any tests for Conv2DBackpropInput yet
 
@@ -130,6 +136,10 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 
 #cwise_ops_binary_test.BinaryOpTest.testZeroPowGrad
 
+cwise_ops_binary_test.ComparisonOpTest.testBCastLessEqual
+cwise_ops_test.ComparisonOpTest.testBCastLessEqual
+cwise_ops_test.ComparisonOpTest.testBCastNotEqual
+
 depthwise_conv_op_test.DepthwiseConv2DTest.testConv2D2x2Filter
 depthtospace_op_test.*
 
@@ -167,6 +177,8 @@ image_ops_test.ResizeImagesTest.testResizeUpAlignCornersTrue
 image_ops_test.ResizeImagesV2Test.testNoOp
 image_ops_test.ResizeImagesV2Test.testResizeUp   
 
+image_ops_test.NonMaxSuppressionTest.*
+
 # Delta ops in Sprint 2 
 lrn_op_test.LRNOpTest.testCompute  
 
@@ -177,6 +189,9 @@ math_ops_test.AddNTest.*
 math_ops_test.DivAndModTest.testConsistent
 math_ops_test.ModTest.testFixed
 math_ops_test.DivAndModTest.testFloorModInt
+
+math_grad_test.SquaredDifferenceOpTest.*
+math_ops_test.SquaredDifferenceTest.*
 
 matmul_op_test.MatMulTest.*
 
@@ -224,6 +239,8 @@ relu_op_test.EluTest.*
 relu_op_test.LeakyReluTest.*
 
 reshape_op_test.ReshapeTest.*
+
+scan_ops_test.CumsumTest.*
 
 shape_ops_test.ShapeOpsTest.testExpandDims
 shape_ops_test.ShapeOpsTest.testExpandDimsDimType

@@ -59,10 +59,8 @@ def run_thru_ocm(path, ov_ver, device):
     if not os.path.exists(ocm_log_path):
       result = subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 
-      mc_log_file = open(ocm_log_path, "w")
-      mc_log_file.write(result.stdout.decode("utf-8"))
-      mc_log_file.close()
-
+      with open(ocm_log_path, "w") as mc_log_file:
+          mc_log_file.write(result.stdout.decode("utf-8"))  
       print("Log file written to " + ocm_log_path)
 
 if __name__ == '__main__':
