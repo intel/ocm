@@ -100,5 +100,6 @@ if __name__ == '__main__':
   parameter_test.device_validation(args.device)
   parameter_test.modelpath_validation(args.model_path)
   parameter_test.testlist_validation(args.test_list)
+  parameter_test.ov_validation(args.ov_version)
   ov_path = os.path.dirname(importlib.util.find_spec("openvino").origin)
   run_thru_mo(ov_path, args.ov_version, args.model_path, args.test_list, args.mode, args.device)

@@ -54,3 +54,20 @@ def testlist_validation(test_list):
     print("{0}".format(colored("File is found empty", "red")))
   else:
     print("Test List is ok")
+
+def ov_validation(ov_version):
+  regex = re.compile('[@!#$%^&*()<>?/\|}{~:]')
+  if ov_version == "":
+    print("{0}".format(colored("OpenVino Version in None", "red")))
+  if " " in ov_version:
+    print("{0}: {1} ".format(colored("OpenVino name Contain Spaces", "red"), ov_version))
+  if regex.search(ov_version) != None:
+    print("{0}: {1}".format(colored("Openvino name Contains Special Characters", "red"), ov_version))
+  ov_path = "/opt/intel/"+ ov_version
+  if not os.path.exists(ov_path):
+    raise AssertionError("OV Path does not exists")
+  else:
+    if ov_version == "openvino_2021.1.110" or ov_version == "openvino_2021.2.185" or ov_version == "openvino_2021.3.394"or "openvino_2021.4" in ov_version or "openvino_2022.1.0" in ov_version:
+      print("OV version is ok")
+    else:
+      print("OV Version is incorrect")
