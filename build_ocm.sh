@@ -15,7 +15,7 @@ else
     TF_SRC_DIR=$1
     if [ ! -d  ${TF_SRC_DIR}/tensorflow ]
     then
-      echo "Tensorflow sourc code doesn't exists at the ${TF_SRC_DIR} "
+      echo "Tensorflow source code doesn't exists at the ${TF_SRC_DIR} "
       exit
     fi
 fi

@@ -4,8 +4,6 @@
 #  SPDX-License-Identifier: Apache-2.0
 # ******************************************************************************
 
-OV_PATH=$1
-
 #Download Tensorflow
 if [ -d "tensorflow" ]
 then

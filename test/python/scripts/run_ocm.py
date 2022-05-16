@@ -81,6 +81,7 @@ if __name__ == '__main__':
   args = parser.parse_args()
   parameter_test.device_validation(args.device)
   parameter_test.modelpath_validation(args.model_path)
+  parameter_test.ov_validation(args.ov_version)
   in_path = args.model_path
   ov_ver = args.ov_version
   run_thru_ocm(in_path, ov_ver, args.device)

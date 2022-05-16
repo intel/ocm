@@ -62,6 +62,7 @@ if __name__ == '__main__':
   args = parser.parse_args()
   parameter_test.device_validation(args.device)
   parameter_test.modelpath_validation(args.model_path)
+  parameter_test.ov_validation(args.ov_version)
   home = os.environ['HOME']
   benchmark_app_exe_path = home + "/benchmark_build/intel64/Release/benchmark_app"
   if not os.path.exists(benchmark_app_exe_path):
