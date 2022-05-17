@@ -1672,7 +1672,9 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
   
   // Get the Major, Minor and Patch from OpenVino Version
   char ov_ver[OV_VER_SIZE];
-  memset(ov_ver, '\0', sizeof(ov_ver));
+  // memset(ov_ver, '\0', sizeof(ov_ver));
+  for(int i=0;i<sizeof(ov_ver);i++)
+    ov_ver[i]='\0';
   strncpy(ov_ver, ov_version.c_str(),OV_VER_SIZE-1);
   ov_ver[OV_VER_SIZE-1]='\0';
   
