@@ -152,7 +152,7 @@ const std::map<std::string, std::set<string>> ov_2021_4_op_update_vpu = {
 
 const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_cpu = {
     {"update", {"SquaredDifference", "LessEqual", "NotEqual", "Cumsum", "NonMaxSuppression", "NonMaxSuppressionV2", "NonMaxSuppressionV3", 
-    "NonMaxSuppressionV4", "NonMaxSuppressionV5", "CTCGreedyDecoder", "BatchMatMulV2"
+    "NonMaxSuppressionV4", "NonMaxSuppressionV5", "CTCGreedyDecoder", "BatchMatMulV2", "BatchMatMul"
     }}
 };
 
