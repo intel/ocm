@@ -24,6 +24,8 @@ bucketize_op_test.BucketizationOpTest.*
 
 batch_matmul_test.BatchMatMulWeightBroadcastTest.*
 batch_matmul_test.BatchMatMulWeightBroadcastDims2Test.*
+batch_matmul_op_test.BatchMatmulOpTest.*
+batch_matmul_test.*
 
 cast_op_test.CastOpTest.testBasic
 cast_op_test.CastOpTest.testBfloat16
