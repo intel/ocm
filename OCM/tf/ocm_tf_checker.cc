@@ -192,6 +192,20 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } 
       return supported_types;
     }();
+    type_constraint_map["BatchMatMul"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] > 2022 || ov_version[1] >= 1 ) {
+          supported_types.erase(DT_INT32);
+        }
+      } 
+      return supported_types;
+    }();
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -308,7 +322,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["Equal"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["ExpandDims"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ExpandDims"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+        if (ov_version[0] > 2022 || ov_version[1]>=1) {
+          supported_types.insert(DT_DOUBLE);
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Floor"]["T"] = [device_id, ov_version]() {
@@ -648,10 +670,13 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["Reshape"]["T"] = [device_id]() {
+    type_constraint_map["Reshape"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
         supported_types.insert(DT_BOOL);
+        if (ov_version[0] > 2022 || ov_version[1]>=1) {
+          supported_types.insert(DT_DOUBLE);
+        }
       }
       return supported_types;
     }();
@@ -807,6 +832,10 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2021 || ov_version[1] >= 4 ) {
           supported_types.insert(DT_BOOL);
         }
+        if (ov_version[0] > 2022 || ov_version[1]>=1) {
+          supported_types.insert(DT_DOUBLE);
+        }
+        
       }
       return supported_types;
     }();
@@ -1113,6 +1142,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["BiasAdd"] = SimpleConfirmationFunction();
     confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchMatMulV2"] = SimpleConfirmationFunction();
+    confirmation_function_map["BatchMatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
