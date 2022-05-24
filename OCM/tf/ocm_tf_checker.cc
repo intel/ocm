@@ -327,6 +327,16 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           supported_types.insert(DT_BOOL);
         }
       }
+      if (device_id == "GPU") {
+        if (ov_version[0] > 2022 || ov_version[1]>=1) {
+          supported_types.insert(DT_BOOL);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] > 2022 || ov_version[1]>=1) {
+          supported_types.insert(DT_BOOL);
+        }
+      }
       return supported_types;
     }();
     type_constraint_map["Exp"]["T"] = SupportedTypes(device_id);
