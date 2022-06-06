@@ -13,10 +13,10 @@ else
 fi
 
 cd tensorflow
-if [[ $(git describe --contains HEAD)  == "v2.8.0" ]]; then
+if [[ $(git describe --contains HEAD)  == "v2.9.1" ]]; then
   echo "Tensorflow repo is already checked out to required tf version"
 else
-  git pull; git checkout v2.8.0; 
+  git pull; git checkout v2.9.1; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
 fi
@@ -47,5 +47,5 @@ pip3 install defusedxml
 
 #Disable eager execution
 patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
-# Installing tf=2.8.0
-pip3 install -U tensorflow==2.8.0
+# Installing tf=2.9.1
+pip3 install -U tensorflow==2.9.1
