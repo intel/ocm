@@ -66,9 +66,9 @@ FrameworkNodesChecker::FrameworkNodesChecker(Framework_Names fw,
   ocm_status = OCMStatus::SUCCESS;
 }
 
-std::vector<void *> FrameworkNodesChecker::MarkSupportedNodes() {
+std::vector<void *> FrameworkNodesChecker::MarkSupportedNodes(const std::set<std::string> &nodes_to_skip={}) {
   if (ocm_status == OCMStatus::SUCCESS) {
-    nodes_list = ocmFrameworkObj->PrepareSupportedNodesList();
+    nodes_list = ocmFrameworkObj->PrepareSupportedNodesList(nodes_to_skip);
   } else {
     OCM_LOG(3) << "OCM Initialization was incomplete with Error code : "
                << ocm::OCMStatusMsg[int(ocm_status)] << std::endl;

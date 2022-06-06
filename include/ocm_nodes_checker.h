@@ -86,7 +86,7 @@ public:
    * @return list of supported nodes, needs to be typecasted back to the 
    * underlying frameworks  node* for further use
    */
-  virtual std::vector<void *> PrepareSupportedNodesList() = 0;
+  virtual std::vector<void *> PrepareSupportedNodesList(const std::set<std::string> &nodes_to_skip={}) = 0;
 
 public:
   /**
@@ -136,7 +136,7 @@ public:
    * To be used with Tensorflow graph
    * @return the list of supported nodes
    */
-  OCM_EXPORT std::vector<void *> MarkSupportedNodes();
+  OCM_EXPORT std::vector<void *> MarkSupportedNodes(const std::set<std::string> &nodes_to_skip);
 
   /**
    * To be used with OnnxRT

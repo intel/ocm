@@ -1696,7 +1696,14 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
   return is_input_dim_zero;
 }
 
-std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
+static Status CheckIfOutputNode(const Node* node,
+                                const std::set<std::string> skip_these_nodes,
+                                bool& skip_it) {
+  skip_it = !(skip_these_nodes.find(node->name()) != skip_these_nodes.end());
+  return Status::OK();
+}
+
+std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(const std::set<string> &nodes_to_skip) {
 
   std::vector<void *> node_list;
   
@@ -1747,6 +1754,16 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
     bool is_node_supported = true;
     // check if the optype supported
     do {
+
+      // CHECK_0: Check if some nodes need to be skipped
+      // instruct to skip marking keep, init, feed, and fetch ops (mainly used for grappler pass)
+      CheckIfOutputNode(node, nodes_to_skip, is_node_supported);
+      if (is_node_supported == false) {
+        OCM_LOG(1) << "Skip marking fetch node: " << node->name() << std::endl;
+        break;
+      }
+
+
       // CHECK_1: if the op is supported
       is_node_supported &= IsOpSupported(node->type_string());
       if (is_node_supported == false) {
