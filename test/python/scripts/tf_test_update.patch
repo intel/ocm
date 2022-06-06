@@ -40,7 +40,7 @@ index 71bbc0667ce..20772ad9807 100644
  
        # For all the possible axis to split it, including negative indices.
        for j in range(-i, i):
-diff --git a/tensorflow/python/kernel_tests/array_ops_test.py b/tensorflow/python/kernel_tests/array_ops_test.py
+diff --git a/tensorflow/python/kernel_tests/array_ops/array_ops_test.py b/tensorflow/python/kernel_tests/array_ops/array_ops_test.py
 index 8c6492dc53a..e2c436fc1f0 100644
 --- a/tensorflow/python/kernel_tests/array_ops_test.py
 +++ b/tensorflow/python/kernel_tests/array_ops_test.py
