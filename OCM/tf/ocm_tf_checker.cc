@@ -813,6 +813,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Select"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Select"]["Tidx"] = SupportedTypes(device_id);
     type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -1334,6 +1336,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
+    confirmation_function_map["Select"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sign"] =
