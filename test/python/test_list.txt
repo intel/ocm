@@ -143,7 +143,6 @@ cwise_ops_test.ComparisonOpTest.testBCastLessEqual
 cwise_ops_test.ComparisonOpTest.testBCastNotEqual
 
 # Select Op
-cwise_ops_test.SelectOpTest.*
 cwise_ops_test.BatchSelectOpTest.*
 
 depthwise_conv_op_test.DepthwiseConv2DTest.testConv2D2x2Filter
