@@ -1698,8 +1698,9 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
 
 static Status CheckIfOutputNode(const Node* node,
                                 const std::set<std::string> skip_these_nodes,
-                                bool& skip_it) {
-  skip_it = !(skip_these_nodes.find(node->name()) != skip_these_nodes.end());
+                                bool& is_node_supported) {
+  bool skip_it = skip_these_nodes.find(node->name()) != skip_these_nodes.end();
+  is_node_supported = !skip_it;
   return Status::OK();
 }
 
