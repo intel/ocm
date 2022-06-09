@@ -89,7 +89,7 @@ public:
    * @return list of supported nodes, needs to be typecasted back to the
    * underlying frameworks  node* for further use
    */
-  std::vector<void *> PrepareSupportedNodesList(const std::set<std::string> &nodes_to_skip) override;
+  std::vector<void *> PrepareSupportedNodesList() override;
   const tensorflow::Graph *graph;
   const tensorflow::GraphDef *graphDef;
 };

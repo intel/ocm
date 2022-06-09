@@ -27,7 +27,7 @@ public:
   void SetGraph(void *graph) {
     graph = static_cast<onnxruntime::GraphViewer *>(graph);
   }
-  std::vector<void *> PrepareSupportedNodesList(const std::set<std::string> &nodes_to_skip) override;
+  std::vector<void *> PrepareSupportedNodesList() override;
 
 public:
   const onnxruntime::GraphViewer *graph;

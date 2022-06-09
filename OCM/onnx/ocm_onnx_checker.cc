@@ -8,7 +8,7 @@
 
 namespace ocm {
 
-std::vector<void *> ONNXRTNodesChecker::PrepareSupportedNodesList(const std::set<std::string> &nodes_to_skip) {
+std::vector<void *> ONNXRTNodesChecker::PrepareSupportedNodesList() {
   std::vector<void *> nodeList;
   /*
           // TODO: Get NG supported ops list too

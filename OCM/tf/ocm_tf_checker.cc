@@ -1703,7 +1703,7 @@ static Status CheckIfOutputNode(const Node* node,
   return Status::OK();
 }
 
-std::vector<void *> TFNodesChecker::PrepareSupportedNodesList(const std::set<string> &nodes_to_skip) {
+std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
 
   std::vector<void *> node_list;
   
