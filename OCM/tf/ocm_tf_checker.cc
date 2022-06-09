@@ -558,6 +558,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["_MklSwish"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppression"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
@@ -1275,6 +1276,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           return tensorflow::Status::OK();
         };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
+    confirmation_function_map["_MklSwish"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["NonMaxSuppression"] =
