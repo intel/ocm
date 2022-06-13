@@ -109,6 +109,11 @@ public:
    */
   std::set<std::string> disabled_ops;
 
+  /**
+   * A set of node names to be skipped by OCM 
+   */
+  std::set<std::string> nodes_to_skip;
+
 };
 
 
@@ -145,10 +150,15 @@ public:
   OCM_EXPORT std::vector<unsigned int> GetUnSupportedNodesIndices();
 
   /**
-   * set disabled ops
+   * Set disabled ops
    * @param disabled_ops Set of disabled ops name 
    */
   OCM_EXPORT void SetDisabledOps(const std::set<std::string>); 
+
+  /**
+   * Set the nodes (names) to be ignored by OCM
+   */
+  OCM_EXPORT void SetSkipNodes(const std::set<std::string> &nodes_to_skip);
 
 private:
   /**

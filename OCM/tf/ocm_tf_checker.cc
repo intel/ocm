@@ -558,6 +558,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["_MklSwish"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Neg"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppression"]["T"] = SupportedTypes(device_id);
     type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
@@ -1284,6 +1285,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           return tensorflow::Status::OK();
         };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
+    confirmation_function_map["_MklSwish"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["NonMaxSuppression"] =
@@ -1705,6 +1707,14 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
   return is_input_dim_zero;
 }
 
+static Status CheckIfOutputNode(const Node* node,
+                                const std::set<std::string> skip_these_nodes,
+                                bool& is_node_supported) {
+  bool skip_it = skip_these_nodes.find(node->name()) != skip_these_nodes.end();
+  is_node_supported = !skip_it;
+  return Status::OK();
+}
+
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
 
   std::vector<void *> node_list;
@@ -1756,6 +1766,16 @@ std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
     bool is_node_supported = true;
     // check if the optype supported
     do {
+
+      // CHECK_0: Check if some nodes need to be skipped
+      // instruct to skip marking keep, init, feed, and fetch ops (mainly used for grappler pass)
+      CheckIfOutputNode(node, nodes_to_skip, is_node_supported);
+      if (is_node_supported == false) {
+        OCM_LOG(1) << "Skip marking fetch node: " << node->name() << std::endl;
+        break;
+      }
+
+
       // CHECK_1: if the op is supported
       is_node_supported &= IsOpSupported(node->type_string());
       if (is_node_supported == false) {

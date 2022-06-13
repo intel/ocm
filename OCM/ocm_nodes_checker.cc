@@ -92,4 +92,9 @@ void FrameworkNodesChecker::SetDisabledOps(
   ocmFrameworkObj->disabled_ops = disabled_ops;
 }
 
+void FrameworkNodesChecker::SetSkipNodes(
+    const std::set<std::string> &nodes_to_skip) {
+  ocmFrameworkObj->nodes_to_skip = nodes_to_skip;
+}
+
 } // namespace ocm
