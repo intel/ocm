@@ -7,7 +7,7 @@ OCM 检查在英特尔平台（CPU、GPU、MYRIAD 和 HDDL）上使用 OpenVINO 
 
 要求：
 
-- Tensorflow 版本：2.8.0
+- Tensorflow 版本：2.9.1
 - Tensorflow CC 库
 - Tensorflow for python
 
