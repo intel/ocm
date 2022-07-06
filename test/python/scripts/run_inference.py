@@ -24,8 +24,6 @@ def run_inference(path, device, ov_version):
 
   for f in files:
       # timeout of 60 seconds 
-      if device == "MYRIAD":
-        time.sleep(10) 
       cmd = ["timeout","60", benchmark_app_exe_path, "-m", f,"-d", device,"-load_config","config.json", "-niter", "1","-nireq", "1"]
       start=13+len(device)+len(ov_version)
       infer_log = "./tf_infer_logs/" + device + "/" + f[start:].replace("/","_")
