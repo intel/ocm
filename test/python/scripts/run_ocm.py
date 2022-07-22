@@ -48,8 +48,8 @@ def run_thru_ocm(path, ov_ver, device):
   for f in files:
     cmd = [ov_ocm_path, f, device, ov_version]
     test_name,ext=os.path.splitext(f[10:].replace("/","_"))
-    if test_name in invalid_list:
-      continue
+    # if test_name in invalid_list:
+    #   continue
     ocm_log_path = "./tf_ocm_logs/" + device + "/" + test_name
     #ocm_log_path, ext = os.path.splitext(ocm_log_path)
     ocm_log_path += ".log"
