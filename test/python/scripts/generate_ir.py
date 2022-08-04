@@ -52,9 +52,9 @@ def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
     mo_out = mo_out.replace("pbfiles", mo_op_path)
     test_name, ext=os.path.splitext(fname[10:].replace("/","_"))
     
-    # if mode == 'UTEST':
-    #   if test_name in invalid_list:
-    #     continue
+    if mode == 'UTEST':
+      if test_name in invalid_list:
+        continue
       
     cmd = [ov_path + '/tools/mo/mo_tf.py', '--input_model', fname, '-o',mo_out]
     mo_log = mo_log_path + "/" + test_name
