@@ -7,6 +7,7 @@
 #include "ocm_tf_checker.h"
 #include "ocm_logging.h"
 #include "ocm_tf_ops_list.h"
+#include "tensorflow/core/framework/node_def_util.h"
 
 namespace ocm {
 
@@ -1106,7 +1107,7 @@ static Status ConfirmationOk(
   if (it != confirmation_function_map.end()) {
     TF_RETURN_IF_ERROR(it->second(node, &confirmation_ok));
   }
-  return Status::OK();
+  return OkStatus();
 }
 
 // Implements a specific constraint on the input ops count
@@ -1118,7 +1119,7 @@ static Status ValidateInputCountMin(const Node *op, tensorflow::int32 count,
                << " input(s), got " << op->num_inputs() << " instead";
   }
   *result = true;
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 // Validate the dimension of the input tensor of the node
@@ -1136,14 +1137,14 @@ static Status ValidateNodeInputDim(const Node *n, tensorflow::int32 count,
     OCM_LOG(0) << " ERROR : " << n->name() << "\" supports max  " << count
                << " input dims, got " << t.dims() << " instead" << std::endl;
   }
-  return tensorflow::Status::OK();
+  return tensorflow::OkStatus();
 }
 
 // Generates a "simple" confirmation function which always returns true,
 static ConfirmationFunction SimpleConfirmationFunction() {
   auto cf = [](tensorflow::Node *, bool *result) {
     *result = true;
-    return tensorflow::Status::OK();
+    return tensorflow::OkStatus();
   };
   return cf;
 };
@@ -1163,10 +1164,10 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
   //      int dummy;
   //      if (GetAttr(n->attrs(),"my_unsupported_attr",&dummy).ok()) {
   //        *confirmed = false;
-  //        return Status::OK();
+  //        return OkStatus();
   //      }
   //      *confirmed = true;
-  //      return Status::OK();
+  //      return OkStatus();
   //    };
   //
   // The foregoing function checks every "MyOp" node to make sure that it does
@@ -1202,7 +1203,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
               TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
           }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["ArgMin"] = [device_id,ov_version](Node *n, bool *result) {
       *result = true;
@@ -1216,7 +1217,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
             TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Asin"] =
         SimpleConfirmationFunction(); // cwise_math
@@ -1266,11 +1267,11 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
                                                               bool *result) {
       bool tf_is_training;
       if (GetNodeAttr(n->attrs(), "is_training", &tf_is_training) !=
-          Status::OK()) {
+          OkStatus()) {
         tf_is_training = true;
       }
       *result = !tf_is_training;
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["FusedBatchNormV2"] =
         confirmation_function_map["FusedBatchNorm"];
@@ -1301,11 +1302,11 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
             OCM_LOG(0) << " ERROR : " << n->type_string()
                        << " Op has dimension size " << values.dim_size(i)
                        << std::endl;
-            return tensorflow::Status::OK();
+            return tensorflow::OkStatus();
           }
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["GatherNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Greater"] =
@@ -1362,7 +1363,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
             tensorflow::int32 count = 5;
             TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
           }
-          return tensorflow::Status::OK();
+          return tensorflow::OkStatus();
         };
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["_MklSwish"] = SimpleConfirmationFunction();
@@ -1379,13 +1380,13 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           *result = true;
           bool pad_to_max_output_size;
           auto status = GetNodeAttr(n->attrs(), "pad_to_max_output_size", &pad_to_max_output_size);
-          if (status==tensorflow::Status::OK()){
+          if (status==tensorflow::OkStatus()){
             // pad_to_max_output_size is not supported in openvino-tensorflow yet
             if(pad_to_max_output_size){
               *result = false;
             }
           }
-          return tensorflow::Status::OK();
+          return tensorflow::OkStatus();
         };
     confirmation_function_map["NonMaxSuppressionV5"] =
         confirmation_function_map["NonMaxSuppressionV4"];
@@ -1398,13 +1399,13 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         tensorflow::int32 count = 5;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Pack"] = [](Node *n, bool *result) {
       // num of inputs
       tensorflow::int32 count = 1;
       TF_RETURN_IF_ERROR(ValidateInputCountMin(n, count, result));
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Pad"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["PadV2"] = confirmation_function_map["MirrorPad"];
@@ -1440,7 +1441,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         tensorflow::int32 count = 5;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Size"] = SimpleConfirmationFunction();
     confirmation_function_map["Slice"] = SimpleConfirmationFunction();
@@ -1451,7 +1452,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         tensorflow::int32 count = 5;
         TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Softplus"] = SimpleConfirmationFunction();
     confirmation_function_map["SpaceToBatchND"] = SimpleConfirmationFunction();
@@ -1489,13 +1490,13 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
               OCM_LOG(0) << " ERROR : " << n->type_string()
                          << " Op has multiple negatve value in size_splits."
                          << std::endl;
-              return tensorflow::Status::OK();
+              return tensorflow::OkStatus();
             }
             found_neg_val = true;
           }
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Sqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["Square"] = SimpleConfirmationFunction();
@@ -1521,7 +1522,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           }
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["StridedSlice"] =
         [device_id, ov_version](Node *n, bool *result) {
@@ -1549,7 +1550,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
                 *result = false;
                 OCM_LOG(0) << " ERROR : " << n->type_string()
                            << " Op has empty Stride values." << std::endl;
-                return tensorflow::Status::OK();
+                return tensorflow::OkStatus();
               }
             }
 
@@ -1568,7 +1569,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
                   *result = false;
                   OCM_LOG(0) << " ERROR : " << n->type_string()
                              << " Op has negative Stride value." << std::endl;
-                  return tensorflow::Status::OK();
+                  return tensorflow::OkStatus();
                 }
               }
             }
@@ -1602,7 +1603,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
                          << " ellipsis_mask is set ." << std::endl;
             }
           }
-          return tensorflow::Status::OK();
+          return tensorflow::OkStatus();
         };
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] =
@@ -1633,7 +1634,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
         if (*result == false)
-          return tensorflow::Status::OK();
+          return tensorflow::OkStatus();
 
         DataType multiples_type = tensor_values.dtype();
         switch (multiples_type) {
@@ -1654,10 +1655,10 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
         if (!(*result)) {
           OCM_LOG(0) << " ERROR : " << n->type_string()
                      << " Op has invalid value of param-multple" << std::endl;
-          return tensorflow::Status::OK();
+          return tensorflow::OkStatus();
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     // Adapted from OVTF Translation, "sorted" parameter doesn't supports
     // false value as of now
@@ -1668,7 +1669,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
       if (!sorted_value) {
         *result = false;
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Transpose"] = [device_id,ov_version](Node *n,
                                                          bool *result) {
@@ -1691,7 +1692,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
             TF_RETURN_IF_ERROR(ValidateNodeInputDim(n, count, result));
         }
       }
-      return tensorflow::Status::OK();
+      return tensorflow::OkStatus();
     };
     confirmation_function_map["Where"] = SimpleConfirmationFunction();
     confirmation_function_map["Unpack"] = SimpleConfirmationFunction();
@@ -1727,7 +1728,7 @@ static bool IsTypeSupported(tensorflow::Node *node,
 
       DataType dt = DT_INVALID;
 
-      if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != Status::OK() ||
+      if (GetNodeAttr(node->attrs(), type_attr_name, &dt) != OkStatus() ||
           std::find(allowed_types.begin(), allowed_types.end(), dt) ==
               allowed_types.end()) {
         OCM_LOG(0) << node->type_string() << " " << type_attr_name << ": " << dt
@@ -1745,13 +1746,13 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
   int num_ips = node->num_inputs();
   for (int input_idx = 0; input_idx < num_ips; input_idx++) {
     Node *tf_input_node;
-    if (node->input_node(input_idx, &tf_input_node) == Status::OK()) {
+    if (node->input_node(input_idx, &tf_input_node) == OkStatus()) {
       if ((node->type_string() == "Mean" &&
            (ov_version[0] == 2021 && (ov_version[1] == 1 || ov_version[1] == 2))) ||
           node->type_string() == "Max" || node->type_string() == "Sum" ||
           node->type_string() == "EuclideanNorm") {
         Tensor t;
-        if (GetNodeAttr(tf_input_node->attrs(), "value", &t) == Status::OK()) {
+        if (GetNodeAttr(tf_input_node->attrs(), "value", &t) == OkStatus()) {
           // Check dim of any of the input is ZERO.
           for (int index = 0; index < t.dims(); index++) {
             if (t.dim_size(index) == 0) {
@@ -1767,7 +1768,7 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
           tf_input_node->type_string() != "ConcatV2") {
         TensorShape t;
 
-        if (GetNodeAttr(tf_input_node->attrs(), "shape", &t) == Status::OK()) {
+        if (GetNodeAttr(tf_input_node->attrs(), "shape", &t) == OkStatus()) {
           if (t.dims() == 0 && tf_input_node->type_string() != "Placeholder") {
             is_input_dim_zero &= false;
             return is_input_dim_zero;
@@ -1792,7 +1793,7 @@ static Status CheckIfOutputNode(const Node* node,
                                 bool& is_node_supported) {
   bool skip_it = skip_these_nodes.find(node->name()) != skip_these_nodes.end();
   is_node_supported = !skip_it;
-  return Status::OK();
+  return OkStatus();
 }
 
 std::vector<void *> TFNodesChecker::PrepareSupportedNodesList() {
