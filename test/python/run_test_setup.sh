@@ -13,10 +13,10 @@ else
 fi
 
 cd tensorflow
-if [[ $(git describe --contains HEAD)  == "v2.9.1" ]]; then
+if [[ $(git describe --contains HEAD)  == "v2.10.0" ]]; then
   echo "Tensorflow repo is already checked out to required tf version"
 else
-  git pull; git checkout v2.9.1; 
+  git pull; git checkout v2.10.0; 
   git apply ../scripts/tf_test_update.patch
   git apply ../scripts/tf_rem_unsupported_op_update.patch
 fi
@@ -29,6 +29,7 @@ else
   wget https://raw.githubusercontent.com/tensorflow/ngraph-bridge/master/test/python/tensorflow/tf_unittest_runner.py -O ./scripts/
   patch ./scripts/tf_unittest_runner.py ./patch/tf_test_dump_pb.patch
 fi
+PYTHON_VERSION=`python -c 'import sys; version=sys.version_info[:3]; print("{0}.{1}".format(*version))'`
 
 #Create virtual python env
 echo "Creating python virtual env"
@@ -46,6 +47,6 @@ pip3 install networkx
 pip3 install defusedxml
 
 #Disable eager execution
-patch ./env/lib/python3.6/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
-# Installing tf=2.9.1
-pip3 install -U tensorflow==2.9.1
+patch ./env/lib/python3.7/site-packages/tensorflow/python/framework/test_util.py ./patch/disable_eager_execution.patch
+# Installing tf=2.10.0
+pip3 install -U tensorflow==2.10.0
