@@ -1461,6 +1461,10 @@ transpose_op_test_TransposeTest_testHalf_testHalf-4
 transpose_op_test_TransposeTest_testInt32_testInt32-10
 transpose_op_test_TransposeTest_testInt64_testInt64-10
 
+# Timeout, monitored command dumped core
+transpose_op_test_TransposeTest_testHalf_testHalf-3
+transpose_op_test_TransposeTest_testHalf_testHalf-5
+
 # TF infer fails with "timeout, core dumped" during model loading
 reduction_ops_test_MeanReductionTest_testGradient_testGradient-4
 
