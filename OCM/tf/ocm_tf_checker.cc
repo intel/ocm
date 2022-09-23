@@ -606,10 +606,42 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["NonMaxSuppression"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["NonMaxSuppressionV2"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["NonMaxSuppressionV3"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["NonMaxSuppressionV4"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["NonMaxSuppressionV5"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["NonMaxSuppressionV2"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+      }();
+    type_constraint_map["NonMaxSuppressionV3"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+      }();
+    type_constraint_map["NonMaxSuppressionV4"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+      }();
+    type_constraint_map["NonMaxSuppressionV5"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+      }
+      return supported_types;
+      }();
     type_constraint_map["NotEqual"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
