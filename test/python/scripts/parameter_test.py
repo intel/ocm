@@ -67,7 +67,7 @@ def ov_validation(ov_version):
   if not os.path.exists(ov_path):
     raise AssertionError("OV Path does not exists")
   else:
-    if ov_version == "openvino_2021.1.110" or ov_version == "openvino_2021.2.185" or ov_version == "openvino_2021.3.394"or "openvino_2021.4" in ov_version or "openvino_2022.1.0" in ov_version:
+    if ov_version == "openvino_2021.1.110" or ov_version == "openvino_2021.2.185" or ov_version == "openvino_2021.3.394"or "openvino_2021.4" in ov_version or "openvino_2022.1.0" or "openvino_2022.2.0" in ov_version:
       print("OV version is ok")
     else:
       print("OV Version is incorrect")
