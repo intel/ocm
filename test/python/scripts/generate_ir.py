@@ -56,7 +56,7 @@ def run_thru_mo(ov_path, ov_name, path, test_list,mode, device):
       if test_name in invalid_list:
         continue
       
-      cmd = [ov_path + '/tools/mo/mo_tf.py', '--input_model', fname, '-o',mo_out]
+    cmd = [ov_path + '/tools/mo/mo_tf.py', '--input_model', fname, '-o',mo_out]
     mo_log = mo_log_path + "/" + test_name
     #mo_log, ext = os.path.splitext(mo_log)
     mo_log += ".log"

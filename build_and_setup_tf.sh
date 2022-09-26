@@ -19,12 +19,12 @@ if [ -d  ${TF_SRC_DIR}/tensorflow ]
 then
   echo "Tensorflow source code is already available"
   echo "Checking out the required version"
-  cd ${TF_SRC_DIR}/tensorflow; git checkout v2.9.1; 
+  cd ${TF_SRC_DIR}/tensorflow; git checkout v2.9.2; 
 else
 	cd ${TF_SRC_DIR}
   git clone https://github.com/tensorflow/tensorflow.git
   echo "Checking out the required version"
-  cd tensorflow; git checkout v2.9.1; 
+  cd tensorflow; git checkout v2.9.2; 
 fi 
 
 # Create virtual python env
@@ -67,10 +67,10 @@ bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --loca
 bazel build --config=nonccl --config=noaws --config=nogcp --config=nohdfs --local_cpu_resources=8 --local_ram_resources 10240 --jobs=8  //tensorflow:libtensorflow_cc.so
 
 # echo "Installing the built Tensorflow python package"
-pip3 install --force-reinstall /tmp/tensorflow_pkg/tensorflow-2.9.1*.whl
+pip3 install --force-reinstall /tmp/tensorflow_pkg/tensorflow-2.9.2*.whl
 
 echo "Copying the tensorflow wheel to ${TF_SRC_DIR}/tensorflow/"
-cp /tmp/tensorflow_pkg/tensorflow-2.9.1*.whl ${TF_SRC_DIR}/tensorflow/
+cp /tmp/tensorflow_pkg/tensorflow-2.9.2*.whl ${TF_SRC_DIR}/tensorflow/
 
 echo "Deactivating the virtual environment"
 deactivate
