@@ -181,9 +181,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["BatchMatMulV2"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "GPU") {
-        if (ov_version[0] >=
-        
-         2022 || ov_version[1] >= 1 ) {
+        if (ov_version[0] >= 2022 || ov_version[1] >= 1 ) {
           supported_types.erase(DT_INT32);
         }
       }
