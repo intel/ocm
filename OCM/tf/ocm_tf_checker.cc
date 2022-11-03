@@ -327,6 +327,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["DynamicPartition"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Erf"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -1296,6 +1297,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
     confirmation_function_map["DynamicPartition"] = SimpleConfirmationFunction();
     confirmation_function_map["Elu"] = SimpleConfirmationFunction();
+    confirmation_function_map["Erf"] = SimpleConfirmationFunction();
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
