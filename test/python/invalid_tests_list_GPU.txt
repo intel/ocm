@@ -173,6 +173,12 @@ array_ops_test_StridedSliceTest_test_int16_indices_test_int16_indices-8
 # -i or -data_shape command line parameter should be set for all inputs in case of network with dynamic shapes
 batchtospace_op_test_BatchToSpaceNDErrorHandlingTest_testUnknownShape_testUnknownShape-4
 
+# Bucketize Op is not supported
+ bucketize_op_test_BucketizationOpTest_test2DInput_test2DInput-0
+ bucketize_op_test_BucketizationOpTest_testFloat_testFloat-0
+ bucketize_op_test_BucketizationOpTest_testInt_testInt-0
+ bucketize_op_test_BucketizationOpTest_testInvalidBoundariesOrder_testInvalidBoundariesOrder-0
+ 
 # Cast Op : DstT - DT_DOUBLE, SrcT - DT_INT64 not supported
 cast_op_test_CastOpTest_testBasic_testBasic-0
 cast_op_test_CastOpTest_testBasic_testBasic-11
