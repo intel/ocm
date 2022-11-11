@@ -326,6 +326,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["DynamicPartition"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Erf"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -722,6 +724,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["PadV2"]["Tpaddings"] = SupportedTypesIdx(device_id);
+    type_constraint_map["ParallelDynamicStitch"]["T"] = SupportedTypes(device_id);
     // Additonal DT_HALF is needed. Need to handle this at common place.
     type_constraint_map["Placeholder"]["dtype"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -807,6 +810,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Select"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SegmentSum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["Tindices"] = SupportedTypes(device_id);
     type_constraint_map["Shape"]["T"] = SupportedTypes(device_id);
@@ -1057,6 +1062,11 @@ std::set<std::string> GetTFSupportedOPs(std::string device_id,
       for(const auto & e : ov_2022_1_0_op_update_cpu){
         ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
       }
+    }
+    if (ov_version[0] > 2022 || ov_version[1] >= 2) {
+      for(const auto & e : ov_2022_2_0_op_update_cpu){
+        ov_based_op_list[e.first].insert(e.second.begin(), e.second.end());
+      }
     }        
   } else if (device_id == "GPU") {
     supported_ops.insert(common_supported_ops.begin(),
@@ -1285,7 +1295,9 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["DepthwiseConv2dNative"] =
         SimpleConfirmationFunction();
     confirmation_function_map["DepthToSpace"] = SimpleConfirmationFunction();
+    confirmation_function_map["DynamicPartition"] = SimpleConfirmationFunction();
     confirmation_function_map["Elu"] = SimpleConfirmationFunction();
+    confirmation_function_map["Erf"] = SimpleConfirmationFunction();
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
@@ -1438,6 +1450,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
       TF_RETURN_IF_ERROR(ValidateInputCountMin(n, count, result));
       return tensorflow::Status::OK();
     };
+    confirmation_function_map["ParallelDynamicStitch"] = SimpleConfirmationFunction();
     confirmation_function_map["Pad"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["PadV2"] = confirmation_function_map["MirrorPad"];
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
@@ -1457,6 +1470,8 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
+    confirmation_function_map["Select"] = SimpleConfirmationFunction();
+    confirmation_function_map["SegmentSum"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Sign"] =

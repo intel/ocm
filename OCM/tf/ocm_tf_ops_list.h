@@ -171,6 +171,10 @@ const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
     {"remove", {"Range"}} // Ops removed by OpenVINO in this version
 };
 
+const std::map<std::string, std::set<string>> ov_2022_2_0_op_update_cpu = {
+    {"update", {"Select", "SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf"}}
+};
+
 } // namespace ocm
 
 #endif //_OCM_TF_OPS_LIST_H_
