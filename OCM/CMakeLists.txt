@@ -14,9 +14,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-comment -Wno-sign-compare")
 endif()
 
-include_directories(${TensorFlow_INCLUDE_DIR})
-include_directories(${TensorFlow_INCLUDE_DIR}/external/nsync/public)
-
 include_directories(../include/)
 
 if(WIN32)
@@ -39,6 +36,10 @@ message(STATUS "Shared Link Flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "TensorFlow_FRAMEWORK_LIBRARY path: ${TensorFlow_FRAMEWORK_LIBRARY}")
 
 add_library(ocm SHARED ${SRC})
+
+target_include_directories(ocm PRIVATE ${TensorFlow_INCLUDE_DIR}
+                           ${TensorFlow_INCLUDE_DIR}/external/nsync/public)
+
 if ( APPLE OR WIN32)
     target_link_libraries(
             ocm

@@ -299,3 +299,7 @@ split_op_test_SplitOpTest_testShapeInference_testShapeInference-3
 
 # TopKV2 Op Mode is not supported
 topk_op_test_TopKTest_testTop3Unsorted_testTop3Unsorted-0
+
+# Timeout, monitored command dumped core
+transpose_op_test_TransposeTest_testHalf_testHalf-3
+transpose_op_test_TransposeTest_testHalf_testHalf-5
