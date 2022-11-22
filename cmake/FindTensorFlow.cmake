@@ -19,7 +19,7 @@ message(STATUS "Looking for TensorFlow installation")
 
 execute_process(
     COMMAND
-    "${Python3_EXECUTABLE}" -c "import tensorflow as tf; print(tf.sysconfig.get_include())"
+    python -c "import tensorflow as tf; print(tf.sysconfig.get_include())"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE TensorFlow_INCLUDE_DIR
     ERROR_VARIABLE ERR
@@ -34,7 +34,7 @@ MESSAGE(STATUS "TensorFlow_INCLUDE_DIR: " ${TensorFlow_INCLUDE_DIR})
 
 execute_process(
     COMMAND
-    "${Python3_EXECUTABLE}" -c "import tensorflow as tf; print(tf.sysconfig.get_lib())"
+    python -c "import tensorflow as tf; print(tf.sysconfig.get_lib())"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE TensorFlow_DIR
     ERROR_VARIABLE ERR
@@ -49,7 +49,7 @@ message(STATUS "TensorFlow_DIR: " ${TensorFlow_DIR})
 
 execute_process(
     COMMAND
-    "${Python3_EXECUTABLE}" -c "import tensorflow as tf; print(tf.__cxx11_abi_flag__)"
+    python -c "import tensorflow as tf; print(tf.__cxx11_abi_flag__)"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE TensorFlow_CXX_ABI
     ERROR_VARIABLE ERR
@@ -63,7 +63,7 @@ message(STATUS "TensorFlow_CXX_ABI: " ${TensorFlow_CXX_ABI})
 
 execute_process(
     COMMAND
-    "${Python3_EXECUTABLE}" -c "import tensorflow as tf; print(tf.__git_version__)"
+    python -c "import tensorflow as tf; print(tf.__git_version__)"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE TensorFlow_GIT_VERSION
     ERROR_VARIABLE ERR
@@ -78,7 +78,7 @@ message(STATUS "TensorFlow_GIT_VERSION: " ${TensorFlow_GIT_VERSION})
 
 execute_process(
     COMMAND
-    "${Python3_EXECUTABLE}" -c "import tensorflow as tf; print(tf.__version__)"
+    python -c "import tensorflow as tf; print(tf.__version__)"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE TensorFlow_VERSION
     ERROR_VARIABLE ERR
