@@ -18,7 +18,7 @@ namespace ocm {
 const std::set<DataType> SupportedTypes(const std::string device_id = "CPU") {
 
   const std::set<DataType> cpu_supported_inputTypes = {
-      DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16,
+      DT_FLOAT, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_DOUBLE,
   };
 
   const std::set<DataType> gpu_supported_inputTypes = {DT_BFLOAT16,
