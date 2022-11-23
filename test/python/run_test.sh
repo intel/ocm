@@ -58,17 +58,12 @@ run_infer(){
 
 if [[ $MODE == "UTEST" ]]; then
     echo "Unit Test of Ops"
-    if [[ -z $MODEL_PATH ]]; then
-      generate_unittest_pbfiles
-      MODEL_PATH='./pbfiles'
-    else
-      echo "PB file path is " + $MODEL_PATH
-    fi
+    generate_unittest_pbfiles
+    MODEL_PATH='./pbfiles'
    
 elif [[ $MODE == "MTEST" ]]; then
     echo "Model Testings"
    
-
 else
     echo $MODE
     echo "Sorry!! Wrong Mode Option."
