@@ -874,3 +874,4 @@ softmax_op_test_SoftmaxTest_testHalfGPU_testHalfGPU-1
 
 # Range op is not supported
 softmax_op_test_SoftmaxTest_testFloatGPU_testFloatGPU-0
+softmax_op_test_SoftmaxTest_testDoubleGPU_testDoubleGPU-0
