@@ -6,12 +6,19 @@
 
 cmake_minimum_required(VERSION 3.4)
 project (ocm CXX)
-find_package(TensorFlow REQUIRED)
+
+# Find TensorFlow
+if(STANDALONE_CMAKE)
+    # Use a separate TensorFlow finder if we're building with standalone CMake
+    include(../cmake/FindTensorFlowStandalone.cmake)
+else()
+    find_package(TensorFlow REQUIRED)
+endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "^(Apple)?Clang$")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-comment -Wno-sign-compare -Wno-backslash-newline-escape")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-comment -Wno-sign-compare -Wno-backslash-newline-escape")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-comment -Wno-sign-compare")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wno-comment -Wno-sign-compare")
 endif()
 
 include_directories(../include/)
