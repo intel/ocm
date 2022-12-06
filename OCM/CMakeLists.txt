@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.4)
 project (ocm CXX)
 
 # Find TensorFlow
-if(NOT PY_SCRIPT_BUILD)
+if(STANDALONE_CMAKE)
     # Use a separate TensorFlow finder if we're building with standalone CMake
     include(../cmake/FindTensorFlowStandalone.cmake)
 else()
