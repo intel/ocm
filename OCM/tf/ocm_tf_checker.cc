@@ -213,7 +213,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
 #endif
-      } else if (device_id == "MYRIAD" && device_id == "HDDL") {
+      } else if (device_id == "MYRIAD" || device_id == "HDDL") {
         // checked using OVTF code, it's working
         supported_types.insert(DT_UINT16);
       }
@@ -375,7 +375,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
         // Floor_mod supports only I32 precision of inputs for CPU
         supported_types = {DT_INT32, DT_FLOAT};
-        if (ov_version[0] == 2021 || ov_version[1]==1) {
+        if (ov_version[0] == 2021 && ov_version[1]==1) {
           supported_types.erase(DT_FLOAT);
         }
         if (ov_version[0] >=2022 && ov_version[1] >= 1) {
@@ -393,7 +393,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["FloorDiv"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version[0] == 2021 || ov_version[1]==1) {
+        if (ov_version[0] == 2021 && ov_version[1]==1) {
           supported_types.erase(DT_UINT32);
           supported_types.erase(DT_UINT64);
         }
@@ -545,7 +545,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Mean"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "MYRIAD") {
-        if (ov_version[0] == 2021 || (ov_version[1]==1 || ov_version[1] == 2)) {
+        if (ov_version[0] == 2021 && (ov_version[1]==1 || ov_version[1] == 2)) {
           supported_types.erase(DT_INT32);
         }
       } 
@@ -856,7 +856,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Sign"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version[0] == 2021 || ov_version[1]==1) {
+        if (ov_version[0] == 2021 && ov_version[1]==1) {
           supported_types.erase(DT_UINT32);
           supported_types.erase(DT_UINT64);
         }
@@ -899,7 +899,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         supported_types.insert(DT_HALF);
 #endif
       } else if (device_id == "MYRIAD") {
-        if (ov_version[0] == 2021 || ov_version[1] == 3) {
+        if (ov_version[0] == 2021 && ov_version[1] == 3) {
           supported_types.erase(DT_INT32);
         }
       }
@@ -1010,7 +1010,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["TopKV2"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
-        if (ov_version[0] == 2021 || (ov_version[1]==1 || ov_version[1] == 2)) {
+        if (ov_version[0] == 2021 && (ov_version[1]==1 || ov_version[1] == 2)) {
           supported_types.erase(DT_INT32);
         }
         supported_types.erase(DT_INT64);
@@ -1438,7 +1438,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
               TF_RETURN_IF_ERROR(
                   GetNodeAttr(tf_pad_paddings_node->attrs(), "value", &values));
               // check the first dimension
-              if (ov_version[0] == 2021 || (ov_version[1] == 1 || ov_version[1] == 2)) {
+              if (ov_version[0] == 2021 && (ov_version[1] == 1 || ov_version[1] == 2)) {
                 if (values.dim_size(0) != 4) {
                   *result = false;
                 }
@@ -1650,9 +1650,9 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
             }
 
             // Check: Negative stride values are not supported
-            if ((ov_version[0] == 2021 || (ov_version[1] == 1 || ov_version[1] == 2)) &&
+            if ((ov_version[0] == 2021 && (ov_version[1] == 1 || ov_version[1] == 2)) &&
                 (device_id == "MYRIAD" || device_id == "HDDL" ||
-                 (device_id == "GPU" && ov_version[0] == 2021 || ov_version[1] == 1))) {
+                 (device_id == "GPU" && ov_version[0] == 2021 && ov_version[1] == 1))) {
 #if TF_VERSION < 2
               auto array = (void *)DMAHelper::base(&values);
 #else
@@ -1671,7 +1671,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           }
 
           // shrink_axis_mask attribute is not supported for MYRIAD and HDDL
-          if ((ov_version[0] == 2021 || ( ov_version[1]== 1 || ov_version[1] == 2)) &&
+          if ((ov_version[0] == 2021 && ( ov_version[1]== 1 || ov_version[1] == 2)) &&
               (device_id == "MYRIAD" || device_id == "HDDL")) {
             int shrink_axis_mask;
             int new_axis_mask;
@@ -1843,7 +1843,7 @@ static bool IsOpInputDimZeroTF(tensorflow::Node *node, int * ov_version) {
     Node *tf_input_node;
     if (node->input_node(input_idx, &tf_input_node) == Status::OK()) {
       if ((node->type_string() == "Mean" &&
-           (ov_version[0] == 2021 || (ov_version[1] == 1 || ov_version[1] == 2))) ||
+           (ov_version[0] == 2021 && (ov_version[1] == 1 || ov_version[1] == 2))) ||
           node->type_string() == "Max" || node->type_string() == "Sum" ||
           node->type_string() == "EuclideanNorm") {
         Tensor t;
