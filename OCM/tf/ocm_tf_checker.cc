@@ -248,6 +248,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);
+    type_constraint_map["Const"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Const"]["dtype"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -261,6 +262,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
             supported_types.insert(DT_INT8);
           }
           if (ov_version[0] >= 2022 && ov_version[1] >= 1) {
+            supported_types.insert(DT_DOUBLE);
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
 #endif
@@ -460,6 +462,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
+        }
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+        supported_types.insert(DT_DOUBLE);
         }
       }
       return supported_types;
@@ -857,7 +865,19 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Roll"]["T_IND_1"] = SupportedTypesIdx(device_id);
     type_constraint_map["Roll"]["T_IND_2"] = SupportedTypesIdx(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Select"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Select"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=2) {
+          supported_types.insert(DT_DOUBLE);
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+        }
+      }
+      return supported_types;
+    }();
+    type_constraint_map["SelectV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SegmentSum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["Tindices"] = SupportedTypes(device_id);
@@ -992,7 +1012,18 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Sum"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=2) {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+        supported_types.insert(DT_DOUBLE);
+      }
+    }
+      return supported_types;
+    }();
     type_constraint_map["Swish"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
@@ -1542,6 +1573,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Select"] = SimpleConfirmationFunction();
+    confirmation_function_map["SelectV2"] = SimpleConfirmationFunction();
     confirmation_function_map["SegmentSum"] = SimpleConfirmationFunction();
     confirmation_function_map["Sigmoid"] =
         SimpleConfirmationFunction(); // cwise_math
