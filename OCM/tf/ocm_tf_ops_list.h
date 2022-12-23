@@ -172,7 +172,7 @@ const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
 };
 
 const std::map<std::string, std::set<string>> ov_2022_2_0_op_update_cpu = {
-    {"update", {"Select", "SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf"}}
+    {"update", {"Select", "SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf", "Concat","ExtractImagePatches","LogicalNot","LogicalOr","LogicalXor","Mod","RandomUniform","Roll","Swish"}}
 };
 
 } // namespace ocm

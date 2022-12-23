@@ -236,6 +236,8 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         }
       return supported_types;
     }();
+    type_constraint_map["Concat"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Concat"]["Taxis"] = SupportedTypesIdx(device_id);
     type_constraint_map["ConcatV2"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -356,6 +358,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
+    type_constraint_map["ExtractImagePatches"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Floor"]["T"] = [device_id, ov_version]() {
@@ -490,6 +493,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["Log"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogicalAnd"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogicalNot"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogicalOr"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["LogicalXor"]["T"] = SupportedTypes(device_id);
     type_constraint_map["LogSoftmax"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -593,6 +599,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     }();
     type_constraint_map["MirrorPad"]["Tpaddings"] =
         SupportedTypesIdx(device_id);
+    type_constraint_map["Mod"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Mul"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -785,6 +792,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Prod"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Prod"]["Tidx"] = SupportedTypesIdx(device_id);
     type_constraint_map["Range"]["Tidx"] = SupportedTypesIdx(device_id);
+    type_constraint_map["RandomUniform"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Reciprocal"]["T"] = SupportedTypes(device_id);
     type_constraint_map["RealDiv"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Relu"]["T"] = [device_id]() {
@@ -844,6 +852,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
     type_constraint_map["Reverse"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ReverseV2"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Round"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Roll"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Roll"]["T_IND_1"] = SupportedTypesIdx(device_id);
+    type_constraint_map["Roll"]["T_IND_2"] = SupportedTypesIdx(device_id);
     type_constraint_map["Rsqrt"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Select"]["T"] = SupportedTypes(device_id);
     type_constraint_map["SegmentSum"]["T"] = SupportedTypes(device_id);
@@ -981,6 +992,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["Sum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Swish"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tan"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Tanh"]["T"] = [device_id]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -1326,6 +1338,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["BatchMatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
+    confirmation_function_map["Concat"] = SimpleConfirmationFunction();
     confirmation_function_map["ConcatV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Const"] = SimpleConfirmationFunction();
     confirmation_function_map["Conv2D"] = SimpleConfirmationFunction();
@@ -1350,6 +1363,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["ExpandDims"] = SimpleConfirmationFunction();
     confirmation_function_map["Equal"] = SimpleConfirmationFunction();
     confirmation_function_map["Exp"] = SimpleConfirmationFunction();
+    confirmation_function_map["ExtractImagePatches"] = SimpleConfirmationFunction();
     confirmation_function_map["FakeQuantWithMinMaxVars"] = SimpleConfirmationFunction();
     confirmation_function_map["Fill"] = SimpleConfirmationFunction();
     confirmation_function_map["Floor"] = SimpleConfirmationFunction();
@@ -1412,6 +1426,9 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["LessEqual"] = SimpleConfirmationFunction();
     confirmation_function_map["Log"] = SimpleConfirmationFunction();
     confirmation_function_map["LogicalAnd"] = SimpleConfirmationFunction();
+    confirmation_function_map["LogicalNot"] = SimpleConfirmationFunction();
+    confirmation_function_map["LogicalOr"] = SimpleConfirmationFunction();
+    confirmation_function_map["LogicalXor"] = SimpleConfirmationFunction();
     confirmation_function_map["LogSoftmax"] = SimpleConfirmationFunction();
     confirmation_function_map["MatMul"] = SimpleConfirmationFunction();
     confirmation_function_map["MaxPool"] = SimpleConfirmationFunction();
@@ -1457,6 +1474,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
           }
           return tensorflow::Status::OK();
         };
+    confirmation_function_map["Mod"] = SimpleConfirmationFunction();
     confirmation_function_map["Mul"] = SimpleConfirmationFunction();
     confirmation_function_map["_MklSwish"] = SimpleConfirmationFunction();
     confirmation_function_map["Neg"] =
@@ -1505,6 +1523,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Placeholder"] = SimpleConfirmationFunction();
     confirmation_function_map["Prod"] = SimpleConfirmationFunction();
     confirmation_function_map["Range"] = SimpleConfirmationFunction();
+    confirmation_function_map["RandomUniform"] = SimpleConfirmationFunction();
     confirmation_function_map["Reciprocal"] = SimpleConfirmationFunction();
     confirmation_function_map["RealDiv"] =
         SimpleConfirmationFunction(); // cwise_math
@@ -1517,6 +1536,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Reverse"] = SimpleConfirmationFunction();
     confirmation_function_map["ReverseV2"] = SimpleConfirmationFunction();
     confirmation_function_map["Round"] = SimpleConfirmationFunction();
+    confirmation_function_map["Roll"] = SimpleConfirmationFunction();
     confirmation_function_map["Rsqrt"] = SimpleConfirmationFunction();
     confirmation_function_map["ScatterNd"] = SimpleConfirmationFunction();
     confirmation_function_map["Select"] = SimpleConfirmationFunction();
@@ -1703,6 +1723,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Sub"] = SimpleConfirmationFunction();
     confirmation_function_map["Sum"] =
         SimpleConfirmationFunction(); // cwise_math
+    confirmation_function_map["Swish"] = SimpleConfirmationFunction();
     confirmation_function_map["Tan"] =
         SimpleConfirmationFunction(); // cwise_math
     confirmation_function_map["Tanh"] =
