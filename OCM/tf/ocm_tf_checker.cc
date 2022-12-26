@@ -206,6 +206,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       } 
       return supported_types;
     }();
+    type_constraint_map["BroadcastGradientArgs"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Cast"]["SrcT"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       supported_types.insert(DT_BOOL);
@@ -248,7 +249,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);
-    type_constraint_map["Const"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Const"]["dtype"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
       if (device_id == "CPU") {
@@ -783,6 +783,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
           supported_types.insert(DT_INT8);
           supported_types.insert(DT_BOOL);
         }
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
+          supported_types.insert(DT_DOUBLE);
+        }
       } else if (device_id == "GPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
@@ -834,6 +837,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] >= 2022 && ov_version[1]>=1) {
           supported_types.insert(DT_DOUBLE);
         }
+        if (ov_version[0] >= 2022 && ov_version[1]>=1) {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif          
+        }
       }
       else if (device_id == "GPU") {
         supported_types.insert(DT_INT64);
@@ -877,7 +885,17 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["SelectV2"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["SelectV2"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "CPU") {
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2) {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+        }
+      }
+      return supported_types;
+    }();
     type_constraint_map["SegmentSum"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["T"] = SupportedTypes(device_id);
     type_constraint_map["ScatterNd"]["Tindices"] = SupportedTypes(device_id);
@@ -1368,6 +1386,7 @@ GetConfirmationMap(std::string device_id, int * ov_version) {
     confirmation_function_map["Bucketize"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchMatMulV2"] = SimpleConfirmationFunction();
     confirmation_function_map["BatchMatMul"] = SimpleConfirmationFunction();
+    confirmation_function_map["BroadcastGradientArgs"] = SimpleConfirmationFunction();
     confirmation_function_map["Cast"] = SimpleConfirmationFunction();
     confirmation_function_map["Ceil"] = SimpleConfirmationFunction();
     confirmation_function_map["Concat"] = SimpleConfirmationFunction();

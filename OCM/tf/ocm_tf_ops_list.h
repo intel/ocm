@@ -48,7 +48,7 @@ std::set<std::string> common_supported_ops = {
     "Sub",
     "Sum", 
     "Tile", "TopKV2", "Transpose", "Unpack",
-    //"Where",  // Commented as it introduces dynamic shape error
+    "Where",  // Commented as it introduces dynamic shape error
     "ZerosLike" 
 };
 
@@ -172,7 +172,13 @@ const std::map<std::string, std::set<string>> ov_2022_1_0_op_update_vpu = {
 };
 
 const std::map<std::string, std::set<string>> ov_2022_2_0_op_update_cpu = {
-    {"update", {"Select", "SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf","Einsum", "Concat","ExtractImagePatches","LogicalNot","LogicalOr","LogicalXor","Mod","RandomUniform","Roll","Swish"}}
+    {"update", {"Select","SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf","Einsum", "BroadcastGradientArgs","Concat","ExtractImagePatches","LogicalNot","LogicalOr","LogicalXor","Mod","RandomUniform","Roll","SelectV2","Swish"}}
+};
+const std::map<std::string, std::set<string>> ov_2022_2_0_op_update_gpu = {
+    {"update", {"Select","SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf","Einsum", "BroadcastGradientArgs","Concat","ExtractImagePatches","LogicalNot","LogicalOr","LogicalXor","Mod","RandomUniform","Roll","SelectV2","Swish"}}
+};
+const std::map<std::string, std::set<string>> ov_2022_2_0_op_update_vpu = {
+    {"update", {"Select","SegmentSum", "ParallelDynamicStitch", "DynamicPartition", "Erf","Einsum", "BroadcastGradientArgs","Concat","ExtractImagePatches","LogicalNot","LogicalOr","LogicalXor","Mod","RandomUniform","Roll","SelectV2","Swish"}}
 };
 
 } // namespace ocm
