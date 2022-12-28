@@ -258,7 +258,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "CPU") {
         if (ov_version[0] > 2021 || ov_version[1] >= 4 ) {
           supported_types.insert(DT_BOOL);
-        }
+        } }
         if (device_id == "GPU") {
           if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
             supported_types.insert(DT_INT64);
@@ -271,7 +271,6 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
             supported_types.insert(DT_INT64);
             }
             }
-      }
       return supported_types;
     }();
     type_constraint_map["ConcatV2"]["Tidx"] = SupportedTypesIdx(device_id);
@@ -968,6 +967,11 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       if (device_id == "GPU") {
         if (ov_version[0] >= 2022 && ov_version[1]>=2) {
           supported_types.insert(DT_DOUBLE);
+          supported_types.insert(DT_INT64);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=2) {
           supported_types.insert(DT_INT64);
         }
       }
