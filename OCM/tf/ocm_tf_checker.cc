@@ -217,13 +217,19 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
           supported_types.insert(DT_INT64);
         }
-      } else if (device_id == "MYRIAD" || device_id == "HDDL") {
+      } if (device_id == "GPU") {
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
+          supported_types.insert(DT_INT64);
+        }
+      } 
+      if (device_id == "MYRIAD" || device_id == "HDDL") {
         // checked using OVTF code, it's working
         supported_types.insert(DT_UINT16);
       }
-      else if (device_id == "MYRIAD") {
+      if (device_id == "MYRIAD") {
         if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
           supported_types.insert(DT_DOUBLE);
+          supported_types.insert(DT_INT64);
         }
       }
       return supported_types;
@@ -262,6 +268,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (device_id == "MYRIAD") {
           if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
             supported_types.insert(DT_DOUBLE);
+            supported_types.insert(DT_INT64);
             }
             }
       }
@@ -353,7 +360,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       return supported_types;
     }();
     type_constraint_map["DynamicPartition"]["T"] = SupportedTypes(device_id);
-    type_constraint_map["Einsum"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["Einsum"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=1) {
+          supported_types.insert(DT_INT64);
+        }  
+      }
+      return supported_types;
+    }();
     type_constraint_map["Erf"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Elu"]["T"] = [device_id, ov_version]() {
       std::set<DataType> supported_types = SupportedTypes(device_id);
@@ -383,7 +398,15 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
       }
       return supported_types;
     }();
-    type_constraint_map["ExtractImagePatches"]["T"] = SupportedTypes(device_id);
+    type_constraint_map["ExtractImagePatches"]["T"] = [device_id, ov_version]() {
+      std::set<DataType> supported_types = SupportedTypes(device_id);
+      if (device_id == "GPU") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=1) {
+          supported_types.insert(DT_INT64);
+        }  
+      }
+      return supported_types;
+    }();
     type_constraint_map["Fill"]["T"] = SupportedTypes(device_id);
     type_constraint_map["Fill"]["index_type"] = SupportedTypesIdx(device_id);
     type_constraint_map["Floor"]["T"] = [device_id, ov_version]() {
@@ -409,9 +432,9 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] >=2022 && ov_version[1] >= 1) {
           supported_types.erase(DT_INT64);
         }
-      } else if (device_id == "MYRIAD" || device_id == "HDDL") {
+      } if (device_id == "MYRIAD" || device_id == "HDDL") {
         supported_types.erase(DT_INT32);
-      } else if (device_id == "MYRIAD") {
+      } if (device_id == "MYRIAD") {
         if (ov_version[0] >=2022 && ov_version[1] >= 2) {
           supported_types.insert(DT_INT32);
         }
@@ -493,6 +516,14 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2021 || ov_version[1] >= 3 ) {
           supported_types.insert(DT_INT8);
         }
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
+#ifdef ENABLE_DT_HALF
+        supported_types.insert(DT_HALF);
+#endif
+        supported_types.insert(DT_DOUBLE);
+        }
+      }
+      if (device_id == "GPU") {
         if (ov_version[0] >= 2022 && ov_version[1] >= 2 ) {
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
@@ -934,6 +965,12 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
 #endif
         }
       }
+      if (device_id == "GPU") {
+        if (ov_version[0] >= 2022 && ov_version[1]>=2) {
+          supported_types.insert(DT_DOUBLE);
+          supported_types.insert(DT_INT64);
+        }
+      }
       return supported_types;
     }();
     type_constraint_map["SelectV2"]["T"] = [device_id, ov_version]() {
@@ -943,6 +980,17 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
 #ifdef ENABLE_DT_HALF
         supported_types.insert(DT_HALF);
 #endif
+        }
+      }
+      if (device_id == "GPU") {
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2) {
+          supported_types.insert(DT_INT64);
+          supported_types.insert(DT_DOUBLE);
+        }
+      }
+      if (device_id == "MYRIAD") {
+        if (ov_version[0] >= 2022 && ov_version[1] >= 2) {
+          supported_types.insert(DT_INT64);
         }
       }
       return supported_types;
