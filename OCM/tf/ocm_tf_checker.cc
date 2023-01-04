@@ -595,6 +595,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2022 && ov_version[1] >= 1 ) {
           supported_types.insert(DT_INT64);
         }
+        supported_types.erase(DT_FLOAT);
       }
       return supported_types;
     }();
@@ -929,6 +930,7 @@ const TypeConstraintMap &GetTypeConstraintMap(std::string device_id,
         if (ov_version[0] > 2022 && ov_version[1] >= 1 ) {
           supported_types.insert(DT_INT64);
         }
+          supported_types.erase(DT_FLOAT);
       }
       return supported_types;
     }();
