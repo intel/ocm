@@ -55,6 +55,7 @@ concat_op_test.ConcatOpTest.testRefType
 concat_op_test.ConcatOpTest.testShapeWithUnknownConcatDim
 concat_op_test.ConcatOpTest.testVStack
 concat_op_test.ConcatOpTest.testZeroSize
+concat_op_test.ConcatOpTest.*
 
 constant_op_test.ConstantTest.*
 #No valid tests in these
@@ -141,9 +142,15 @@ cwise_ops_binary_test.BinaryOpTest.testUint8Basic
 cwise_ops_binary_test.ComparisonOpTest.testBCastLessEqual
 cwise_ops_test.ComparisonOpTest.testBCastLessEqual
 cwise_ops_test.ComparisonOpTest.testBCastNotEqual
+cwise_ops_test.SelectOpTest.*
 
 depthwise_conv_op_test.DepthwiseConv2DTest.testConv2D2x2Filter
 depthtospace_op_test.*
+dynamic_partition_op_test.DynamicPartitionTest.*
+
+einsum_op_test.EinsumOpTest.*
+einsum_op_test.EinsumGradTest.*
+extract_image_patches_op_test.ExtractImagePatches.*
 
 gather_nd_op_test.*
 
@@ -199,6 +206,9 @@ matmul_op_test.MatMulTest.*
 
 # # Round ops
 math_ops_test.RoundTest.testRounding
+math_ops_test.ModTest.*
+math_ops_test.SquaredDifferenceTest.*
+nn_test.SwishTest.*
 
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape1
 nn_fused_batchnorm_test.BatchNormalizationTest.testInferenceShape2
