@@ -23,7 +23,7 @@ std::set<std::string> common_supported_ops = {
     "ArgMax", "AvgPool",
     "BiasAdd",
     "Cast", 
-    "ConcatV2", "Const", "Conv2D", "Conv2DBackpropInput",
+    "Conv2D", "Conv2DBackpropInput",
     "DepthwiseConv2dNative",
     "DepthToSpace", 
     "Equal", "Exp", "ExpandDims",
@@ -75,7 +75,7 @@ std::set<std::string> cpu_only_ops = {
     "Asinh", // Unittest - cwise_math
     "Atan",  // Unittest - cwise_math
     "Atanh", // Unittest - cwise_math
-    "Bucketize",     "ExperimentalSparseWeightedSum",
+    "Bucketize", "ConcatV2", "Const", "ExperimentalSparseWeightedSum",
     "Neg",  // Unittest - cwise_math
     "Sinh", // Unittest - cwise_math
     "SparseToDense", 
