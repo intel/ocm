@@ -48,7 +48,7 @@ std::set<std::string> common_supported_ops = {
     "Sub",
     "Sum", 
     "Tile", "TopKV2", "Transpose", "Unpack",
-    "Where",  // Commented as it introduces dynamic shape error
+    // "Where",  // Commented as it introduces dynamic shape error
     "ZerosLike" 
 };
 
